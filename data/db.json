@@ -1,0 +1,70 @@
+{
+  "tournaments": [
+    {
+      "id": 1,
+      "name": "Spring Scholastic Open",
+      "date": "2025-03-15",
+      "location": "Chess Club HQ, Upper West Side",
+      "age": "All Ages (6–16)",
+      "max": 32,
+      "fee": 25,
+      "format": "Swiss System",
+      "desc": "Our flagship spring tournament! Open to all skill levels. Trophies for top 3 in each section.",
+      "status": "open"
+    },
+    {
+      "id": 2,
+      "name": "Junior Rapid Championship",
+      "date": "2025-04-05",
+      "location": "Brooklyn Community Center",
+      "age": "Juniors (6–10)",
+      "max": 24,
+      "fee": 20,
+      "format": "Rapid",
+      "desc": "A fast-paced rapid tournament for our youngest players. G/15 time control.",
+      "status": "open"
+    },
+    {
+      "id": 3,
+      "name": "NYC Youth Invitational",
+      "date": "2025-05-17",
+      "location": "Manhattan Public Library",
+      "age": "Seniors (14–16)",
+      "max": 20,
+      "fee": 30,
+      "format": "Swiss System",
+      "desc": "Invitational for top-rated players. USCF rated.",
+      "status": "upcoming"
+    }
+  ],
+  "camps": [
+    {
+      "id": 1,
+      "name": "Summer Chess Camp – Session 1",
+      "dateStart": "2025-06-23",
+      "dateEnd": "2025-06-27",
+      "location": "Chess Club HQ, Upper West Side",
+      "type": "Half Day (9AM–1PM)",
+      "age": "All Ages (6–16)",
+      "price": 350,
+      "spots": 20,
+      "desc": "Chess fundamentals, puzzle competitions, board games, snacks. Certificate of completion included.",
+      "status": "open"
+    },
+    {
+      "id": 2,
+      "name": "Summer Chess Camp – Session 2",
+      "dateStart": "2025-07-07",
+      "dateEnd": "2025-07-11",
+      "location": "Chess Club HQ, Upper West Side",
+      "type": "Full Day (9AM–5PM)",
+      "age": "All Ages (6–16)",
+      "price": 550,
+      "spots": 20,
+      "desc": "Advanced strategy, tournament simulations, team challenges, lunch, guest grandmaster visit, trophy ceremony.",
+      "status": "open"
+    }
+  ],
+  "tournamentRegs": [],
+  "campRegs": []
+}

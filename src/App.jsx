@@ -1,27 +1,25 @@
 import { useState, useEffect, useCallback } from "react";
 
 /* ══════════════════════════════════════════
-   STORAGE
+      API
 ══════════════════════════════════════════ */
-const K = {
-  t: "mcf_t2",
-  tr: "mcf_tr2",
-  c: "mcf_c2",
-  cr: "mcf_cr2",
-  s: "mcf_s2",
-};
-const ld = (k, d) => {
-  try {
-    const v = localStorage.getItem(k);
-    return v ? JSON.parse(v) : d;
-  } catch {
-    return d;
-  }
-};
-const sv = (k, v) => {
-  try {
-    localStorage.setItem(k, JSON.stringify(v));
-  } catch {}
+const AUTH_KEY = "mcf_admin_token";
+
+const api = async (path, options = {}) => {
+  const token = localStorage.getItem(AUTH_KEY);
+
+  const headers = {
+    "Content-Type": "application/json",
+    ...(options.headers || {}),
+  };
+
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const res = await fetch(`/api${path}`, { ...options, headers });
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) throw new Error(data.error || "Request failed");
+  return data;
 };
 
 const DEF_TOURNAMENTS = [
@@ -106,23 +104,13 @@ const fmtD = (d) =>
     day: "numeric",
     year: "numeric",
   });
+
 const fmtDShort = (d) =>
   new Date(d + "T12:00:00").toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
-const nowStamp = () => {
-  const d = new Date();
-  return {
-    date: d.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }),
-    time: d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
-  };
-};
 
 /* ══════════════════════════════════════════
    STYLES
@@ -446,7 +434,7 @@ function Footer({ onNav }) {
 }
 
 /* Registration modal – shared by tournaments & camps */
-function RegModal({ item, type, onClose, showToast }) {
+function RegModal({ item, type, onClose, showToast, onRegistered }) {
   const [f, setF] = useState({
     fname: "",
     lname: "",
@@ -464,54 +452,57 @@ function RegModal({ item, type, onClose, showToast }) {
   const [done, setDone] = useState(false);
   const set = (k) => (e) => setF((p) => ({ ...p, [k]: e.target.value }));
 
-  const submit = () => {
+  const submit = async () => {
     const base = !f.fname || !f.lname || !f.parent || !f.email || !f.phone;
     const tournExtra = type === "tournament" && (!f.age || !f.skill);
     const campExtra = type === "camp" && (!f.dob || !f.level);
+
     if (base || tournExtra || campExtra) {
       showToast("Please fill in all required fields.", "e");
       return;
     }
-    const { date, time } = nowStamp();
-    if (type === "tournament") {
-      const regs = ld(K.tr, []);
-      regs.push({
-        id: Date.now(),
-        tournId: item.id,
-        tournName: item.name,
-        childName: f.fname + " " + f.lname,
-        age: f.age,
-        skill: f.skill,
-        parent: f.parent,
-        email: f.email,
-        phone: f.phone,
-        notes: f.notes || "—",
-        date,
-        time,
-      });
-      sv(K.tr, regs);
-    } else {
-      const regs = ld(K.cr, []);
-      regs.push({
-        id: Date.now(),
-        campId: item.id,
-        campName: item.name,
-        childName: f.fname + " " + f.lname,
-        dob: f.dob,
-        level: f.level,
-        parent: f.parent,
-        email: f.email,
-        phone: f.phone,
-        emergency: f.emergency || "—",
-        medical: f.medical || "None",
-        price: item.price,
-        date,
-        time,
-      });
-      sv(K.cr, regs);
+
+    try {
+      if (type === "tournament") {
+        await api("/registrations/tournament", {
+          method: "POST",
+          body: JSON.stringify({
+            tournId: item.id,
+            tournName: item.name,
+            childName: `${f.fname} ${f.lname}`,
+            age: f.age,
+            skill: f.skill,
+            parent: f.parent,
+            email: f.email,
+            phone: f.phone,
+            notes: f.notes || "—",
+          }),
+        });
+      } else {
+        await api("/registrations/camp", {
+          method: "POST",
+          body: JSON.stringify({
+            campId: item.id,
+            campName: item.name,
+            childName: `${f.fname} ${f.lname}`,
+            dob: f.dob,
+            level: f.level,
+            parent: f.parent,
+            email: f.email,
+            phone: f.phone,
+            emergency: f.emergency || "—",
+            medical: f.medical || "None",
+            price: item.price,
+          }),
+        });
+      }
+
+      setDone(true);
+      onRegistered?.();
+      showToast("🎉 Registration submitted!", "s");
+    } catch (error) {
+      showToast(error.message || "Could not submit registration.", "e");
     }
-    setDone(true);
-    showToast("🎉 Registration submitted!", "s");
   };
 
   return (
@@ -527,6 +518,7 @@ function RegModal({ item, type, onClose, showToast }) {
           {type === "tournament" ? "Register: " : "Sign Up: "}
           {item.name}
         </h3>
+
         {!done ? (
           <>
             <div className="fgrid">
@@ -539,6 +531,7 @@ function RegModal({ item, type, onClose, showToast }) {
                   onChange={set("fname")}
                 />
               </div>
+
               <div className="fg">
                 <label className="lbl">Last Name *</label>
                 <input
@@ -548,6 +541,7 @@ function RegModal({ item, type, onClose, showToast }) {
                   onChange={set("lname")}
                 />
               </div>
+
               {type === "tournament" && (
                 <>
                   <div className="fg">
@@ -574,6 +568,7 @@ function RegModal({ item, type, onClose, showToast }) {
                   </div>
                 </>
               )}
+
               {type === "camp" && (
                 <>
                   <div className="fg">
@@ -601,6 +596,7 @@ function RegModal({ item, type, onClose, showToast }) {
                   </div>
                 </>
               )}
+
               <div className="fg full">
                 <label className="lbl">Parent / Guardian *</label>
                 <input
@@ -610,6 +606,7 @@ function RegModal({ item, type, onClose, showToast }) {
                   onChange={set("parent")}
                 />
               </div>
+
               <div className="fg full">
                 <label className="lbl">Email *</label>
                 <input
@@ -620,6 +617,7 @@ function RegModal({ item, type, onClose, showToast }) {
                   onChange={set("email")}
                 />
               </div>
+
               <div className="fg full">
                 <label className="lbl">Phone *</label>
                 <input
@@ -630,6 +628,7 @@ function RegModal({ item, type, onClose, showToast }) {
                   onChange={set("phone")}
                 />
               </div>
+
               {type === "camp" && (
                 <>
                   <div className="fg full">
@@ -652,6 +651,7 @@ function RegModal({ item, type, onClose, showToast }) {
                   </div>
                 </>
               )}
+
               {type === "tournament" && (
                 <div className="fg full">
                   <label className="lbl">Notes</label>
@@ -664,6 +664,7 @@ function RegModal({ item, type, onClose, showToast }) {
                 </div>
               )}
             </div>
+
             <button className="sbtn" onClick={submit}>
               Submit Registration →
             </button>
@@ -694,7 +695,6 @@ function RegModal({ item, type, onClose, showToast }) {
 function HomePage({ onNav }) {
   return (
     <div className="pg">
-      {/* HERO */}
       <div className="hero">
         <div className="hero-bg">
           {Array.from({ length: 64 }, (_, i) => (
@@ -742,7 +742,6 @@ function HomePage({ onNav }) {
         </div>
       </div>
 
-      {/* Programs */}
       <div className="wrap">
         <div className="slbl">What We Offer</div>
         <h2 className="stit">
@@ -783,7 +782,6 @@ function HomePage({ onNav }) {
 
       <div className="sdiv" />
 
-      {/* Why Chess */}
       <div className="wrap" style={{ paddingTop: "3rem" }}>
         <div className="slbl">Why Chess?</div>
         <h2 className="stit">
@@ -828,8 +826,9 @@ function HomePage({ onNav }) {
   );
 }
 
-function TournamentsPage({ tournaments, onNav, showToast }) {
+function TournamentsPage({ tournaments, onNav, showToast, onRegistered }) {
   const [modal, setModal] = useState(null);
+
   return (
     <div className="pg">
       <div className="ph">
@@ -840,6 +839,7 @@ function TournamentsPage({ tournaments, onNav, showToast }) {
           all skill levels!
         </p>
       </div>
+
       <div className="wrap" style={{ paddingTop: "3rem" }}>
         {!tournaments.length ? (
           <div className="empty">
@@ -892,21 +892,25 @@ function TournamentsPage({ tournaments, onNav, showToast }) {
           </div>
         )}
       </div>
+
       {modal && (
         <RegModal
           item={modal}
           type="tournament"
           onClose={() => setModal(null)}
           showToast={showToast}
+          onRegistered={onRegistered}
         />
       )}
+
       <Footer onNav={onNav} />
     </div>
   );
 }
 
-function CampPage({ camps, onNav, showToast }) {
+function CampPage({ camps, onNav, showToast, onRegistered }) {
   const [modal, setModal] = useState(null);
+
   return (
     <div className="pg">
       <div
@@ -925,6 +929,7 @@ function CampPage({ camps, onNav, showToast }) {
           friendships in the heart of New York City!
         </p>
       </div>
+
       <div className="wrap" style={{ paddingTop: "3rem" }}>
         {!camps.length ? (
           <div className="empty">
@@ -969,14 +974,17 @@ function CampPage({ camps, onNav, showToast }) {
           </div>
         )}
       </div>
+
       {modal && (
         <RegModal
           item={modal}
           type="camp"
           onClose={() => setModal(null)}
           showToast={showToast}
+          onRegistered={onRegistered}
         />
       )}
+
       <Footer onNav={onNav} />
     </div>
   );
@@ -1067,6 +1075,7 @@ function AboutPage({ onNav }) {
             </div>
           </div>
         </div>
+
         <div style={{ marginTop: "4.5rem" }}>
           <div className="slbl">Our Team</div>
           <h2 className="stit">Meet the Coaches</h2>
@@ -1116,13 +1125,22 @@ function LoginPage({ onLogin, showToast }) {
   const [u, setU] = useState("");
   const [p, setP] = useState("");
   const [err, setErr] = useState("");
-  const submit = () => {
-    if (u === "admin" && p === "chess123") {
-      sv(K.s, true);
+
+  const submit = async () => {
+    try {
+      setErr("");
+      const data = await api("/admin/login", {
+        method: "POST",
+        body: JSON.stringify({ username: u, password: p }),
+      });
+      localStorage.setItem(AUTH_KEY, data.token);
       onLogin();
       showToast("✅ Welcome back, Admin!", "s");
-    } else setErr("❌ Wrong credentials. Use: admin / chess123");
+    } catch {
+      setErr("❌ Wrong credentials. Use: admin / chess123");
+    }
   };
+
   return (
     <div className="pg">
       <div className="login-box" style={{ marginTop: "4rem" }}>
@@ -1192,12 +1210,13 @@ function AdminPage({
   setTournaments,
   camps,
   setCamps,
+  tournRegs,
+  campRegs,
   onLogout,
   showToast,
 }) {
   const [tab, setTab] = useState("tournaments");
 
-  /* tournament form */
   const [tf, setTf] = useState({
     name: "",
     date: "",
@@ -1212,7 +1231,6 @@ function AdminPage({
   const setT = (k) => (e) => setTf((p) => ({ ...p, [k]: e.target.value }));
   const [tDone, setTDone] = useState(false);
 
-  /* camp form */
   const [cf, setCf] = useState({
     name: "",
     dateStart: "",
@@ -1228,113 +1246,144 @@ function AdminPage({
   const setC = (k) => (e) => setCf((p) => ({ ...p, [k]: e.target.value }));
   const [cDone, setCDone] = useState(false);
 
-  const tournRegs = ld(K.tr, []);
-  const campRegs = ld(K.cr, []);
   const revenue = campRegs.reduce((s, r) => s + (r.price || 0), 0);
 
-  const addTournament = () => {
+  const addTournament = async () => {
     if (!tf.name || !tf.date || !tf.loc) {
       showToast("Fill Name, Date & Location.", "e");
       return;
     }
-    const updated = [
-      ...tournaments,
-      {
-        id: Date.now(),
-        name: tf.name,
-        date: tf.date,
-        location: tf.loc,
-        age: tf.age,
-        format: tf.format,
-        max: parseInt(tf.max) || 32,
-        fee: parseInt(tf.fee) || 0,
-        status: tf.status,
-        desc: tf.desc || "Registration open!",
-      },
-    ];
-    sv(K.t, updated);
-    setTournaments(updated);
-    setTDone(true);
-    setTimeout(() => setTDone(false), 3000);
-    setTf({
-      name: "",
-      date: "",
-      loc: "",
-      age: "All Ages (6–16)",
-      format: "Swiss System",
-      max: "",
-      fee: "",
-      status: "open",
-      desc: "",
-    });
-    showToast("✅ Tournament published!", "s");
+
+    try {
+      const data = await api("/admin/tournaments", {
+        method: "POST",
+        body: JSON.stringify({
+          name: tf.name,
+          date: tf.date,
+          location: tf.loc,
+          age: tf.age,
+          format: tf.format,
+          max: parseInt(tf.max) || 32,
+          fee: parseInt(tf.fee) || 0,
+          status: tf.status,
+          desc: tf.desc || "Registration open!",
+        }),
+      });
+
+      setTournaments(data.tournaments);
+      setTDone(true);
+      setTimeout(() => setTDone(false), 3000);
+
+      setTf({
+        name: "",
+        date: "",
+        loc: "",
+        age: "All Ages (6–16)",
+        format: "Swiss System",
+        max: "",
+        fee: "",
+        status: "open",
+        desc: "",
+      });
+
+      showToast("✅ Tournament published!", "s");
+    } catch (error) {
+      showToast(error.message || "Could not add tournament.", "e");
+    }
   };
 
-  const addCamp = () => {
+  const addCamp = async () => {
     if (!cf.name || !cf.dateStart || !cf.dateEnd || !cf.loc) {
       showToast("Fill Name, Dates & Location.", "e");
       return;
     }
-    const updated = [
-      ...camps,
-      {
-        id: Date.now(),
-        name: cf.name,
-        dateStart: cf.dateStart,
-        dateEnd: cf.dateEnd,
-        location: cf.loc,
-        age: cf.age,
-        type: cf.type,
-        price: parseInt(cf.price) || 0,
-        spots: parseInt(cf.spots) || 20,
-        status: cf.status,
-        desc: cf.desc || "Registration open!",
-      },
-    ];
-    sv(K.c, updated);
-    setCamps(updated);
-    setCDone(true);
-    setTimeout(() => setCDone(false), 3000);
-    setCf({
-      name: "",
-      dateStart: "",
-      dateEnd: "",
-      loc: "",
-      age: "All Ages (6–16)",
-      type: "Half Day (9AM–1PM)",
-      price: "",
-      spots: "",
-      status: "open",
-      desc: "",
-    });
-    showToast("✅ Camp session published!", "s");
+
+    try {
+      const data = await api("/admin/camps", {
+        method: "POST",
+        body: JSON.stringify({
+          name: cf.name,
+          dateStart: cf.dateStart,
+          dateEnd: cf.dateEnd,
+          location: cf.loc,
+          age: cf.age,
+          type: cf.type,
+          price: parseInt(cf.price) || 0,
+          spots: parseInt(cf.spots) || 20,
+          status: cf.status,
+          desc: cf.desc || "Registration open!",
+        }),
+      });
+
+      setCamps(data.camps);
+      setCDone(true);
+      setTimeout(() => setCDone(false), 3000);
+
+      setCf({
+        name: "",
+        dateStart: "",
+        dateEnd: "",
+        loc: "",
+        age: "All Ages (6–16)",
+        type: "Half Day (9AM–1PM)",
+        price: "",
+        spots: "",
+        status: "open",
+        desc: "",
+      });
+
+      showToast("✅ Camp session published!", "s");
+    } catch (error) {
+      showToast(error.message || "Could not add camp session.", "e");
+    }
   };
 
-  const changeStatusT = (id, status) => {
-    const u = tournaments.map((t) => (t.id === id ? { ...t, status } : t));
-    sv(K.t, u);
-    setTournaments(u);
-    showToast("Status updated!", "s");
+  const changeStatusT = async (id, status) => {
+    try {
+      const data = await api(`/admin/tournaments/${id}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status }),
+      });
+      setTournaments(data.tournaments);
+      showToast("Status updated!", "s");
+    } catch (error) {
+      showToast(error.message || "Could not update status.", "e");
+    }
   };
-  const changeStatusC = (id, status) => {
-    const u = camps.map((c) => (c.id === id ? { ...c, status } : c));
-    sv(K.c, u);
-    setCamps(u);
-    showToast("Status updated!", "s");
+
+  const changeStatusC = async (id, status) => {
+    try {
+      const data = await api(`/admin/camps/${id}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status }),
+      });
+      setCamps(data.camps);
+      showToast("Status updated!", "s");
+    } catch (error) {
+      showToast(error.message || "Could not update status.", "e");
+    }
   };
-  const delT = (id) => {
+
+  const delT = async (id) => {
     if (!confirm("Delete this tournament?")) return;
-    const u = tournaments.filter((t) => t.id !== id);
-    sv(K.t, u);
-    setTournaments(u);
-    showToast("Deleted.", "i");
+    try {
+      const data = await api(`/admin/tournaments/${id}`, { method: "DELETE" });
+      setTournaments(data.tournaments);
+      showToast("Deleted.", "i");
+    } catch (error) {
+      showToast(error.message || "Could not delete tournament.", "e");
+    }
   };
-  const delC = (id) => {
+
+  const delC = async (id) => {
     if (!confirm("Delete this camp session?")) return;
-    const u = camps.filter((c) => c.id !== id);
-    sv(K.c, u);
-    setCamps(u);
-    showToast("Deleted.", "i");
+    try {
+      const data = await api(`/admin/camps/${id}`, { method: "DELETE" });
+      setCamps(data.camps);
+      showToast("Deleted.", "i");
+    } catch (error) {
+      showToast(error.message || "Could not delete camp session.", "e");
+    }
   };
 
   return (
@@ -1362,6 +1411,7 @@ function AdminPage({
               Welcome, Admin! 👋
             </h2>
           </div>
+
           <button
             className="delbtn"
             style={{ fontSize: ".88rem", padding: ".45rem 1rem" }}
@@ -1403,7 +1453,6 @@ function AdminPage({
           ))}
         </div>
 
-        {/* ── MANAGE TOURNAMENTS ── */}
         {tab === "tournaments" && (
           <>
             <div className="add-form">
@@ -1416,6 +1465,7 @@ function AdminPage({
               >
                 ➕ Add New Tournament
               </h3>
+
               <div className="fgrid">
                 <div className="fg full">
                   <label className="lbl">Tournament Name *</label>
@@ -1426,6 +1476,7 @@ function AdminPage({
                     onChange={setT("name")}
                   />
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Date *</label>
                   <input
@@ -1435,6 +1486,7 @@ function AdminPage({
                     onChange={setT("date")}
                   />
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Location *</label>
                   <input
@@ -1444,6 +1496,7 @@ function AdminPage({
                     onChange={setT("loc")}
                   />
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Age Group</label>
                   <select className="inp" value={tf.age} onChange={setT("age")}>
@@ -1453,6 +1506,7 @@ function AdminPage({
                     <option>Seniors (14–16)</option>
                   </select>
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Format</label>
                   <select
@@ -1467,6 +1521,7 @@ function AdminPage({
                     <option>Blitz</option>
                   </select>
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Max Participants</label>
                   <input
@@ -1477,6 +1532,7 @@ function AdminPage({
                     onChange={setT("max")}
                   />
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Entry Fee ($)</label>
                   <input
@@ -1487,6 +1543,7 @@ function AdminPage({
                     onChange={setT("fee")}
                   />
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Status</label>
                   <select
@@ -1499,6 +1556,7 @@ function AdminPage({
                     <option value="full">Full</option>
                   </select>
                 </div>
+
                 <div className="fg full">
                   <label className="lbl">Description</label>
                   <textarea
@@ -1509,9 +1567,11 @@ function AdminPage({
                   />
                 </div>
               </div>
+
               <button className="sbtn" onClick={addTournament}>
                 Add Tournament →
               </button>
+
               {tDone && (
                 <div className="ok-box">
                   <div style={{ fontSize: "1.4rem" }}>✅</div>
@@ -1519,6 +1579,7 @@ function AdminPage({
                 </div>
               )}
             </div>
+
             <h3
               style={{
                 fontFamily: "'Playfair Display',serif",
@@ -1528,6 +1589,7 @@ function AdminPage({
             >
               All Tournaments ({tournaments.length})
             </h3>
+
             {!tournaments.length ? (
               <div className="empty">
                 <div className="empty-i">🏆</div>
@@ -1546,6 +1608,7 @@ function AdminPage({
                         {rc !== 1 ? "s" : ""}
                       </div>
                     </div>
+
                     <div
                       style={{
                         display: "flex",
@@ -1574,7 +1637,6 @@ function AdminPage({
           </>
         )}
 
-        {/* ── MANAGE CAMPS ── */}
         {tab === "camps" && (
           <>
             <div className="add-form">
@@ -1587,6 +1649,7 @@ function AdminPage({
               >
                 ➕ Add New Camp Session
               </h3>
+
               <div className="fgrid">
                 <div className="fg full">
                   <label className="lbl">Camp Session Name *</label>
@@ -1597,6 +1660,7 @@ function AdminPage({
                     onChange={setC("name")}
                   />
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Start Date *</label>
                   <input
@@ -1606,6 +1670,7 @@ function AdminPage({
                     onChange={setC("dateStart")}
                   />
                 </div>
+
                 <div className="fg">
                   <label className="lbl">End Date *</label>
                   <input
@@ -1615,6 +1680,7 @@ function AdminPage({
                     onChange={setC("dateEnd")}
                   />
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Location *</label>
                   <input
@@ -1624,6 +1690,7 @@ function AdminPage({
                     onChange={setC("loc")}
                   />
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Session Type</label>
                   <select
@@ -1635,6 +1702,7 @@ function AdminPage({
                     <option>Full Day (9AM–5PM)</option>
                   </select>
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Age Group</label>
                   <select className="inp" value={cf.age} onChange={setC("age")}>
@@ -1644,6 +1712,7 @@ function AdminPage({
                     <option>Seniors (14–16)</option>
                   </select>
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Price per Child ($)</label>
                   <input
@@ -1654,6 +1723,7 @@ function AdminPage({
                     onChange={setC("price")}
                   />
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Max Spots</label>
                   <input
@@ -1664,6 +1734,7 @@ function AdminPage({
                     onChange={setC("spots")}
                   />
                 </div>
+
                 <div className="fg">
                   <label className="lbl">Status</label>
                   <select
@@ -1676,6 +1747,7 @@ function AdminPage({
                     <option value="full">Full</option>
                   </select>
                 </div>
+
                 <div className="fg full">
                   <label className="lbl">Description</label>
                   <textarea
@@ -1686,9 +1758,11 @@ function AdminPage({
                   />
                 </div>
               </div>
+
               <button className="sbtn" onClick={addCamp}>
                 Add Camp Session →
               </button>
+
               {cDone && (
                 <div className="ok-box">
                   <div style={{ fontSize: "1.4rem" }}>✅</div>
@@ -1696,6 +1770,7 @@ function AdminPage({
                 </div>
               )}
             </div>
+
             <h3
               style={{
                 fontFamily: "'Playfair Display',serif",
@@ -1705,6 +1780,7 @@ function AdminPage({
             >
               All Camp Sessions ({camps.length})
             </h3>
+
             {!camps.length ? (
               <div className="empty">
                 <div className="empty-i">☀️</div>
@@ -1720,9 +1796,11 @@ function AdminPage({
                       <div className="ei-meta">
                         📅 {fmtDShort(c.dateStart)} – {fmtDShort(c.dateEnd)} ·
                         📍 {c.location} · {c.type} · 💵 ${c.price} · 📝 {rc}{" "}
-                        sign-up{rc !== 1 ? "s" : ""}
+                        sign-up
+                        {rc !== 1 ? "s" : ""}
                       </div>
                     </div>
+
                     <div
                       style={{
                         display: "flex",
@@ -1751,7 +1829,6 @@ function AdminPage({
           </>
         )}
 
-        {/* ── TOURNAMENT REGS ── */}
         {tab === "tourregs" && (
           <>
             <h3
@@ -1763,6 +1840,7 @@ function AdminPage({
             >
               Tournament Registrations ({tournRegs.length})
             </h3>
+
             {!tournRegs.length ? (
               <div className="empty">
                 <div className="empty-i">📋</div>
@@ -1823,7 +1901,6 @@ function AdminPage({
           </>
         )}
 
-        {/* ── CAMP REGS ── */}
         {tab === "campregs" && (
           <>
             <h3
@@ -1835,6 +1912,7 @@ function AdminPage({
             >
               Camp Sign-Ups ({campRegs.length})
             </h3>
+
             {!campRegs.length ? (
               <div className="empty">
                 <div className="empty-i">🏕</div>
@@ -1914,24 +1992,16 @@ function AdminPage({
 ══════════════════════════════════════════ */
 export default function App() {
   const [page, setPage] = useState("home");
-  const [isAdmin, setIsAdmin] = useState(() => ld(K.s, false) === true);
+  const [isAdmin, setIsAdmin] = useState(
+    () => !!localStorage.getItem(AUTH_KEY),
+  );
   const [toasts, setToasts] = useState([]);
-  const [tournaments, setTournaments] = useState(() => {
-    const t = ld(K.t, null);
-    if (!t) {
-      sv(K.t, DEF_TOURNAMENTS);
-      return DEF_TOURNAMENTS;
-    }
-    return t;
-  });
-  const [camps, setCamps] = useState(() => {
-    const c = ld(K.c, null);
-    if (!c) {
-      sv(K.c, DEF_CAMPS);
-      return DEF_CAMPS;
-    }
-    return c;
-  });
+
+  const [tournaments, setTournaments] = useState(DEF_TOURNAMENTS);
+  const [camps, setCamps] = useState(DEF_CAMPS);
+
+  const [tournRegs, setTournRegs] = useState([]);
+  const [campRegs, setCampRegs] = useState([]);
 
   useEffect(() => {
     injectStyles();
@@ -1942,6 +2012,52 @@ export default function App() {
     setToasts((t) => [...t, { id, msg, type }]);
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 3200);
   }, []);
+
+  const loadPublicData = useCallback(async () => {
+    try {
+      const data = await api("/bootstrap");
+      setTournaments(data.tournaments || []);
+      setCamps(data.camps || []);
+    } catch {
+      showToast(
+        "Using fallback local data. Start backend server for sync.",
+        "e",
+      );
+    }
+  }, [showToast]);
+
+  const loadAdminData = useCallback(async () => {
+    if (!localStorage.getItem(AUTH_KEY)) return;
+
+    try {
+      const data = await api("/admin/registrations");
+      setTournRegs(data.tournamentRegs || []);
+      setCampRegs(data.campRegs || []);
+    } catch {
+      setIsAdmin(false);
+      localStorage.removeItem(AUTH_KEY);
+    }
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      loadPublicData();
+    }, 0);
+  }, [loadPublicData]);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+
+    setTimeout(() => {
+      loadAdminData();
+    }, 0);
+
+    const interval = setInterval(() => {
+      loadAdminData();
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, [isAdmin, loadAdminData]);
 
   const go = useCallback(
     (p) => {
@@ -1955,20 +2071,28 @@ export default function App() {
     [isAdmin],
   );
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setIsAdmin(true);
     setPage("admin");
+    await loadAdminData();
   };
-  const handleLogout = () => {
-    sv(K.s, false);
+
+  const handleLogout = async () => {
+    try {
+      await api("/admin/logout", { method: "POST" });
+    } catch {
+      // ignore
+    }
+    localStorage.removeItem(AUTH_KEY);
     setIsAdmin(false);
+    setTournRegs([]);
+    setCampRegs([]);
     setPage("home");
     showToast("👋 Logged out.", "i");
   };
 
   return (
     <div style={{ width: "100%", minHeight: "100vh", background: "#09131E" }}>
-      {/* NAV */}
       <nav className="nav">
         <div className="nav-logo" onClick={() => go("home")}>
           ♔ MyChessFamily
@@ -2000,28 +2124,40 @@ export default function App() {
         </div>
       </nav>
 
-      {/* PAGES */}
       {page === "home" && <HomePage onNav={go} />}
+
       {page === "tournaments" && (
         <TournamentsPage
           tournaments={tournaments}
           onNav={go}
           showToast={showToast}
+          onRegistered={loadAdminData}
         />
       )}
+
       {page === "camp" && (
-        <CampPage camps={camps} onNav={go} showToast={showToast} />
+        <CampPage
+          camps={camps}
+          onNav={go}
+          showToast={showToast}
+          onRegistered={loadAdminData}
+        />
       )}
+
       {page === "about" && <AboutPage onNav={go} />}
+
       {page === "login" && (
         <LoginPage onLogin={handleLogin} showToast={showToast} />
       )}
+
       {page === "admin" && (
         <AdminPage
           tournaments={tournaments}
           setTournaments={setTournaments}
           camps={camps}
           setCamps={setCamps}
+          tournRegs={tournRegs}
+          campRegs={campRegs}
           onLogout={handleLogout}
           showToast={showToast}
         />
