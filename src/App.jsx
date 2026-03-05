@@ -138,7 +138,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .adm-dot{font-size:.78rem;color:var(--green3);font-weight:600;}
 
 /* ── PAGE BASE ── */
-.pg{width:100%;min-height:100vh;padding-top:66px; padding-left: 2%; padding-right: 2%;}
+.pg{width:100%;min-height:100vh;padding-top:66px;}
 
 /* ── HERO ── */
 .hero{width:100%;min-height:calc(100vh - 66px);display:flex;align-items:center;background:linear-gradient(135deg,#09131E 0%,#0D1E2C 55%,#091A10 100%);position:relative;overflow:hidden;}
@@ -358,7 +358,7 @@ textarea.inp{min-height:85px;resize:vertical;}
 .mcls:hover{color:var(--cream);}
 
 /* ── ADMIN ── */
-.login-box{max-width:430px;margin:4rem auto;background:rgba(13,30,48,.85);border:1px solid var(--border);border-radius:18px;padding:2.3rem;text-align:center;}
+.login-box{max-width:430px;margin:4rem auto;background:rgba(13,30,48,.85);border:1px solid var(--border);border-radius:18px;padding:2.3rem;text-align:center; margin-left: 2%; margin-right: 2%;}
 .adm-wrap{width:100%;max-width:1200px;margin:0 auto;padding:2rem 2.5rem 4rem;}
 .adm-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
 .atabs{display:flex;gap:6px;margin-bottom:1.8rem;border-bottom:1px solid rgba(74,171,232,.12);padding-bottom:.85rem;flex-wrap:wrap;}
