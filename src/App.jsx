@@ -720,7 +720,7 @@ function HomePage({ onNav, onContact }) {
               </button>
               <button
                 className="btn btn-g"
-                style={{ background: "var(--blue2)" }}
+                style={{ background: "var(--navy3)" }}
                 onClick={() => onNav("team")}
               >
                 ♟ Meet Our Team
@@ -1063,7 +1063,7 @@ function TeamPage({ onNav, onContact }) {
         </p>
       </div>
 
-      <div className="wrap" style={{ paddingTop: "3rem" }}>
+      {/* <div className="wrap" style={{ paddingTop: "3rem" }}>
         <div className="g3">
           {[
             {
@@ -1155,7 +1155,7 @@ function TeamPage({ onNav, onContact }) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <Footer onNav={onNav} onContact={onContact} />
     </div>
