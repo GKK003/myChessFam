@@ -214,6 +214,108 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .cc-price span{font-size:.85rem;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400;}
 .cc-desc{color:var(--muted);font-size:.85rem;line-height:1.6;margin-bottom:1.1rem;}
 
+
+/* ── MOBILE NAV ── */
+.burger{
+  display:none;
+  width:42px;height:42px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:rgba(26,94,168,.09);
+  color:var(--cream);
+  cursor:pointer;
+  align-items:center;
+  justify-content:center;
+  transition:.18s;
+}
+.burger:hover{background:rgba(26,94,168,.14);}
+
+.burger-lines{
+  width:18px;height:14px;position:relative;
+}
+.burger-lines span{
+  position:absolute;left:0;right:0;height:2px;border-radius:2px;
+  background:rgba(220,233,245,.9);
+  transition:.18s;
+}
+.burger-lines span:nth-child(1){top:0;}
+.burger-lines span:nth-child(2){top:6px;opacity:.9;}
+.burger-lines span:nth-child(3){top:12px;}
+
+.burger.on .burger-lines span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.burger.on .burger-lines span:nth-child(2){opacity:0;}
+.burger.on .burger-lines span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+
+/* Drawer */
+.mnav-ovl{
+  position:fixed;inset:0;z-index:1200;
+  background:rgba(0,0,0,.6);
+  backdrop-filter:blur(8px);
+  opacity:0;pointer-events:none;
+  transition:.2s;
+}
+.mnav-ovl.on{opacity:1;pointer-events:auto;}
+
+.mnav{
+  position:fixed;top:0;right:0;height:100vh;z-index:1250;
+  width:min(86vw,360px);
+  background:#0C1C2E;
+  border-left:1px solid var(--border);
+  transform:translateX(105%);
+  transition:transform .25s cubic-bezier(.2,.9,.2,1);
+  display:flex;flex-direction:column;
+}
+.mnav.on{transform:translateX(0);}
+.mnav-h{
+  padding:1.2rem 1.2rem .9rem;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(74,171,232,.12);
+}
+.mnav-logo{
+  font-family:'Playfair Display',serif;
+  font-size:1.25rem;font-weight:900;color:var(--green3);
+  display:flex;align-items:center;gap:8px;
+}
+.mnav-close{
+  width:40px;height:40px;border-radius:10px;
+  border:1px solid var(--border);
+  background:rgba(26,94,168,.09);
+  color:var(--cream);cursor:pointer;
+}
+.mnav-close:hover{background:rgba(26,94,168,.14);}
+
+.mnav-links{
+  padding:1rem 1.2rem;
+  display:flex;flex-direction:column;gap:.55rem;
+}
+.mnav-btn{
+  width:100%;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.85rem 1rem;
+  border-radius:12px;
+  border:1px solid rgba(74,171,232,.14);
+  background:rgba(26,94,168,.07);
+  color:rgba(220,233,245,.92);
+  font-weight:700;
+  cursor:pointer;
+  transition:.18s;
+}
+.mnav-btn:hover{background:rgba(26,94,168,.12);border-color:rgba(74,171,232,.28);}
+.mnav-btn.on{border-color:rgba(45,204,116,.35);background:rgba(21,122,69,.12);color:#EEF5FF;}
+
+.mnav-cta{
+  margin-top:auto;
+  padding:1rem 1.2rem 1.2rem;
+  border-top:1px solid rgba(74,171,232,.12);
+}
+.mnav-cta .btn{width:100%;justify-content:center;}
+
+/* Hide desktop links on mobile, show burger */
+@media(max-width:850px){
+  .nav-links{display:none;}
+  .burger{display:flex;}
+}
+
 /* ── STATUS BADGE ── */
 .bdg{position:absolute;top:.9rem;right:.9rem;padding:.22rem .7rem;border-radius:100px;font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
 .bdg-open{background:var(--green);color:#fff;}
@@ -1694,6 +1796,28 @@ export default function App() {
   // Contact popup state
   const [contactOpen, setContactOpen] = useState(false);
 
+  // ✅ Mobile burger menu state
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const closeMobile = useCallback(() => setMobileOpen(false), []);
+  const openMobile = useCallback(() => setMobileOpen(true), []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+
+    const onKey = (e) => e.key === "Escape" && setMobileOpen(false);
+    window.addEventListener("keydown", onKey);
+
+    // lock scroll
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [mobileOpen]);
+
   useEffect(() => {
     injectStyles();
   }, []);
@@ -1753,6 +1877,8 @@ export default function App() {
 
   const go = useCallback(
     (p) => {
+      setMobileOpen(false); // ✅ close drawer when navigating
+
       if (p === "admin" && !isAdmin) {
         setPage("login");
         return;
@@ -1789,7 +1915,37 @@ export default function App() {
           ♔ MyChessFamily
         </div>
 
-        <div className="nav-links">
+        <div className="nav-links">...</div>
+
+        <div className="nav-right">...</div>
+      </nav>
+      {/* ✅ E) START: Mobile overlay */}
+      <div
+        className={`mnav-ovl${mobileOpen ? " on" : ""}`}
+        onClick={closeMobile}
+      />
+      {/* ✅ E) END: Mobile overlay */}
+      {/* ✅ E) START: Mobile drawer */}
+      <div className={`mnav${mobileOpen ? " on" : ""}`}>
+        <div className="mnav-h">
+          <div
+            className="mnav-logo"
+            onClick={() => go("home")}
+            style={{ cursor: "pointer" }}
+          >
+            ♔ MyChessFamily
+          </div>
+
+          <button
+            className="mnav-close"
+            onClick={closeMobile}
+            aria-label="Close menu"
+          >
+            ×
+          </button>
+        </div>
+
+        <div className="mnav-links">
           {[
             ["home", "Home"],
             ["camp", "Summer Camp"],
@@ -1798,32 +1954,37 @@ export default function App() {
           ].map(([p, l]) => (
             <button
               key={p}
-              className={`nb${page === p ? " on" : ""}`}
+              className={`mnav-btn${page === p ? " on" : ""}`}
               onClick={() => go(p)}
             >
-              {l}
+              <span>{l}</span>
+              <span style={{ color: "var(--muted)", fontWeight: 600 }}>›</span>
             </button>
           ))}
 
-          {/* Contact after Our Team */}
-          <button className="nb" onClick={openContact}>
-            Contact
+          <button
+            className="mnav-btn"
+            onClick={() => {
+              closeMobile();
+              openContact();
+            }}
+          >
+            <span>Contact</span>
+            <span style={{ color: "var(--muted)", fontWeight: 600 }}>✉</span>
           </button>
         </div>
 
-        <div className="nav-right">
-          {isAdmin && <span className="adm-dot">● Admin</span>}
+        <div className="mnav-cta">
           <button
-            className={`nb cta${isAdmin ? " adm" : ""}`}
+            className="btn btn-g btn-w"
             onClick={() => (isAdmin ? go("admin") : go("login"))}
           >
-            {isAdmin ? "Dashboard" : "Admin Login"}
+            {isAdmin ? "Open Dashboard" : "Admin Login"}
           </button>
         </div>
-      </nav>
-
+      </div>
+      {/* ✅ E) END: Mobile drawer */}
       {page === "home" && <HomePage onNav={go} onContact={openContact} />}
-
       {page === "camp" && (
         <CampPage
           camps={camps}
@@ -1833,31 +1994,7 @@ export default function App() {
           onContact={openContact}
         />
       )}
-
-      {page === "about" && <AboutPage onNav={go} onContact={openContact} />}
-
-      {page === "team" && <TeamPage onNav={go} onContact={openContact} />}
-
-      {page === "login" && (
-        <LoginPage onLogin={handleLogin} showToast={showToast} />
-      )}
-
-      {page === "admin" && (
-        <AdminPage
-          camps={camps}
-          setCamps={setCamps}
-          campRegs={campRegs}
-          reloadRegs={loadAdminData}
-          onLogout={handleLogout}
-          showToast={showToast}
-        />
-      )}
-
-      {contactOpen && (
-        <ContactModal onClose={closeContact} showToast={showToast} />
-      )}
-
-      <Toast toasts={toasts} />
+      ...
     </div>
   );
 }
