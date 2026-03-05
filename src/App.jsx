@@ -639,7 +639,7 @@ function ContactModal({ onClose, showToast }) {
               lineHeight: 1.6,
             }}
           >
-            For fastest response, email us. If you call and we miss it, we’ll
+            For fastest response, email us. If you call and we miss it, we'll
             call you back.
           </div>
         </div>
@@ -1184,7 +1184,6 @@ function AboutPage({ onNav, onContact }) {
   );
 }
 
-/* ✅ NEW PAGE: Our Team */
 function TeamPage({ onNav, onContact }) {
   return (
     <div className="pg">
@@ -1250,7 +1249,7 @@ function TeamPage({ onNav, onContact }) {
               }}
             >
               Ask about the right class level, camp schedule, or tournament
-              preparation. We’ll help you choose what fits your child best.
+              preparation. We'll help you choose what fits your child best.
             </div>
             <div style={{ display: "flex", gap: ".8rem", flexWrap: "wrap" }}>
               <button className="btn btn-g" onClick={onContact}>
@@ -1569,7 +1568,7 @@ function AdminPage({
   setCamps,
   campRegs,
   reloadRegs,
-  adminReviews, // ✅ ADD //
+  adminReviews,
   onLogout,
   showToast,
 }) {
@@ -1725,7 +1724,7 @@ function AdminPage({
           {[
             ["camps", "☀️ Manage Camps"],
             ["campregs", "🏕 Camp Sign-Ups"],
-            ["reviews", "⭐ Reviews"], // ✅
+            ["reviews", "⭐ Reviews"],
           ].map(([id, lbl]) => (
             <button
               key={id}
@@ -2124,32 +2123,27 @@ export default function App() {
   const [reviews, setReviews] = useState([]);
   const [adminReviews, setAdminReviews] = useState([]);
   const [reviewOpen, setReviewOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(
-    () => !!localStorage.getItem(AUTH_KEY),
-  );
+
+  // ✅ FIX 1: Start as false, verify token async on mount instead of trusting localStorage blindly
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const [toasts, setToasts] = useState([]);
 
   const [camps, setCamps] = useState(DEF_CAMPS);
   const [campRegs, setCampRegs] = useState([]);
 
-  // Contact popup state
   const [contactOpen, setContactOpen] = useState(false);
 
-  // ✅ Mobile burger menu state
   const [mobileOpen, setMobileOpen] = useState(false);
   const toggleMobile = useCallback(() => setMobileOpen((v) => !v), []);
   const closeMobile = useCallback(() => setMobileOpen(false), []);
 
   useEffect(() => {
     if (!mobileOpen) return;
-
     const onKey = (e) => e.key === "Escape" && setMobileOpen(false);
     window.addEventListener("keydown", onKey);
-
-    // lock scroll while drawer open
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
@@ -2188,7 +2182,6 @@ export default function App() {
       const data = await api("/admin/registrations");
       setCampRegs(data.campRegs || []);
 
-      // ✅ load reviews for admin
       const r = await api("/admin/reviews");
       setAdminReviews(r.reviews || []);
     } catch (err) {
@@ -2201,6 +2194,28 @@ export default function App() {
       loadPublicData();
     }, 0);
   }, [loadPublicData]);
+
+  // ✅ FIX 2: Verify saved token is still valid on page load/refresh
+  useEffect(() => {
+    const token = localStorage.getItem(AUTH_KEY);
+    if (!token) return;
+
+    api("/admin/registrations")
+      .then((data) => {
+        setCampRegs(data.campRegs || []);
+        setIsAdmin(true);
+        // Also load reviews while we're at it
+        return api("/admin/reviews");
+      })
+      .then((r) => {
+        if (r) setAdminReviews(r.reviews || []);
+      })
+      .catch(() => {
+        // Token is invalid/expired — clear it
+        localStorage.removeItem(AUTH_KEY);
+        setIsAdmin(false);
+      });
+  }, []); // runs once on mount
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -2218,7 +2233,7 @@ export default function App() {
 
   const go = useCallback(
     (p) => {
-      setMobileOpen(false); // ✅ close drawer when navigating
+      setMobileOpen(false);
 
       if (p === "admin" && !isAdmin) {
         setPage("login");
@@ -2283,7 +2298,7 @@ export default function App() {
             ["camp", "Summer Camp"],
             ["about", "About"],
             ["team", "Our Team"],
-            ["reviews", "Reviews"], // ✅ add
+            ["reviews", "Reviews"],
           ].map(([p, l]) => (
             <button
               key={p}
@@ -2311,7 +2326,6 @@ export default function App() {
             {isAdmin ? "Dashboard" : "Admin Login"}
           </button>
 
-          {/* ✅ Burger button (ONLY visible on mobile via CSS) */}
           <button
             className={`burger${mobileOpen ? " on" : ""}`}
             onClick={toggleMobile}
@@ -2327,7 +2341,6 @@ export default function App() {
         </div>
       </nav>
 
-      {/* ✅ Mobile overlay + drawer (drawer is hidden on desktop by CSS) */}
       <div
         className={`mnav-ovl${mobileOpen ? " on" : ""}`}
         onClick={closeMobile}
@@ -2402,7 +2415,6 @@ export default function App() {
         </div>
       </div>
 
-      {/* ✅ your pages below (keep exactly as you had) */}
       {page === "home" && <HomePage onNav={go} onContact={openContact} />}
 
       {page === "camp" && (
