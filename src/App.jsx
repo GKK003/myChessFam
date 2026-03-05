@@ -1213,6 +1213,7 @@ function AdminPage({
   setCamps,
   tournRegs,
   campRegs,
+  reloadRegs,
   onLogout,
   showToast,
 }) {
@@ -1384,6 +1385,28 @@ function AdminPage({
       showToast("Deleted.", "i");
     } catch (error) {
       showToast(error.message || "Could not delete camp session.", "e");
+    }
+  };
+
+  const deleteTournamentReg = async (id) => {
+    if (!confirm("Delete this tournament registration?")) return;
+    try {
+      await api(`/admin/registrations/tournament/${id}`, { method: "DELETE" });
+      showToast("Registration deleted.", "i");
+      await reloadRegs?.();
+    } catch (error) {
+      showToast(error.message || "Could not delete registration.", "e");
+    }
+  };
+
+  const deleteCampReg = async (id) => {
+    if (!confirm("Delete this camp sign-up?")) return;
+    try {
+      await api(`/admin/registrations/camp/${id}`, { method: "DELETE" });
+      showToast("Sign-up deleted.", "i");
+      await reloadRegs?.();
+    } catch (error) {
+      showToast(error.message || "Could not delete sign-up.", "e");
     }
   };
 
@@ -1862,6 +1885,7 @@ function AdminPage({
                       <th>Email</th>
                       <th>Phone</th>
                       <th>Notes</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1892,6 +1916,15 @@ function AdminPage({
                           style={{ fontSize: ".8rem", color: "var(--muted)" }}
                         >
                           {r.notes}
+                        </td>
+
+                        <td>
+                          <button
+                            className="delbtn"
+                            onClick={() => deleteTournamentReg(r.id)}
+                          >
+                            🗑 Delete
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -1936,6 +1969,7 @@ function AdminPage({
                       <th>Emergency</th>
                       <th>Medical</th>
                       <th>Fee</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1974,6 +2008,15 @@ function AdminPage({
                         </td>
                         <td style={{ color: "var(--green3)", fontWeight: 700 }}>
                           ${r.price}
+                        </td>
+
+                        <td>
+                          <button
+                            className="delbtn"
+                            onClick={() => deleteCampReg(r.id)}
+                          >
+                            🗑 Delete
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -2159,11 +2202,11 @@ export default function App() {
           setCamps={setCamps}
           tournRegs={tournRegs}
           campRegs={campRegs}
+          reloadRegs={loadAdminData}
           onLogout={handleLogout}
           showToast={showToast}
         />
       )}
-
       <Toast toasts={toasts} />
     </div>
   );

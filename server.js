@@ -154,6 +154,8 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === "POST" && url.pathname === "/api/admin/logout") {
+    const token = (req.headers.authorization || "").replace("Bearer ", "");
+    if (token) sessions.delete(token);
     return send(res, 200, { ok: true });
   }
 
@@ -164,6 +166,37 @@ const server = http.createServer(async (req, res) => {
       tournamentRegs: db.tournamentRegs,
       campRegs: db.campRegs,
     });
+  }
+
+  // ✅ DELETE one tournament registration
+  const delTR = url.pathname.match(
+    /^\/api\/admin\/registrations\/tournament\/(\d+)$/,
+  );
+  if (req.method === "DELETE" && delTR) {
+    if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
+    const id = Number(delTR[1]);
+    const db = await readDb();
+    const before = db.tournamentRegs.length;
+    db.tournamentRegs = db.tournamentRegs.filter((r) => r.id !== id);
+    await writeDb(db);
+    if (db.tournamentRegs.length === before)
+      return send(res, 404, { error: "Registration not found" });
+    return send(res, 200, { ok: true });
+  }
+
+  const delCR = url.pathname.match(
+    /^\/api\/admin\/registrations\/camp\/(\d+)$/,
+  );
+  if (req.method === "DELETE" && delCR) {
+    if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
+    const id = Number(delCR[1]);
+    const db = await readDb();
+    const before = db.campRegs.length;
+    db.campRegs = db.campRegs.filter((r) => r.id !== id);
+    await writeDb(db);
+    if (db.campRegs.length === before)
+      return send(res, 404, { error: "Sign-up not found" });
+    return send(res, 200, { ok: true });
   }
 
   if (
