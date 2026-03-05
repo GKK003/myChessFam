@@ -1569,6 +1569,7 @@ function AdminPage({
   setCamps,
   campRegs,
   reloadRegs,
+  adminReviews, // ✅ ADD //
   onLogout,
   showToast,
 }) {
@@ -2190,9 +2191,8 @@ export default function App() {
       // ✅ load reviews for admin
       const r = await api("/admin/reviews");
       setAdminReviews(r.reviews || []);
-    } catch {
-      setIsAdmin(false);
-      localStorage.removeItem(AUTH_KEY);
+    } catch (err) {
+      console.error("Admin data load failed:", err);
     }
   }, []);
 
