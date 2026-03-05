@@ -169,20 +169,59 @@ const server = http.createServer(async (req, res) => {
     }
 
     /* create camp registration */
-    if (req.method === "POST" && url.pathname === "/api/registrations/camp") {
+    /* create camp (admin) */
+    if (req.method === "POST" && url.pathname === "/api/admin/camps") {
+      if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
+
       const body = await parseBody(req);
-      const stamp = nowStamp();
 
-      await colCampRegs.insertOne({
+      const camp = {
         id: Date.now(),
-        ...body,
-        date: stamp.date,
-        time: stamp.time,
-      });
+        name: body.name || "Untitled Camp",
+        dateStart: body.dateStart || "",
+        dateEnd: body.dateEnd || "",
+        location: body.location || "",
+        type: body.type || "",
+        age: body.age || "",
+        price: Number(body.price) || 0,
+        spots: Number(body.spots) || 20,
+        desc: body.desc || "",
+        status: body.status || "open",
+      };
 
-      return send(res, 201, { ok: true });
+      await colCamps.insertOne(camp);
+
+      const camps = await colCamps.find().sort({ id: -1 }).toArray();
+      return send(res, 200, { camps });
     }
 
+    /* update camp status (admin) */
+    const campStatus = url.pathname.match(
+      /^\/api\/admin\/camps\/(\d+)\/status$/,
+    );
+    if (req.method === "PATCH" && campStatus) {
+      if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
+
+      const id = Number(campStatus[1]);
+      const body = await parseBody(req);
+
+      await colCamps.updateOne({ id }, { $set: { status: body.status } });
+
+      const camps = await colCamps.find().sort({ id: -1 }).toArray();
+      return send(res, 200, { camps });
+    }
+
+    /* delete camp (admin) */
+    const delCamp = url.pathname.match(/^\/api\/admin\/camps\/(\d+)$/);
+    if (req.method === "DELETE" && delCamp) {
+      if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
+
+      const id = Number(delCamp[1]);
+      await colCamps.deleteOne({ id });
+
+      const camps = await colCamps.find().sort({ id: -1 }).toArray();
+      return send(res, 200, { camps });
+    }
     /* DELETE tournament registration */
     const delTourReg = url.pathname.match(
       /^\/api\/admin\/registrations\/tournament\/(\d+)$/,
