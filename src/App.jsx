@@ -86,7 +86,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 /* ── NAV ── */
 .nav{position:fixed;top:0;left:0;width:100%;z-index:999;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(9,19,30,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--green3);cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;}
-.nav-links{display:flex;gap:2px;}
+.nav-links{display:flex;gap:2px;flex-wrap:wrap;}
 .nav-right{display:flex;align-items:center;gap:10px;}
 .nb{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:500;padding:.4rem .85rem;border-radius:7px;cursor:pointer;transition:.18s;white-space:nowrap;}
 .nb:hover,.nb.on{color:var(--blue3);background:rgba(74,171,232,0.1);}
@@ -366,6 +366,97 @@ function Footer({ onNav }) {
         © 2025 MyChessFamily. All rights reserved.
       </p>
     </footer>
+  );
+}
+
+/* ✅ NEW: Contact popup modal */
+function ContactModal({ onClose, showToast }) {
+  const phoneDisplay = "(212) 555-0182";
+  const phoneLink = "+12125550182";
+  const email = "info@mychessfamily.org";
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+      showToast("📋 Email copied!", "s");
+    } catch {
+      // fallback for older browsers / blocked clipboard
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = email;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        showToast("📋 Email copied!", "s");
+      } catch {
+        showToast("Could not copy email.", "e");
+      }
+    }
+  };
+
+  return (
+    <div
+      className="ovl"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div className="modal">
+        <button className="mcls" onClick={onClose}>
+          ×
+        </button>
+
+        <h3>Contact Us</h3>
+
+        <div style={{ display: "grid", gap: ".85rem" }}>
+          <a
+            href={`tel:${phoneLink}`}
+            className="inp"
+            style={{
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              cursor: "pointer",
+            }}
+            onClick={() => showToast("📞 Opening dialer…", "i")}
+          >
+            <span>📞 {phoneDisplay}</span>
+            <span style={{ color: "var(--muted)", fontSize: ".85rem" }}>
+              Tap to call
+            </span>
+          </a>
+
+          <button
+            type="button"
+            className="inp"
+            style={{
+              textAlign: "left",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+            onClick={copyEmail}
+          >
+            <span>✉️ {email}</span>
+            <span style={{ color: "var(--muted)", fontSize: ".85rem" }}>
+              Click to copy
+            </span>
+          </button>
+
+          <div
+            style={{
+              color: "var(--muted)",
+              fontSize: ".85rem",
+              lineHeight: 1.6,
+            }}
+          >
+            For fastest response, email us. If you call and we miss it, we’ll
+            call you back.
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -1455,6 +1546,9 @@ export default function App() {
   const [camps, setCamps] = useState(DEF_CAMPS);
   const [campRegs, setCampRegs] = useState([]);
 
+  // ✅ NEW: contact popup state
+  const [contactOpen, setContactOpen] = useState(false);
+
   useEffect(() => {
     injectStyles();
   }, []);
@@ -1561,6 +1655,11 @@ export default function App() {
               {l}
             </button>
           ))}
+
+          {/* ✅ NEW: Contact button after About */}
+          <button className="nb" onClick={() => setContactOpen(true)}>
+            Contact
+          </button>
         </div>
 
         <div className="nav-right">
@@ -1598,6 +1697,14 @@ export default function App() {
           campRegs={campRegs}
           reloadRegs={loadAdminData}
           onLogout={handleLogout}
+          showToast={showToast}
+        />
+      )}
+
+      {/* ✅ NEW: Contact popup render */}
+      {contactOpen && (
+        <ContactModal
+          onClose={() => setContactOpen(false)}
           showToast={showToast}
         />
       )}
