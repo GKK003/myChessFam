@@ -163,7 +163,9 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .hero-bg div{background:var(--blue3);}
 .hero-bg div:nth-child(even){background:transparent;}
 .hero-inner{position:relative;z-index:2;width:100%;max-width:1320px;margin:0 auto;padding:3rem 2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(45,204,116,.1);border:1px solid rgba(45,204,116,.38);color:var(--green2);font-size:.73rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:.32rem .95rem;border-radius:100px;margin-bottom:1.35rem;animation:fu .6s ease both;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background: rgba(74, 171, 232, 0.18);
+;border:1px solid rgba(74, 171, 232, 0.18);
+;color:rgb(238, 245, 255);font-size:.73rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:.32rem .95rem;border-radius:100px;margin-bottom:1.35rem;animation:fu .6s ease both;}
 .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.3rem,4.8vw,4.2rem);font-weight:900;line-height:1.07;margin-bottom:1.3rem;animation:fu .6s ease .1s both;}
 .hero h1 em{color:var(--green2);font-style:normal;}
 .hero-sub{font-size:1.02rem;color:var(--muted);line-height:1.78;margin-bottom:2rem;animation:fu .6s ease .2s both;}
@@ -858,7 +860,7 @@ function HomePage({ onNav, onContact }) {
               </button>
               <button
                 className="btn btn-g"
-                style={{ background: "var(--navy3)" }}
+                style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
                 onClick={() => onNav("team")}
               >
                 ♟ Meet Our Team
