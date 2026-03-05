@@ -23,6 +23,47 @@ const api = async (path, options = {}) => {
   return data;
 };
 
+/* ══════════════════════════════════════════
+   CONTENT / SETTINGS (good practice: centralize)
+══════════════════════════════════════════ */
+const CONTACT = {
+  city: "New York City",
+  phoneDisplay: "(212) 555-0182",
+  phoneLink: "+12125550182",
+  email: "info@mychessfamily.org",
+};
+
+const TEAM = [
+  {
+    av: "♔",
+    name: "David Karpov",
+    role: "Head Coach",
+    bio: "10+ years coaching youth chess. Loves teaching endgames and helping kids build confidence.",
+    tags: ["Endgames", "Tournament Prep", "Mentorship"],
+  },
+  {
+    av: "♕",
+    name: "Sophia Chen",
+    role: "Junior Coach",
+    bio: "Former state scholastic champion. Specializes in beginners and building strong fundamentals.",
+    tags: ["Beginners", "Tactics", "Confidence"],
+  },
+  {
+    av: "♘",
+    name: "Aisha Patel",
+    role: "Camp Coordinator",
+    bio: "Designs our summer camp experience. Makes every week organized, fun, and unforgettable.",
+    tags: ["Camps", "Logistics", "Community"],
+  },
+  {
+    av: "♖",
+    name: "Miguel Rivera",
+    role: "Strategy Coach",
+    bio: "Focuses on middle-game plans and practical decision-making under time pressure.",
+    tags: ["Strategy", "Middlegames", "Time Mgmt"],
+  },
+];
+
 const DEF_CAMPS = [
   {
     id: 1,
@@ -234,13 +275,18 @@ tr:hover td{background:rgba(26,94,168,.07);}
 .about-g{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center;}
 .about-vis{background:linear-gradient(135deg,var(--navy3),var(--navy4));border-radius:18px;padding:2.5rem;text-align:center;border:1px solid var(--border);}
 .apc{font-size:3.8rem;line-height:1.6;}
+
+/* ── TEAM ── */
 .tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:1.3rem;margin-top:2.2rem;}
-.tcard{text-align:center;background:rgba(26,94,168,.07);border:1px solid var(--border);border-radius:var(--r);padding:1.8rem 1.3rem;transition:.28s;}
-.tcard:hover{border-color:rgba(45,204,116,.35);transform:translateY(-4px);}
+.tcard{text-align:center;background:rgba(26,94,168,.07);border:1px solid var(--border);border-radius:var(--r);padding:1.8rem 1.3rem;transition:.28s;position:relative;overflow:hidden;}
+.tcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green3),var(--blue3));opacity:.9;}
+.tcard:hover{border-color:rgba(45,204,116,.35);transform:translateY(-4px);box-shadow:0 18px 55px rgba(0,0,0,.35);}
 .tav{width:66px;height:66px;border-radius:50%;margin:0 auto .85rem;display:flex;align-items:center;justify-content:center;font-size:1.8rem;background:linear-gradient(135deg,var(--navy3),var(--navy4));border:2px solid var(--green);}
 .tcard h4{font-weight:700;margin-bottom:.18rem;color:#EEF5FF;}
 .tcard .role{font-size:.8rem;color:var(--muted);}
 .tcard .bio{font-size:.81rem;color:var(--muted);margin-top:.65rem;line-height:1.5;}
+.tagrow{display:flex;flex-wrap:wrap;gap:.35rem;justify-content:center;margin-top:.85rem;}
+.tag{font-size:.68rem;font-weight:700;letter-spacing:.5px;color:rgba(220,233,245,.9);background:rgba(45,204,116,.12);border:1px solid rgba(45,204,116,.22);padding:.18rem .5rem;border-radius:999px;}
 
 /* ── FOOTER ── */
 .footer{width:100vw;background:#060F18;border-top:1px solid var(--border);padding:3rem 2.5rem;text-align:center;color:var(--muted);font-size:.86rem;}
@@ -343,24 +389,30 @@ function ChessBoard() {
   );
 }
 
-function Footer({ onNav }) {
+function Footer({ onNav, onContact }) {
   return (
     <footer className="footer">
       <div className="f-logo">♔ MyChessFamily</div>
+
       <div className="f-links">
         {[
           ["home", "Home"],
           ["camp", "Summer Camp"],
           ["about", "About"],
+          ["team", "Our Team"],
         ].map(([p, l]) => (
           <button key={p} className="flnk" onClick={() => onNav(p)}>
             {l}
           </button>
         ))}
+        <button className="flnk" onClick={onContact}>
+          Contact
+        </button>
       </div>
+
       <p>
-        📍 New York City &nbsp;·&nbsp; 📞 (212) 555-0182 &nbsp;·&nbsp; ✉
-        info@mychessfamily.org
+        📍 {CONTACT.city} &nbsp;·&nbsp; 📞 {CONTACT.phoneDisplay} &nbsp;·&nbsp;
+        ✉ {CONTACT.email}
       </p>
       <p style={{ marginTop: ".7rem" }}>
         © 2025 MyChessFamily. All rights reserved.
@@ -369,21 +421,16 @@ function Footer({ onNav }) {
   );
 }
 
-/* ✅ NEW: Contact popup modal */
+/* Contact popup modal */
 function ContactModal({ onClose, showToast }) {
-  const phoneDisplay = "(212) 555-0182";
-  const phoneLink = "+12125550182";
-  const email = "info@mychessfamily.org";
-
   const copyEmail = async () => {
     try {
-      await navigator.clipboard.writeText(email);
+      await navigator.clipboard.writeText(CONTACT.email);
       showToast("📋 Email copied!", "s");
     } catch {
-      // fallback for older browsers / blocked clipboard
       try {
         const ta = document.createElement("textarea");
-        ta.value = email;
+        ta.value = CONTACT.email;
         document.body.appendChild(ta);
         ta.select();
         document.execCommand("copy");
@@ -409,7 +456,7 @@ function ContactModal({ onClose, showToast }) {
 
         <div style={{ display: "grid", gap: ".85rem" }}>
           <a
-            href={`tel:${phoneLink}`}
+            href={`tel:${CONTACT.phoneLink}`}
             className="inp"
             style={{
               textDecoration: "none",
@@ -420,7 +467,7 @@ function ContactModal({ onClose, showToast }) {
             }}
             onClick={() => showToast("📞 Opening dialer…", "i")}
           >
-            <span>📞 {phoneDisplay}</span>
+            <span>📞 {CONTACT.phoneDisplay}</span>
             <span style={{ color: "var(--muted)", fontSize: ".85rem" }}>
               Tap to call
             </span>
@@ -438,7 +485,7 @@ function ContactModal({ onClose, showToast }) {
             }}
             onClick={copyEmail}
           >
-            <span>✉️ {email}</span>
+            <span>✉️ {CONTACT.email}</span>
             <span style={{ color: "var(--muted)", fontSize: ".85rem" }}>
               Click to copy
             </span>
@@ -647,7 +694,7 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
 /* ══════════════════════════════════════════
    PAGES
 ══════════════════════════════════════════ */
-function HomePage({ onNav }) {
+function HomePage({ onNav, onContact }) {
   return (
     <div className="pg">
       <div className="hero">
@@ -670,6 +717,20 @@ function HomePage({ onNav }) {
             <div className="hero-btns">
               <button className="btn btn-g" onClick={() => onNav("camp")}>
                 ☀️ Join Summer Camp
+              </button>
+              <button
+                className="btn btn-g"
+                style={{ background: "var(--blue2)" }}
+                onClick={() => onNav("team")}
+              >
+                ♟ Meet Our Team
+              </button>
+              <button
+                className="btn btn-g"
+                style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+                onClick={onContact}
+              >
+                ✉️ Contact
               </button>
             </div>
 
@@ -772,12 +833,12 @@ function HomePage({ onNav }) {
         </div>
       </div>
 
-      <Footer onNav={onNav} />
+      <Footer onNav={onNav} onContact={onContact} />
     </div>
   );
 }
 
-function CampPage({ camps, onNav, showToast, onRegistered }) {
+function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
   const [modal, setModal] = useState(null);
 
   return (
@@ -855,17 +916,21 @@ function CampPage({ camps, onNav, showToast, onRegistered }) {
         />
       )}
 
-      <Footer onNav={onNav} />
+      <Footer onNav={onNav} onContact={onContact} />
     </div>
   );
 }
 
-function AboutPage({ onNav }) {
+function AboutPage({ onNav, onContact }) {
   return (
     <div className="pg">
       <div className="ph">
         <div className="slbl">Our Story</div>
         <h1 className="stit">About MyChessFamily</h1>
+        <p className="ph-sub">
+          A youth chess community built on learning, confidence, and real
+          friendships.
+        </p>
       </div>
 
       <div className="wrap">
@@ -923,9 +988,9 @@ function AboutPage({ onNav }) {
                 marginBottom: "1rem",
               }}
             >
-              Over 8 years, we&apos;ve grown from a small after-school program
+              Over the years, we&apos;ve grown from a small after-school program
               into one of New York&apos;s most beloved youth chess
-              organizations, teaching hundreds of kids each year to think
+              organizations—teaching hundreds of kids each year to think
               strategically, compete gracefully, and grow into confident young
               adults.
             </p>
@@ -943,46 +1008,150 @@ function AboutPage({ onNav }) {
                 ),
               )}
             </div>
+
+            <div
+              style={{
+                marginTop: "1.6rem",
+                display: "flex",
+                gap: ".8rem",
+                flexWrap: "wrap",
+              }}
+            >
+              <button className="btn btn-g" onClick={() => onNav("team")}>
+                ♟ Meet Our Team
+              </button>
+              <button
+                className="btn btn-g"
+                style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+                onClick={onContact}
+              >
+                ✉️ Contact
+              </button>
+            </div>
           </div>
+        </div>
+      </div>
+
+      <Footer onNav={onNav} onContact={onContact} />
+    </div>
+  );
+}
+
+/* ✅ NEW PAGE: Our Team */
+function TeamPage({ onNav, onContact }) {
+  return (
+    <div className="pg">
+      <div
+        className="ph"
+        style={{
+          background:
+            "linear-gradient(180deg,rgba(45,204,116,.08) 0%,transparent 100%)",
+        }}
+      >
+        <div className="slbl" style={{ color: "var(--green3)" }}>
+          The People Behind The Program
+        </div>
+        <h1 className="stit">Our Team</h1>
+        <p className="ph-sub">
+          Coaches who teach chess skills—and the confidence to use them.
+        </p>
+      </div>
+
+      <div className="wrap" style={{ paddingTop: "3rem" }}>
+        <div className="g3">
+          {[
+            {
+              icon: "🎯",
+              title: "Kid-First Coaching",
+              desc: "We teach clearly, keep it fun, and adjust lessons to every child’s level and personality.",
+              tag: "Supportive + Structured",
+            },
+            {
+              icon: "♟️",
+              title: "Real Chess Progress",
+              desc: "Openings, tactics, endgames, strategy—and practical game decision-making.",
+              tag: "Fundamentals → Results",
+            },
+            {
+              icon: "🤝",
+              title: "Community & Sportsmanship",
+              desc: "We care about respectful competition, teamwork, and long-term confidence.",
+              tag: "Healthy Growth",
+            },
+          ].map((p, i) => (
+            <div className="prog" key={i}>
+              <div className="prog-icon">{p.icon}</div>
+              <h3>{p.title}</h3>
+              <p>{p.desc}</p>
+              <div className="prog-tag">{p.tag}</div>
+            </div>
+          ))}
         </div>
 
         <div style={{ marginTop: "4.5rem" }}>
-          <div className="slbl">Our Team</div>
-          <h2 className="stit">Meet the Coaches</h2>
+          <div className="slbl">Meet the Coaches</div>
+          <h2 className="stit">Friendly, Professional, Focused</h2>
+          <div className="sdiv" style={{ marginTop: "1.2rem" }} />
 
           <div className="tgrid">
-            {[
-              {
-                av: "♔",
-                name: "David Karpov",
-                role: "Head Coach",
-                bio: "10+ years coaching youth chess. Loves teaching endgames.",
-              },
-              {
-                av: "♕",
-                name: "Sophia Chen",
-                role: "Junior Coach",
-                bio: "Former state scholastic champion. Specializes in beginners.",
-              },
-              {
-                av: "♘",
-                name: "Aisha Patel",
-                role: "Camp Coordinator",
-                bio: "Designs our summer camp experience. Makes every week unforgettable.",
-              },
-            ].map((c) => (
+            {TEAM.map((c) => (
               <div className="tcard" key={c.name}>
                 <div className="tav">{c.av}</div>
                 <h4>{c.name}</h4>
                 <div className="role">{c.role}</div>
                 <div className="bio">{c.bio}</div>
+                <div className="tagrow">
+                  {c.tags.map((t) => (
+                    <span className="tag" key={t}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
             ))}
+          </div>
+
+          <div
+            style={{
+              marginTop: "2.3rem",
+              background: "rgba(26,94,168,.07)",
+              border: "1px solid var(--border)",
+              borderRadius: 16,
+              padding: "1.6rem",
+              display: "grid",
+              gap: ".9rem",
+            }}
+          >
+            <div style={{ fontWeight: 700, color: "#EEF5FF" }}>
+              Want to talk to a coach?
+            </div>
+            <div
+              style={{
+                color: "var(--muted)",
+                lineHeight: 1.7,
+                fontSize: ".92rem",
+              }}
+            >
+              Ask about the right class level, camp schedule, or tournament
+              preparation. We’ll help you choose what fits your child best.
+            </div>
+            <div style={{ display: "flex", gap: ".8rem", flexWrap: "wrap" }}>
+              <button className="btn btn-g" onClick={onContact}>
+                ✉️ Contact Us
+              </button>
+              <button
+                className="btn btn-g"
+                style={{ background: "rgba(45,204,116,.18)", color: "#EEF5FF" }}
+                onClick={() => onNav("camp")}
+              >
+                ☀️ View Camps
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <Footer onNav={onNav} />
+      <Footer onNav={onNav} onContact={onContact} />
     </div>
   );
 }
@@ -1546,7 +1715,7 @@ export default function App() {
   const [camps, setCamps] = useState(DEF_CAMPS);
   const [campRegs, setCampRegs] = useState([]);
 
-  // ✅ NEW: contact popup state
+  // Contact popup state
   const [contactOpen, setContactOpen] = useState(false);
 
   useEffect(() => {
@@ -1558,6 +1727,9 @@ export default function App() {
     setToasts((t) => [...t, { id, msg, type }]);
     setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 3200);
   }, []);
+
+  const openContact = useCallback(() => setContactOpen(true), []);
+  const closeContact = useCallback(() => setContactOpen(false), []);
 
   const loadPublicData = useCallback(async () => {
     try {
@@ -1646,6 +1818,7 @@ export default function App() {
             ["home", "Home"],
             ["camp", "Summer Camp"],
             ["about", "About"],
+            ["team", "Our Team"],
           ].map(([p, l]) => (
             <button
               key={p}
@@ -1656,8 +1829,8 @@ export default function App() {
             </button>
           ))}
 
-          {/* ✅ NEW: Contact button after About */}
-          <button className="nb" onClick={() => setContactOpen(true)}>
+          {/* Contact after Our Team */}
+          <button className="nb" onClick={openContact}>
             Contact
           </button>
         </div>
@@ -1673,7 +1846,7 @@ export default function App() {
         </div>
       </nav>
 
-      {page === "home" && <HomePage onNav={go} />}
+      {page === "home" && <HomePage onNav={go} onContact={openContact} />}
 
       {page === "camp" && (
         <CampPage
@@ -1681,10 +1854,13 @@ export default function App() {
           onNav={go}
           showToast={showToast}
           onRegistered={loadAdminData}
+          onContact={openContact}
         />
       )}
 
-      {page === "about" && <AboutPage onNav={go} />}
+      {page === "about" && <AboutPage onNav={go} onContact={openContact} />}
+
+      {page === "team" && <TeamPage onNav={go} onContact={openContact} />}
 
       {page === "login" && (
         <LoginPage onLogin={handleLogin} showToast={showToast} />
@@ -1701,12 +1877,8 @@ export default function App() {
         />
       )}
 
-      {/* ✅ NEW: Contact popup render */}
       {contactOpen && (
-        <ContactModal
-          onClose={() => setContactOpen(false)}
-          showToast={showToast}
-        />
+        <ContactModal onClose={closeContact} showToast={showToast} />
       )}
 
       <Toast toasts={toasts} />
