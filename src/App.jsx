@@ -23,45 +23,6 @@ const api = async (path, options = {}) => {
   return data;
 };
 
-const DEF_TOURNAMENTS = [
-  {
-    id: 1,
-    name: "Spring Scholastic Open",
-    date: "2025-03-15",
-    location: "Chess Club HQ, Upper West Side",
-    age: "All Ages (6–16)",
-    max: 32,
-    fee: 25,
-    format: "Swiss System",
-    desc: "Our flagship spring tournament! Open to all skill levels. Trophies for top 3 in each section.",
-    status: "open",
-  },
-  {
-    id: 2,
-    name: "Junior Rapid Championship",
-    date: "2025-04-05",
-    location: "Brooklyn Community Center",
-    age: "Juniors (6–10)",
-    max: 24,
-    fee: 20,
-    format: "Rapid",
-    desc: "A fast-paced rapid tournament for our youngest players. G/15 time control.",
-    status: "open",
-  },
-  {
-    id: 3,
-    name: "NYC Youth Invitational",
-    date: "2025-05-17",
-    location: "Manhattan Public Library",
-    age: "Seniors (14–16)",
-    max: 20,
-    fee: 30,
-    format: "Swiss System",
-    desc: "Invitational for top-rated players. USCF rated.",
-    status: "upcoming",
-  },
-];
-
 const DEF_CAMPS = [
   {
     id: 1,
@@ -97,14 +58,6 @@ const PIECES = {
   6: ["♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
   7: ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
 };
-
-const fmtD = (d) =>
-  new Date(d + "T12:00:00").toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
 
 const fmtDShort = (d) =>
   new Date(d + "T12:00:00").toLocaleDateString("en-US", {
@@ -174,10 +127,6 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .btn{display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:.93rem;font-weight:700;padding:.82rem 1.75rem;border-radius:9px;border:none;cursor:pointer;transition:.22s;}
 .btn-g{background:var(--green);color:#fff;}
 .btn-g:hover{background:var(--green2);transform:translateY(-2px);box-shadow:0 8px 26px rgba(21,122,69,.45);}
-.btn-b{background:var(--blue);color:#fff;}
-.btn-b:hover{background:var(--blue2);transform:translateY(-2px);box-shadow:0 8px 26px rgba(26,94,168,.45);}
-.btn-ghost{background:transparent;color:var(--cream);border:2px solid rgba(180,210,240,.22);}
-.btn-ghost:hover{border-color:var(--blue3);color:var(--blue3);transform:translateY(-2px);}
 .btn-w{width:100%;justify-content:center;}
 
 /* ── SECTIONS ── */
@@ -193,7 +142,6 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 
 /* ── GRIDS ── */
 .g3{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.4rem;margin-top:2.2rem;}
-.g2{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:1.4rem;margin-top:2.2rem;}
 .g4{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.2rem;}
 
 /* ── PROGRAM CARDS ── */
@@ -213,27 +161,6 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .why-i h4{font-weight:700;margin-bottom:.38rem;color:var(--cream);}
 .why-i p{color:var(--muted);font-size:.88rem;line-height:1.65;}
 
-/* ── TOURN CARD ── */
-.tc{background:rgba(13,30,48,.85);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:.28s;}
-.tc:hover{transform:translateY(-4px);box-shadow:0 18px 55px rgba(0,0,0,.4);border-color:rgba(74,171,232,.35);}
-.tc-head{padding:1.35rem;background:linear-gradient(135deg,var(--navy3),var(--navy4));border-bottom:1px solid var(--border);position:relative;}
-.tc-head h3{font-family:'Playfair Display',serif;font-size:1.18rem;margin-bottom:.32rem;padding-right:72px;color:#EEF5FF;}
-.tc-date{color:var(--green3);font-size:.8rem;font-weight:600;}
-.bdg{position:absolute;top:.9rem;right:.9rem;padding:.22rem .7rem;border-radius:100px;font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
-.bdg-open{background:var(--green);color:#fff;}
-.bdg-up{background:rgba(74,171,232,.2);color:var(--blue3);border:1px solid var(--blue3);}
-.bdg-full{background:rgba(220,53,69,.18);color:#fc8181;border:1px solid #fc8181;}
-.tc-body{padding:1.35rem;}
-.tc-meta{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:1.1rem;}
-.tm-l{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.18rem;}
-.tm-v{font-size:.88rem;font-weight:600;color:var(--cream);}
-.tc-desc{color:var(--muted);font-size:.86rem;line-height:1.6;margin-bottom:1.1rem;}
-
-/* ── ACTION BTN ── */
-.abtn{width:100%;padding:.78rem;background:var(--green);color:#fff;font-weight:700;font-family:'DM Sans',sans-serif;border:none;border-radius:8px;cursor:pointer;font-size:.9rem;transition:.2s;}
-.abtn:hover{background:var(--green2);transform:translateY(-1px);}
-.abtn:disabled{background:rgba(255,255,255,.07);color:rgba(180,210,240,.3);cursor:not-allowed;transform:none;}
-
 /* ── CAMP CARD ── */
 .cc{background:rgba(21,122,69,.08);border:1px solid var(--borderg);border-radius:18px;overflow:hidden;transition:.28s;}
 .cc:hover{transform:translateY(-5px);box-shadow:0 18px 55px rgba(21,122,69,.18);border-color:rgba(45,204,116,.38);}
@@ -246,8 +173,18 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .cc-price span{font-size:.85rem;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400;}
 .cc-desc{color:var(--muted);font-size:.85rem;line-height:1.6;margin-bottom:1.1rem;}
 
+/* ── STATUS BADGE ── */
+.bdg{position:absolute;top:.9rem;right:.9rem;padding:.22rem .7rem;border-radius:100px;font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.bdg-open{background:var(--green);color:#fff;}
+.bdg-up{background:rgba(74,171,232,.2);color:var(--blue3);border:1px solid var(--blue3);}
+.bdg-full{background:rgba(220,53,69,.18);color:#fc8181;border:1px solid #fc8181;}
+
+/* ── ACTION BTN ── */
+.abtn{width:100%;padding:.78rem;background:var(--green);color:#fff;font-weight:700;font-family:'DM Sans',sans-serif;border:none;border-radius:8px;cursor:pointer;font-size:.9rem;transition:.2s;}
+.abtn:hover{background:var(--green2);transform:translateY(-1px);}
+.abtn:disabled{background:rgba(255,255,255,.07);color:rgba(180,210,240,.3);cursor:not-allowed;transform:none;}
+
 /* ── FORMS ── */
-.fbox{background:rgba(13,30,48,.8);border:1px solid var(--border);border-radius:18px;padding:2.2rem;}
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
 .fg{margin-bottom:.9rem;}
 .fg.full{grid-column:1/-1;}
@@ -314,7 +251,6 @@ tr:hover td{background:rgba(26,94,168,.07);}
 
 /* ── MISC ── */
 .chip{display:inline-block;background:rgba(21,122,69,.12);border:1px solid var(--borderg);color:var(--green3);font-size:.7rem;font-weight:600;padding:.18rem .62rem;border-radius:100px;margin:.18rem;}
-hr{border:none;border-top:1px solid var(--border);margin:1.8rem 0;}
 .toast{position:fixed;bottom:1.8rem;right:1.8rem;z-index:2000;background:#0C1C2E;border-radius:11px;padding:.95rem 1.4rem;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:.65rem;box-shadow:0 10px 38px rgba(0,0,0,.55);animation:toastIn .4s cubic-bezier(.34,1.56,.64,1);max-width:310px;}
 .toast-s{border:1px solid var(--green2);color:var(--green3);}
 .toast-e{border:1px solid #fc8181;color:#fc8181;}
@@ -414,7 +350,6 @@ function Footer({ onNav }) {
       <div className="f-links">
         {[
           ["home", "Home"],
-          ["tournaments", "Tournaments"],
           ["camp", "Summer Camp"],
           ["about", "About"],
         ].map(([p, l]) => (
@@ -434,69 +369,49 @@ function Footer({ onNav }) {
   );
 }
 
-/* Registration modal – shared by tournaments & camps */
-function RegModal({ item, type, onClose, showToast, onRegistered }) {
+/* Camp Registration modal (camp-only) */
+function CampRegModal({ item, onClose, showToast, onRegistered }) {
   const [f, setF] = useState({
     fname: "",
     lname: "",
-    age: "",
-    skill: "",
     parent: "",
     email: "",
     phone: "",
-    notes: "",
     dob: "",
     level: "",
     emergency: "",
     medical: "",
   });
   const [done, setDone] = useState(false);
+
   const set = (k) => (e) => setF((p) => ({ ...p, [k]: e.target.value }));
 
   const submit = async () => {
     const base = !f.fname || !f.lname || !f.parent || !f.email || !f.phone;
-    const tournExtra = type === "tournament" && (!f.age || !f.skill);
-    const campExtra = type === "camp" && (!f.dob || !f.level);
+    const campExtra = !f.dob || !f.level;
 
-    if (base || tournExtra || campExtra) {
+    if (base || campExtra) {
       showToast("Please fill in all required fields.", "e");
       return;
     }
 
     try {
-      if (type === "tournament") {
-        await api("/registrations/tournament", {
-          method: "POST",
-          body: JSON.stringify({
-            tournId: item.id,
-            tournName: item.name,
-            childName: `${f.fname} ${f.lname}`,
-            age: f.age,
-            skill: f.skill,
-            parent: f.parent,
-            email: f.email,
-            phone: f.phone,
-            notes: f.notes || "—",
-          }),
-        });
-      } else {
-        await api("/registrations/camp", {
-          method: "POST",
-          body: JSON.stringify({
-            campId: item.id,
-            campName: item.name,
-            childName: `${f.fname} ${f.lname}`,
-            dob: f.dob,
-            level: f.level,
-            parent: f.parent,
-            email: f.email,
-            phone: f.phone,
-            emergency: f.emergency || "—",
-            medical: f.medical || "None",
-            price: item.price,
-          }),
-        });
-      }
+      await api("/registrations/camp", {
+        method: "POST",
+        body: JSON.stringify({
+          campId: item.id,
+          campName: item.name,
+          childName: `${f.fname} ${f.lname}`,
+          dob: f.dob,
+          level: f.level,
+          parent: f.parent,
+          email: f.email,
+          phone: f.phone,
+          emergency: f.emergency || "—",
+          medical: f.medical || "None",
+          price: item.price,
+        }),
+      });
 
       setDone(true);
       onRegistered?.();
@@ -515,10 +430,7 @@ function RegModal({ item, type, onClose, showToast, onRegistered }) {
         <button className="mcls" onClick={onClose}>
           ×
         </button>
-        <h3>
-          {type === "tournament" ? "Register: " : "Sign Up: "}
-          {item.name}
-        </h3>
+        <h3>Sign Up: {item.name}</h3>
 
         {!done ? (
           <>
@@ -543,60 +455,26 @@ function RegModal({ item, type, onClose, showToast, onRegistered }) {
                 />
               </div>
 
-              {type === "tournament" && (
-                <>
-                  <div className="fg">
-                    <label className="lbl">Age *</label>
-                    <select className="inp" value={f.age} onChange={set("age")}>
-                      <option value="">Select age</option>
-                      {[6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map((a) => (
-                        <option key={a}>{a}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="fg">
-                    <label className="lbl">Skill Level *</label>
-                    <select
-                      className="inp"
-                      value={f.skill}
-                      onChange={set("skill")}
-                    >
-                      <option value="">Select level</option>
-                      <option>Beginner</option>
-                      <option>Intermediate</option>
-                      <option>Advanced</option>
-                    </select>
-                  </div>
-                </>
-              )}
+              <div className="fg">
+                <label className="lbl">Date of Birth *</label>
+                <input
+                  className="inp"
+                  type="date"
+                  value={f.dob}
+                  onChange={set("dob")}
+                />
+              </div>
 
-              {type === "camp" && (
-                <>
-                  <div className="fg">
-                    <label className="lbl">Date of Birth *</label>
-                    <input
-                      className="inp"
-                      type="date"
-                      value={f.dob}
-                      onChange={set("dob")}
-                    />
-                  </div>
-                  <div className="fg">
-                    <label className="lbl">Chess Level *</label>
-                    <select
-                      className="inp"
-                      value={f.level}
-                      onChange={set("level")}
-                    >
-                      <option value="">Select level</option>
-                      <option>Never played before</option>
-                      <option>Knows the basics</option>
-                      <option>Plays regularly</option>
-                      <option>Tournament player</option>
-                    </select>
-                  </div>
-                </>
-              )}
+              <div className="fg">
+                <label className="lbl">Chess Level *</label>
+                <select className="inp" value={f.level} onChange={set("level")}>
+                  <option value="">Select level</option>
+                  <option>Never played before</option>
+                  <option>Knows the basics</option>
+                  <option>Plays regularly</option>
+                  <option>Tournament player</option>
+                </select>
+              </div>
 
               <div className="fg full">
                 <label className="lbl">Parent / Guardian *</label>
@@ -630,40 +508,25 @@ function RegModal({ item, type, onClose, showToast, onRegistered }) {
                 />
               </div>
 
-              {type === "camp" && (
-                <>
-                  <div className="fg full">
-                    <label className="lbl">Emergency Contact</label>
-                    <input
-                      className="inp"
-                      placeholder="Name · (212) 555-0001"
-                      value={f.emergency}
-                      onChange={set("emergency")}
-                    />
-                  </div>
-                  <div className="fg full">
-                    <label className="lbl">Allergies / Medical Notes</label>
-                    <textarea
-                      className="inp"
-                      placeholder="Any info we should know..."
-                      value={f.medical}
-                      onChange={set("medical")}
-                    />
-                  </div>
-                </>
-              )}
+              <div className="fg full">
+                <label className="lbl">Emergency Contact</label>
+                <input
+                  className="inp"
+                  placeholder="Name · (212) 555-0001"
+                  value={f.emergency}
+                  onChange={set("emergency")}
+                />
+              </div>
 
-              {type === "tournament" && (
-                <div className="fg full">
-                  <label className="lbl">Notes</label>
-                  <textarea
-                    className="inp"
-                    placeholder="Any notes for the organizer..."
-                    value={f.notes}
-                    onChange={set("notes")}
-                  />
-                </div>
-              )}
+              <div className="fg full">
+                <label className="lbl">Allergies / Medical Notes</label>
+                <textarea
+                  className="inp"
+                  placeholder="Any info we should know..."
+                  value={f.medical}
+                  onChange={set("medical")}
+                />
+              </div>
             </div>
 
             <button className="sbtn" onClick={submit}>
@@ -709,7 +572,7 @@ function HomePage({ onNav }) {
               Where Kids Become <em>Chess Champions</em>
             </h1>
             <p className="hero-sub">
-              Join MyChessFamily — New York's premier chess club for young
+              Join MyChessFamily — New York&apos;s premier chess club for young
               minds. We build strategy, confidence, and lasting friendships
               through the timeless game of chess.
             </p>
@@ -717,28 +580,24 @@ function HomePage({ onNav }) {
               <button className="btn btn-g" onClick={() => onNav("camp")}>
                 ☀️ Join Summer Camp
               </button>
-              <button
-                className="btn btn-ghost"
-                onClick={() => onNav("tournaments")}
-              >
-                🏆 View Tournaments
-              </button>
             </div>
+
             <div className="stats">
               <div className="stat">
                 <div className="stat-n">500+</div>
                 <div className="stat-l">Young Players</div>
               </div>
               <div className="stat">
-                <div className="stat-n">12</div>
-                <div className="stat-l">Tournaments/Year</div>
-              </div>
-              <div className="stat">
                 <div className="stat-n">8+</div>
                 <div className="stat-l">Years Running</div>
               </div>
+              <div className="stat">
+                <div className="stat-n">3</div>
+                <div className="stat-l">Camps / Year</div>
+              </div>
             </div>
           </div>
+
           <ChessBoard />
         </div>
       </div>
@@ -755,20 +614,20 @@ function HomePage({ onNav }) {
             {
               icon: "♟",
               title: "Weekly Classes",
-              desc: "Structured lessons from beginner to advanced. Our USCF-certified coaches guide kids through openings, tactics, endgames, and competitive strategy.",
+              desc: "Structured lessons from beginner to advanced. Our coaches guide kids through openings, tactics, endgames, and strategy.",
               tag: "Ages 6–16 · All Levels",
-            },
-            {
-              icon: "🏆",
-              title: "Tournaments",
-              desc: "Monthly rated and friendly tournaments in a safe, exciting environment. Kids compete, earn ratings, and experience the thrill of real competition.",
-              tag: "Monthly Events",
             },
             {
               icon: "☀️",
               title: "Summer Chess Camp",
               desc: "Intensive week-long camps featuring chess mastery, team challenges, and tons of fun. Full-day and half-day options available!",
               tag: "June – August",
+            },
+            {
+              icon: "🧩",
+              title: "Puzzles & Training",
+              desc: "Improve calculation and pattern recognition with fun puzzles and guided practice activities.",
+              tag: "All Skill Levels",
             },
           ].map((p, i) => (
             <div className="prog" key={i}>
@@ -800,17 +659,17 @@ function HomePage({ onNav }) {
             {
               icon: "📚",
               title: "Academic Performance",
-              desc: "Studies show chess players improve in math, reading, and concentration — skills that transfer directly to the classroom.",
+              desc: "Chess players often improve in focus, reading, and math skills — great for the classroom.",
             },
             {
               icon: "🤝",
               title: "Sportsmanship",
-              desc: "Win or lose gracefully. Chess instills respect, patience, and resilience in every young competitor.",
+              desc: "Win or lose gracefully. Chess builds respect, patience, and resilience.",
             },
             {
               icon: "🌟",
               title: "Confidence",
-              desc: "Every improvement, every win, every creative move builds self-esteem and pride in young players.",
+              desc: "Every improvement builds self-esteem and pride in young players.",
             },
           ].map((w, i) => (
             <div className="why-i" key={i}>
@@ -821,88 +680,6 @@ function HomePage({ onNav }) {
           ))}
         </div>
       </div>
-
-      <Footer onNav={onNav} />
-    </div>
-  );
-}
-
-function TournamentsPage({ tournaments, onNav, showToast, onRegistered }) {
-  const [modal, setModal] = useState(null);
-
-  return (
-    <div className="pg">
-      <div className="ph">
-        <div className="slbl">Competitive Play</div>
-        <h1 className="stit">Upcoming Tournaments</h1>
-        <p className="ph-sub">
-          Register your child for our rated and friendly tournaments. Open to
-          all skill levels!
-        </p>
-      </div>
-
-      <div className="wrap" style={{ paddingTop: "3rem" }}>
-        {!tournaments.length ? (
-          <div className="empty">
-            <div className="empty-i">🏆</div>
-            <p>No tournaments scheduled yet. Check back soon!</p>
-          </div>
-        ) : (
-          <div className="g2">
-            {tournaments.map((t) => (
-              <div className="tc" key={t.id}>
-                <div className="tc-head">
-                  <Badge status={t.status} />
-                  <h3>{t.name}</h3>
-                  <div className="tc-date">📅 {fmtD(t.date)}</div>
-                </div>
-                <div className="tc-body">
-                  <div className="tc-meta">
-                    <div>
-                      <div className="tm-l">Location</div>
-                      <div className="tm-v">📍 {t.location}</div>
-                    </div>
-                    <div>
-                      <div className="tm-l">Age Group</div>
-                      <div className="tm-v">👦 {t.age}</div>
-                    </div>
-                    <div>
-                      <div className="tm-l">Format</div>
-                      <div className="tm-v">♟ {t.format}</div>
-                    </div>
-                    <div>
-                      <div className="tm-l">Entry Fee</div>
-                      <div className="tm-v">💵 ${t.fee}</div>
-                    </div>
-                  </div>
-                  <p className="tc-desc">{t.desc}</p>
-                  <button
-                    className="abtn"
-                    disabled={t.status === "full"}
-                    onClick={() => setModal(t)}
-                  >
-                    {t.status === "full"
-                      ? "Registration Closed"
-                      : t.status === "upcoming"
-                        ? "Pre-Register"
-                        : "Register Now"}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {modal && (
-        <RegModal
-          item={modal}
-          type="tournament"
-          onClose={() => setModal(null)}
-          showToast={showToast}
-          onRegistered={onRegistered}
-        />
-      )}
 
       <Footer onNav={onNav} />
     </div>
@@ -945,7 +722,8 @@ function CampPage({ camps, onNav, showToast, onRegistered }) {
                   <span style={{ fontSize: "3.5rem" }}>☀️</span>
                   <span className="cc-tbdg">{c.type}</span>
                 </div>
-                <div className="cc-body">
+
+                <div className="cc-body" style={{ position: "relative" }}>
                   <Badge status={c.status} />
                   <h3 style={{ marginTop: ".5rem" }}>{c.name}</h3>
                   <div className="cc-sub">
@@ -958,6 +736,7 @@ function CampPage({ camps, onNav, showToast, onRegistered }) {
                     ${c.price} <span>/ child</span>
                   </div>
                   <p className="cc-desc">{c.desc}</p>
+
                   <button
                     className="abtn"
                     disabled={c.status === "full"}
@@ -977,9 +756,8 @@ function CampPage({ camps, onNav, showToast, onRegistered }) {
       </div>
 
       {modal && (
-        <RegModal
+        <CampRegModal
           item={modal}
-          type="camp"
           onClose={() => setModal(null)}
           showToast={showToast}
           onRegistered={onRegistered}
@@ -998,6 +776,7 @@ function AboutPage({ onNav }) {
         <div className="slbl">Our Story</div>
         <h1 className="stit">About MyChessFamily</h1>
       </div>
+
       <div className="wrap">
         <div className="about-g">
           <div className="about-vis">
@@ -1024,6 +803,7 @@ function AboutPage({ onNav }) {
               — Blaise Pascal
             </p>
           </div>
+
           <div>
             <h2
               style={{
@@ -1052,27 +832,25 @@ function AboutPage({ onNav }) {
                 marginBottom: "1rem",
               }}
             >
-              Over 8 years, we've grown from a small after-school program into
-              one of New York's most beloved youth chess organizations, teaching
-              hundreds of kids each year to think strategically, compete
-              gracefully, and grow into confident young adults.
+              Over 8 years, we&apos;ve grown from a small after-school program
+              into one of New York&apos;s most beloved youth chess
+              organizations, teaching hundreds of kids each year to think
+              strategically, compete gracefully, and grow into confident young
+              adults.
             </p>
             <p style={{ color: "var(--muted)", lineHeight: 1.8 }}>
-              Our coaches are USCF-certified and passionate about youth
-              development. We believe chess is for every child — from
-              first-timers to future grandmasters.
+              Our coaches are passionate about youth development. Chess is for
+              every child — from first-timers to future grandmasters.
             </p>
+
             <div style={{ marginTop: "1.3rem" }}>
-              {[
-                "📍 New York City",
-                "🎓 USCF Certified",
-                "🏆 State Champions",
-                "👶 Ages 6–16",
-              ].map((c) => (
-                <span className="chip" key={c}>
-                  {c}
-                </span>
-              ))}
+              {["📍 New York City", "🎓 Certified Coaches", "👶 Ages 6–16"].map(
+                (c) => (
+                  <span className="chip" key={c}>
+                    {c}
+                  </span>
+                ),
+              )}
             </div>
           </div>
         </div>
@@ -1080,25 +858,20 @@ function AboutPage({ onNav }) {
         <div style={{ marginTop: "4.5rem" }}>
           <div className="slbl">Our Team</div>
           <h2 className="stit">Meet the Coaches</h2>
+
           <div className="tgrid">
             {[
               {
                 av: "♔",
                 name: "David Karpov",
-                role: "Head Coach · USCF Expert",
+                role: "Head Coach",
                 bio: "10+ years coaching youth chess. Loves teaching endgames.",
               },
               {
                 av: "♕",
                 name: "Sophia Chen",
-                role: "Junior Coach · USCF Class A",
+                role: "Junior Coach",
                 bio: "Former state scholastic champion. Specializes in beginners.",
-              },
-              {
-                av: "♗",
-                name: "Marcus Williams",
-                role: "Tournament Director",
-                bio: "Runs all our tournaments. Keeps things fun and fair.",
               },
               {
                 av: "♘",
@@ -1117,6 +890,7 @@ function AboutPage({ onNav }) {
           </div>
         </div>
       </div>
+
       <Footer onNav={onNav} />
     </div>
   );
@@ -1162,8 +936,9 @@ function LoginPage({ onLogin, showToast }) {
             fontSize: ".88rem",
           }}
         >
-          Sign in to manage tournaments, camps, and view all registrations.
+          Sign in to manage camps and view registrations.
         </p>
+
         <div className="fg" style={{ textAlign: "left" }}>
           <label className="lbl">Username</label>
           <input
@@ -1174,6 +949,7 @@ function LoginPage({ onLogin, showToast }) {
             onKeyDown={(e) => e.key === "Enter" && submit()}
           />
         </div>
+
         <div className="fg" style={{ textAlign: "left", marginTop: ".7rem" }}>
           <label className="lbl">Password</label>
           <input
@@ -1185,6 +961,7 @@ function LoginPage({ onLogin, showToast }) {
             onKeyDown={(e) => e.key === "Enter" && submit()}
           />
         </div>
+
         <p
           style={{
             fontSize: ".75rem",
@@ -1197,6 +974,7 @@ function LoginPage({ onLogin, showToast }) {
           <strong style={{ color: "var(--green3)" }}>admin</strong> /{" "}
           <strong style={{ color: "var(--green3)" }}>chess123</strong>
         </p>
+
         <button className="sbtn" onClick={submit}>
           Sign In →
         </button>
@@ -1207,31 +985,14 @@ function LoginPage({ onLogin, showToast }) {
 }
 
 function AdminPage({
-  tournaments,
-  setTournaments,
   camps,
   setCamps,
-  tournRegs,
   campRegs,
   reloadRegs,
   onLogout,
   showToast,
 }) {
-  const [tab, setTab] = useState("tournaments");
-
-  const [tf, setTf] = useState({
-    name: "",
-    date: "",
-    loc: "",
-    age: "All Ages (6–16)",
-    format: "Swiss System",
-    max: "",
-    fee: "",
-    status: "open",
-    desc: "",
-  });
-  const setT = (k) => (e) => setTf((p) => ({ ...p, [k]: e.target.value }));
-  const [tDone, setTDone] = useState(false);
+  const [tab, setTab] = useState("camps");
 
   const [cf, setCf] = useState({
     name: "",
@@ -1249,50 +1010,6 @@ function AdminPage({
   const [cDone, setCDone] = useState(false);
 
   const revenue = campRegs.reduce((s, r) => s + (r.price || 0), 0);
-
-  const addTournament = async () => {
-    if (!tf.name || !tf.date || !tf.loc) {
-      showToast("Fill Name, Date & Location.", "e");
-      return;
-    }
-
-    try {
-      const data = await api("/admin/tournaments", {
-        method: "POST",
-        body: JSON.stringify({
-          name: tf.name,
-          date: tf.date,
-          location: tf.loc,
-          age: tf.age,
-          format: tf.format,
-          max: parseInt(tf.max) || 32,
-          fee: parseInt(tf.fee) || 0,
-          status: tf.status,
-          desc: tf.desc || "Registration open!",
-        }),
-      });
-
-      setTournaments(data.tournaments);
-      setTDone(true);
-      setTimeout(() => setTDone(false), 3000);
-
-      setTf({
-        name: "",
-        date: "",
-        loc: "",
-        age: "All Ages (6–16)",
-        format: "Swiss System",
-        max: "",
-        fee: "",
-        status: "open",
-        desc: "",
-      });
-
-      showToast("✅ Tournament published!", "s");
-    } catch (error) {
-      showToast(error.message || "Could not add tournament.", "e");
-    }
-  };
 
   const addCamp = async () => {
     if (!cf.name || !cf.dateStart || !cf.dateEnd || !cf.loc) {
@@ -1340,19 +1057,6 @@ function AdminPage({
     }
   };
 
-  const changeStatusT = async (id, status) => {
-    try {
-      const data = await api(`/admin/tournaments/${id}/status`, {
-        method: "PATCH",
-        body: JSON.stringify({ status }),
-      });
-      setTournaments(data.tournaments);
-      showToast("Status updated!", "s");
-    } catch (error) {
-      showToast(error.message || "Could not update status.", "e");
-    }
-  };
-
   const changeStatusC = async (id, status) => {
     try {
       const data = await api(`/admin/camps/${id}/status`, {
@@ -1366,17 +1070,6 @@ function AdminPage({
     }
   };
 
-  const delT = async (id) => {
-    if (!confirm("Delete this tournament?")) return;
-    try {
-      const data = await api(`/admin/tournaments/${id}`, { method: "DELETE" });
-      setTournaments(data.tournaments);
-      showToast("Deleted.", "i");
-    } catch (error) {
-      showToast(error.message || "Could not delete tournament.", "e");
-    }
-  };
-
   const delC = async (id) => {
     if (!confirm("Delete this camp session?")) return;
     try {
@@ -1385,17 +1078,6 @@ function AdminPage({
       showToast("Deleted.", "i");
     } catch (error) {
       showToast(error.message || "Could not delete camp session.", "e");
-    }
-  };
-
-  const deleteTournamentReg = async (id) => {
-    if (!confirm("Delete this tournament registration?")) return;
-    try {
-      await api(`/admin/registrations/tournament/${id}`, { method: "DELETE" });
-      showToast("Registration deleted.", "i");
-      await reloadRegs?.();
-    } catch (error) {
-      showToast(error.message || "Could not delete registration.", "e");
     }
   };
 
@@ -1447,9 +1129,7 @@ function AdminPage({
 
         <div className="adm-stats">
           {[
-            { n: tournaments.length, l: "Tournaments" },
             { n: camps.length, l: "Camp Sessions" },
-            { n: tournRegs.length, l: "Tournament Regs" },
             { n: campRegs.length, l: "Camp Sign-Ups" },
             { n: "$" + revenue.toLocaleString(), l: "Est. Camp Revenue" },
           ].map((s) => (
@@ -1462,9 +1142,7 @@ function AdminPage({
 
         <div className="atabs">
           {[
-            ["tournaments", "🏆 Manage Tournaments"],
             ["camps", "☀️ Manage Camps"],
-            ["tourregs", "📋 Tournament Regs"],
             ["campregs", "🏕 Camp Sign-Ups"],
           ].map(([id, lbl]) => (
             <button
@@ -1476,190 +1154,6 @@ function AdminPage({
             </button>
           ))}
         </div>
-
-        {tab === "tournaments" && (
-          <>
-            <div className="add-form">
-              <h3
-                style={{
-                  fontFamily: "'Playfair Display',serif",
-                  fontSize: "1.25rem",
-                  marginBottom: "1.3rem",
-                }}
-              >
-                ➕ Add New Tournament
-              </h3>
-
-              <div className="fgrid">
-                <div className="fg full">
-                  <label className="lbl">Tournament Name *</label>
-                  <input
-                    className="inp"
-                    placeholder="e.g. Spring Open 2025"
-                    value={tf.name}
-                    onChange={setT("name")}
-                  />
-                </div>
-
-                <div className="fg">
-                  <label className="lbl">Date *</label>
-                  <input
-                    className="inp"
-                    type="date"
-                    value={tf.date}
-                    onChange={setT("date")}
-                  />
-                </div>
-
-                <div className="fg">
-                  <label className="lbl">Location *</label>
-                  <input
-                    className="inp"
-                    placeholder="e.g. Chess Club HQ"
-                    value={tf.loc}
-                    onChange={setT("loc")}
-                  />
-                </div>
-
-                <div className="fg">
-                  <label className="lbl">Age Group</label>
-                  <select className="inp" value={tf.age} onChange={setT("age")}>
-                    <option>All Ages (6–16)</option>
-                    <option>Juniors (6–10)</option>
-                    <option>Intermediates (11–13)</option>
-                    <option>Seniors (14–16)</option>
-                  </select>
-                </div>
-
-                <div className="fg">
-                  <label className="lbl">Format</label>
-                  <select
-                    className="inp"
-                    value={tf.format}
-                    onChange={setT("format")}
-                  >
-                    <option>Swiss System</option>
-                    <option>Round Robin</option>
-                    <option>Knockout</option>
-                    <option>Rapid</option>
-                    <option>Blitz</option>
-                  </select>
-                </div>
-
-                <div className="fg">
-                  <label className="lbl">Max Participants</label>
-                  <input
-                    className="inp"
-                    type="number"
-                    placeholder="32"
-                    value={tf.max}
-                    onChange={setT("max")}
-                  />
-                </div>
-
-                <div className="fg">
-                  <label className="lbl">Entry Fee ($)</label>
-                  <input
-                    className="inp"
-                    type="number"
-                    placeholder="25"
-                    value={tf.fee}
-                    onChange={setT("fee")}
-                  />
-                </div>
-
-                <div className="fg">
-                  <label className="lbl">Status</label>
-                  <select
-                    className="inp"
-                    value={tf.status}
-                    onChange={setT("status")}
-                  >
-                    <option value="open">Open</option>
-                    <option value="upcoming">Upcoming</option>
-                    <option value="full">Full</option>
-                  </select>
-                </div>
-
-                <div className="fg full">
-                  <label className="lbl">Description</label>
-                  <textarea
-                    className="inp"
-                    placeholder="Brief description..."
-                    value={tf.desc}
-                    onChange={setT("desc")}
-                  />
-                </div>
-              </div>
-
-              <button className="sbtn" onClick={addTournament}>
-                Add Tournament →
-              </button>
-
-              {tDone && (
-                <div className="ok-box">
-                  <div style={{ fontSize: "1.4rem" }}>✅</div>
-                  <strong>Tournament published!</strong>
-                </div>
-              )}
-            </div>
-
-            <h3
-              style={{
-                fontFamily: "'Playfair Display',serif",
-                fontSize: "1.15rem",
-                marginBottom: ".9rem",
-              }}
-            >
-              All Tournaments ({tournaments.length})
-            </h3>
-
-            {!tournaments.length ? (
-              <div className="empty">
-                <div className="empty-i">🏆</div>
-                <p>No tournaments yet.</p>
-              </div>
-            ) : (
-              tournaments.map((t) => {
-                const rc = tournRegs.filter((r) => r.tournId === t.id).length;
-                return (
-                  <div className="ei" key={t.id}>
-                    <div style={{ flex: 1 }}>
-                      <div className="ei-name">{t.name}</div>
-                      <div className="ei-meta">
-                        📅 {fmtDShort(t.date)} · 📍 {t.location} · 👦 {t.age} ·
-                        💵 ${t.fee} · ♟ {t.format} · 📝 {rc} reg
-                        {rc !== 1 ? "s" : ""}
-                      </div>
-                    </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: ".5rem",
-                        flexShrink: 0,
-                        alignItems: "center",
-                      }}
-                    >
-                      <select
-                        className="ssel"
-                        value={t.status}
-                        onChange={(e) => changeStatusT(t.id, e.target.value)}
-                      >
-                        <option value="open">Open</option>
-                        <option value="upcoming">Upcoming</option>
-                        <option value="full">Full</option>
-                      </select>
-                      <button className="delbtn" onClick={() => delT(t.id)}>
-                        🗑
-                      </button>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </>
-        )}
 
         {tab === "camps" && (
           <>
@@ -1820,8 +1314,7 @@ function AdminPage({
                       <div className="ei-meta">
                         📅 {fmtDShort(c.dateStart)} – {fmtDShort(c.dateEnd)} ·
                         📍 {c.location} · {c.type} · 💵 ${c.price} · 📝 {rc}{" "}
-                        sign-up
-                        {rc !== 1 ? "s" : ""}
+                        sign-up{rc !== 1 ? "s" : ""}
                       </div>
                     </div>
 
@@ -1842,6 +1335,7 @@ function AdminPage({
                         <option value="upcoming">Upcoming</option>
                         <option value="full">Full</option>
                       </select>
+
                       <button className="delbtn" onClick={() => delC(c.id)}>
                         🗑
                       </button>
@@ -1849,88 +1343,6 @@ function AdminPage({
                   </div>
                 );
               })
-            )}
-          </>
-        )}
-
-        {tab === "tourregs" && (
-          <>
-            <h3
-              style={{
-                fontFamily: "'Playfair Display',serif",
-                fontSize: "1.15rem",
-                marginBottom: ".9rem",
-              }}
-            >
-              Tournament Registrations ({tournRegs.length})
-            </h3>
-
-            {!tournRegs.length ? (
-              <div className="empty">
-                <div className="empty-i">📋</div>
-                <p>No tournament registrations yet.</p>
-              </div>
-            ) : (
-              <div className="twrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Date</th>
-                      <th>Child</th>
-                      <th>Age</th>
-                      <th>Level</th>
-                      <th>Tournament</th>
-                      <th>Parent</th>
-                      <th>Email</th>
-                      <th>Phone</th>
-                      <th>Notes</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tournRegs.map((r, i) => (
-                      <tr key={r.id}>
-                        <td style={{ color: "var(--muted)" }}>{i + 1}</td>
-                        <td
-                          style={{ whiteSpace: "nowrap", fontSize: ".78rem" }}
-                        >
-                          {r.date}
-                          <br />
-                          <span style={{ color: "var(--muted)" }}>
-                            {r.time}
-                          </span>
-                        </td>
-                        <td>
-                          <strong>{r.childName}</strong>
-                        </td>
-                        <td>{r.age}</td>
-                        <td>
-                          <span className="chip">{r.skill}</span>
-                        </td>
-                        <td style={{ fontSize: ".83rem" }}>{r.tournName}</td>
-                        <td>{r.parent}</td>
-                        <td style={{ fontSize: ".8rem" }}>{r.email}</td>
-                        <td style={{ fontSize: ".8rem" }}>{r.phone}</td>
-                        <td
-                          style={{ fontSize: ".8rem", color: "var(--muted)" }}
-                        >
-                          {r.notes}
-                        </td>
-
-                        <td>
-                          <button
-                            className="delbtn"
-                            onClick={() => deleteTournamentReg(r.id)}
-                          >
-                            🗑 Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
             )}
           </>
         )}
@@ -2009,7 +1421,6 @@ function AdminPage({
                         <td style={{ color: "var(--green3)", fontWeight: 700 }}>
                           ${r.price}
                         </td>
-
                         <td>
                           <button
                             className="delbtn"
@@ -2041,10 +1452,7 @@ export default function App() {
   );
   const [toasts, setToasts] = useState([]);
 
-  const [tournaments, setTournaments] = useState(DEF_TOURNAMENTS);
   const [camps, setCamps] = useState(DEF_CAMPS);
-
-  const [tournRegs, setTournRegs] = useState([]);
   const [campRegs, setCampRegs] = useState([]);
 
   useEffect(() => {
@@ -2060,7 +1468,6 @@ export default function App() {
   const loadPublicData = useCallback(async () => {
     try {
       const data = await api("/bootstrap");
-      setTournaments(data.tournaments || []);
       setCamps(data.camps || []);
     } catch {
       showToast(
@@ -2075,7 +1482,6 @@ export default function App() {
 
     try {
       const data = await api("/admin/registrations");
-      setTournRegs(data.tournamentRegs || []);
       setCampRegs(data.campRegs || []);
     } catch {
       setIsAdmin(false);
@@ -2129,7 +1535,6 @@ export default function App() {
     }
     localStorage.removeItem(AUTH_KEY);
     setIsAdmin(false);
-    setTournRegs([]);
     setCampRegs([]);
     setPage("home");
     showToast("👋 Logged out.", "i");
@@ -2141,10 +1546,10 @@ export default function App() {
         <div className="nav-logo" onClick={() => go("home")}>
           ♔ MyChessFamily
         </div>
+
         <div className="nav-links">
           {[
             ["home", "Home"],
-            ["tournaments", "Tournaments"],
             ["camp", "Summer Camp"],
             ["about", "About"],
           ].map(([p, l]) => (
@@ -2157,6 +1562,7 @@ export default function App() {
             </button>
           ))}
         </div>
+
         <div className="nav-right">
           {isAdmin && <span className="adm-dot">● Admin</span>}
           <button
@@ -2169,15 +1575,6 @@ export default function App() {
       </nav>
 
       {page === "home" && <HomePage onNav={go} />}
-
-      {page === "tournaments" && (
-        <TournamentsPage
-          tournaments={tournaments}
-          onNav={go}
-          showToast={showToast}
-          onRegistered={loadAdminData}
-        />
-      )}
 
       {page === "camp" && (
         <CampPage
@@ -2196,17 +1593,15 @@ export default function App() {
 
       {page === "admin" && (
         <AdminPage
-          tournaments={tournaments}
-          setTournaments={setTournaments}
           camps={camps}
           setCamps={setCamps}
-          tournRegs={tournRegs}
           campRegs={campRegs}
           reloadRegs={loadAdminData}
           onLogout={handleLogout}
           showToast={showToast}
         />
       )}
+
       <Toast toasts={toasts} />
     </div>
   );
