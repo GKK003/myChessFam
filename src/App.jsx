@@ -100,6 +100,22 @@ const PIECES = {
   7: ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
 };
 
+const PIECE_SVGS = {
+  "♔": "/pieces/wK.svg",
+  "♕": "/pieces/wQ.svg",
+  "♖": "/pieces/wR.svg",
+  "♗": "/pieces/wB.svg",
+  "♘": "/pieces/wN.svg",
+  "♙": "/pieces/wP.svg",
+
+  "♚": "/pieces/bK.svg",
+  "♛": "/pieces/bQ.svg",
+  "♜": "/pieces/bR.svg",
+  "♝": "/pieces/bB.svg",
+  "♞": "/pieces/bN.svg",
+  "♟": "/pieces/bP.svg",
+};
+
 const fmtDShort = (d) =>
   new Date(d + "T12:00:00").toLocaleDateString("en-US", {
     month: "short",
@@ -213,6 +229,13 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .cc-price{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--green3);font-weight:900;margin:.5rem 0;}
 .cc-price span{font-size:.85rem;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400;}
 .cc-desc{color:var(--muted);font-size:.85rem;line-height:1.6;margin-bottom:1.1rem;}
+
+.piece{
+  width: 75%;
+  height: 75%;
+  object-fit: contain;
+  pointer-events: none;
+}
 
 
 .burger{
@@ -493,7 +516,9 @@ function ChessBoard() {
                 textShadow: "0 1px 3px rgba(0,0,0,.5)",
               }}
             >
-              {piece || ""}
+              {piece && (
+                <img src={PIECE_SVGS[piece]} alt="" className="piece" />
+              )}
             </div>
           );
         })}
