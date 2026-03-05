@@ -15,7 +15,26 @@ const api = async (path, options = {}) => {
 
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const res = await fetch(`/api${path}`, { ...options, headers });
+  const AUTH_KEY = "mcf_admin_token";
+
+  const api = async (path, options = {}) => {
+    const token = localStorage.getItem(AUTH_KEY);
+
+    const headers = {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    };
+
+    if (token) headers.Authorization = `Bearer ${token}`;
+
+    const BASE = "https://mychessfam.onrender.com"; // ✅ backend URL
+    const res = await fetch(`${BASE}/api${path}`, { ...options, headers });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Request failed");
+    return data;
+  };
+  const res = await fetch(`${BASE}/api${path}`, { ...options, headers });
   const data = await res.json().catch(() => ({}));
 
   if (!res.ok) throw new Error(data.error || "Request failed");
