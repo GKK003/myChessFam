@@ -532,9 +532,7 @@ function ChessBoard() {
 function Footer({ onNav, onContact }) {
   return (
     <footer className="footer">
-      <div className="f-logo">
-        <img src="/pieces/logo.png" alt="company logo" />
-      </div>
+      <div className="f-logo">♔ MyChessFamily</div>
 
       <div className="f-links">
         {[
@@ -1951,7 +1949,14 @@ export default function App() {
     <div style={{ width: "100%", minHeight: "100vh", background: "#09131E" }}>
       <nav className="nav">
         <div className="nav-logo" onClick={() => go("home")}>
-          ♔ MyChessFamily
+          <img
+            src="/pieces/logo.png"
+            alt="company logo"
+            style={{
+              width: "25px",
+              height: "25px",
+            }}
+          />
         </div>
 
         {/* Desktop links (hidden on mobile by CSS) */}
