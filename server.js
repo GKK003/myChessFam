@@ -33,6 +33,27 @@ const DEFAULT_DB = {
       status: "open",
     },
   ],
+
+  reviews: [
+    {
+      id: 1,
+      name: "Sarah M.",
+      rating: 5,
+      comment: "Amazing coaches. My son improved a lot!",
+      date: "2/14/2025",
+      time: "10:12 AM",
+      approved: true,
+    },
+    {
+      id: 2,
+      name: "Daniel K.",
+      rating: 4,
+      comment: "Great camp experience. Well organized and fun.",
+      date: "1/29/2025",
+      time: "3:40 PM",
+      approved: true,
+    },
+  ],
 };
 
 const sessions = new Map();
@@ -77,8 +98,7 @@ const MONGODB_URL = process.env.MONGODB_URL || process.env.MONGODB_URI;
 const DB_NAME = process.env.MONGODB_DB || "mychessfamily";
 
 const client = new MongoClient(MONGODB_URL);
-let db, colTournaments, colCamps, colTournRegs, colCampRegs;
-
+let db, colTournaments, colCamps, colTournRegs, colCampRegs, colReviews;
 async function initMongo() {
   await client.connect();
 
@@ -88,6 +108,11 @@ async function initMongo() {
   colCamps = db.collection("camps");
   colTournRegs = db.collection("tournamentRegs");
   colCampRegs = db.collection("campRegs");
+  colReviews = db.collection("reviews");
+
+  if ((await colReviews.countDocuments()) === 0) {
+    await colReviews.insertMany(DEFAULT_DB.reviews || []);
+  }
 
   if ((await colTournaments.countDocuments()) === 0) {
     await colTournaments.insertMany(DEFAULT_DB.tournaments);
@@ -114,6 +139,31 @@ const server = http.createServer(async (req, res) => {
       const tournaments = await colTournaments.find().toArray();
       const camps = await colCamps.find().toArray();
       return send(res, 200, { tournaments, camps });
+    }
+    /* get reviews */
+    if (req.method === "GET" && url.pathname === "/api/reviews") {
+      const reviews = await colReviews.find().sort({ id: -1 }).toArray();
+
+      return send(res, 200, { reviews });
+    }
+
+    /* create review */
+    if (req.method === "POST" && url.pathname === "/api/reviews") {
+      const body = await parseBody(req);
+      const stamp = nowStamp();
+
+      const review = {
+        id: Date.now(),
+        name: body.name || "Anonymous",
+        rating: Number(body.rating) || 5,
+        comment: body.comment || "",
+        date: stamp.date,
+        time: stamp.time,
+      };
+
+      await colReviews.insertOne(review);
+
+      return send(res, 201, { ok: true });
     }
 
     /* login */
@@ -251,6 +301,19 @@ const server = http.createServer(async (req, res) => {
 
       const campRegs = await colCampRegs.find().sort({ id: -1 }).toArray();
       return send(res, 200, { campRegs });
+    }
+
+    /* DELETE review */
+    const delReview = url.pathname.match(/^\/api\/admin\/reviews\/(\d+)$/);
+    if (req.method === "DELETE" && delReview) {
+      if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
+
+      const id = Number(delReview[1]);
+      await colReviews.deleteOne({ id });
+
+      const reviews = await colReviews.find().sort({ id: -1 }).toArray();
+
+      return send(res, 200, { reviews });
     }
 
     return send(res, 404, { error: "Not found" });

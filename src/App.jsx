@@ -1823,6 +1823,7 @@ function AdminPage({
 ══════════════════════════════════════════ */
 export default function App() {
   const [page, setPage] = useState("home");
+  const [reviews, setReviews] = useState([]);
   const [isAdmin, setIsAdmin] = useState(
     () => !!localStorage.getItem(AUTH_KEY),
   );
@@ -1926,6 +1927,19 @@ export default function App() {
     [isAdmin],
   );
 
+  const loadReviews = useCallback(async () => {
+    try {
+      const data = await api("/reviews");
+      setReviews(data.reviews || []);
+    } catch {
+      console.error("Could not load reviews");
+    }
+  }, []);
+
+  useEffect(() => {
+    loadReviews();
+  }, [loadReviews]);
+
   const handleLogin = async () => {
     setIsAdmin(true);
     setPage("admin");
@@ -1953,8 +1967,8 @@ export default function App() {
             src="/pieces/logo.png"
             alt="company logo"
             style={{
-              width: "140px",
-              height: "100px",
+              width: "145px",
+              height: "115px",
             }}
           />
         </div>
