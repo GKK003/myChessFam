@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import Logo from "../public/pieces/logo.png";
 
 /* ══════════════════════════════════════════
       API
@@ -532,7 +533,7 @@ function ChessBoard() {
 function Footer({ onNav, onContact }) {
   return (
     <footer className="footer">
-      <div className="f-logo">♔ MyChessFamily</div>
+      <div className="f-logo">{Logo}</div>
 
       <div className="f-links">
         {[
