@@ -1953,8 +1953,8 @@ export default function App() {
             src="/pieces/logo.png"
             alt="company logo"
             style={{
-              width: "25px",
-              height: "25px",
+              width: "140px",
+              height: "100px",
             }}
           />
         </div>
