@@ -1,4 +1,12 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import {
+  Routes,
+  Route,
+  Navigate,
+  NavLink,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 
 /* ══════════════════════════════════════════
       API
@@ -129,7 +137,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--green3);cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;}
 .nav-links{display:flex;gap:2px;flex-wrap:wrap;}
 .nav-right{display:flex;align-items:center;gap:10px;}
-.nb{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:500;padding:.4rem .85rem;border-radius:7px;cursor:pointer;transition:.18s;white-space:nowrap;}
+.nb{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:500;padding:.4rem .85rem;border-radius:7px;cursor:pointer;transition:.18s;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;}
 .nb:hover,.nb.on{color:var(--blue3);background:rgba(74,171,232,0.1);}
 .nb.cta{background:var(--green);color:#fff;font-weight:700;padding:.4rem 1.1rem;}
 .nb.cta:hover{background:var(--green2);}
@@ -389,17 +397,23 @@ function ChessBoard() {
   );
 }
 
-function Footer({ onNav, onContact }) {
+function Footer({ onContact }) {
+  const navigate = useNavigate();
+  const onNav = (p) => {
+    navigate(p);
+    window.scrollTo(0, 0);
+  };
+
   return (
     <footer className="footer">
       <div className="f-logo">♔ MyChessFamily</div>
 
       <div className="f-links">
         {[
-          ["home", "Home"],
-          ["camp", "Summer Camp"],
-          ["about", "About"],
-          ["team", "Our Team"],
+          ["/", "Home"],
+          ["/summercamp", "Summer Camp"],
+          ["/about", "About"],
+          ["/team", "Our Team"],
         ].map(([p, l]) => (
           <button key={p} className="flnk" onClick={() => onNav(p)}>
             {l}
@@ -694,7 +708,13 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
 /* ══════════════════════════════════════════
    PAGES
 ══════════════════════════════════════════ */
-function HomePage({ onNav, onContact }) {
+function HomePage({ onContact }) {
+  const navigate = useNavigate();
+  const nav = (path) => {
+    navigate(path);
+    window.scrollTo(0, 0);
+  };
+
   return (
     <div className="pg">
       <div className="hero">
@@ -703,6 +723,7 @@ function HomePage({ onNav, onContact }) {
             <div key={i} />
           ))}
         </div>
+
         <div className="hero-inner">
           <div>
             <div className="hero-badge">🗽 New York City · Ages 6–16</div>
@@ -714,14 +735,15 @@ function HomePage({ onNav, onContact }) {
               minds. We build strategy, confidence, and lasting friendships
               through the timeless game of chess.
             </p>
+
             <div className="hero-btns">
-              <button className="btn btn-g" onClick={() => onNav("camp")}>
+              <button className="btn btn-g" onClick={() => nav("/summercamp")}>
                 ☀️ Join Summer Camp
               </button>
               <button
                 className="btn btn-g"
                 style={{ background: "var(--navy3)" }}
-                onClick={() => onNav("team")}
+                onClick={() => nav("/team")}
               >
                 ♟ Meet Our Team
               </button>
@@ -761,6 +783,7 @@ function HomePage({ onNav, onContact }) {
           <br />
           Chess Enthusiast
         </h2>
+
         <div className="g3">
           {[
             {
@@ -801,6 +824,7 @@ function HomePage({ onNav, onContact }) {
           <br />
           Just Game Skills
         </h2>
+
         <div className="why">
           {[
             {
@@ -833,12 +857,12 @@ function HomePage({ onNav, onContact }) {
         </div>
       </div>
 
-      <Footer onNav={onNav} onContact={onContact} />
+      <Footer onContact={onContact} />
     </div>
   );
 }
 
-function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
+function CampPage({ camps, showToast, onRegistered, onContact }) {
   const [modal, setModal] = useState(null);
 
   return (
@@ -916,12 +940,18 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
         />
       )}
 
-      <Footer onNav={onNav} onContact={onContact} />
+      <Footer onContact={onContact} />
     </div>
   );
 }
 
-function AboutPage({ onNav, onContact }) {
+function AboutPage({ onContact }) {
+  const navigate = useNavigate();
+  const nav = (path) => {
+    navigate(path);
+    window.scrollTo(0, 0);
+  };
+
   return (
     <div className="pg">
       <div className="ph">
@@ -1019,10 +1049,8 @@ function AboutPage({ onNav, onContact }) {
             >
               <button
                 className="btn btn-g"
-                style={{
-                  background: "var(--navy3)",
-                }}
-                onClick={() => onNav("team")}
+                style={{ background: "var(--navy3)" }}
+                onClick={() => nav("/team")}
               >
                 ♟ Meet Our Team
               </button>
@@ -1038,13 +1066,19 @@ function AboutPage({ onNav, onContact }) {
         </div>
       </div>
 
-      <Footer onNav={onNav} onContact={onContact} />
+      <Footer onContact={onContact} />
     </div>
   );
 }
 
-/* ✅ NEW PAGE: Our Team */
-function TeamPage({ onNav, onContact }) {
+/* ✅ Our Team Page */
+function TeamPage({ onContact }) {
+  const navigate = useNavigate();
+  const nav = (path) => {
+    navigate(path);
+    window.scrollTo(0, 0);
+  };
+
   return (
     <div className="pg">
       <div
@@ -1118,7 +1152,7 @@ function TeamPage({ onNav, onContact }) {
               <button
                 className="btn btn-g"
                 style={{ background: "rgba(45,204,116,.18)", color: "#EEF5FF" }}
-                onClick={() => onNav("camp")}
+                onClick={() => nav("/summercamp")}
               >
                 ☀️ View Camps
               </button>
@@ -1127,7 +1161,7 @@ function TeamPage({ onNav, onContact }) {
         </div>
       </div>
 
-      <Footer onNav={onNav} onContact={onContact} />
+      <Footer onContact={onContact} />
     </div>
   );
 }
@@ -1678,11 +1712,19 @@ function AdminPage({
   );
 }
 
+/* Route guard */
+function RequireAdmin({ isAdmin, children }) {
+  if (!isAdmin) return <Navigate to="/login" replace />;
+  return children;
+}
+
 /* ══════════════════════════════════════════
-   ROOT
+   ROOT (Router)
 ══════════════════════════════════════════ */
 export default function App() {
-  const [page, setPage] = useState("home");
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [isAdmin, setIsAdmin] = useState(
     () => !!localStorage.getItem(AUTH_KEY),
   );
@@ -1731,14 +1773,21 @@ export default function App() {
     }
   }, []);
 
+  // Load public data once (and keep your fallback)
   useEffect(() => {
     setTimeout(() => {
       loadPublicData();
     }, 0);
   }, [loadPublicData]);
 
+  // ✅ Better practice: only poll admin registrations when user is on /admin
+  const isOnAdminRoute = useMemo(
+    () => location.pathname.startsWith("/admin"),
+    [location.pathname],
+  );
+
   useEffect(() => {
-    if (!isAdmin) return;
+    if (!isAdmin || !isOnAdminRoute) return;
 
     setTimeout(() => {
       loadAdminData();
@@ -1749,23 +1798,11 @@ export default function App() {
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [isAdmin, loadAdminData]);
-
-  const go = useCallback(
-    (p) => {
-      if (p === "admin" && !isAdmin) {
-        setPage("login");
-        return;
-      }
-      setPage(p);
-      window.scrollTo(0, 0);
-    },
-    [isAdmin],
-  );
+  }, [isAdmin, isOnAdminRoute, loadAdminData]);
 
   const handleLogin = async () => {
     setIsAdmin(true);
-    setPage("admin");
+    navigate("/admin", { replace: true });
     await loadAdminData();
   };
 
@@ -1778,32 +1815,35 @@ export default function App() {
     localStorage.removeItem(AUTH_KEY);
     setIsAdmin(false);
     setCampRegs([]);
-    setPage("home");
+    navigate("/", { replace: true });
     showToast("👋 Logged out.", "i");
   };
+
+  const navLinkClass = ({ isActive }) => `nb${isActive ? " on" : ""}`;
 
   return (
     <div style={{ width: "100%", minHeight: "100vh", background: "#09131E" }}>
       <nav className="nav">
-        <div className="nav-logo" onClick={() => go("home")}>
+        <div
+          className="nav-logo"
+          onClick={() => (navigate("/"), window.scrollTo(0, 0))}
+        >
           ♔ MyChessFamily
         </div>
 
         <div className="nav-links">
-          {[
-            ["home", "Home"],
-            ["camp", "Summer Camp"],
-            ["about", "About"],
-            ["team", "Our Team"],
-          ].map(([p, l]) => (
-            <button
-              key={p}
-              className={`nb${page === p ? " on" : ""}`}
-              onClick={() => go(p)}
-            >
-              {l}
-            </button>
-          ))}
+          <NavLink to="/" className={navLinkClass} end>
+            Home
+          </NavLink>
+          <NavLink to="/summercamp" className={navLinkClass}>
+            Summer Camp
+          </NavLink>
+          <NavLink to="/about" className={navLinkClass}>
+            About
+          </NavLink>
+          <NavLink to="/team" className={navLinkClass}>
+            Our Team
+          </NavLink>
 
           {/* Contact after Our Team */}
           <button className="nb" onClick={openContact}>
@@ -1815,43 +1855,63 @@ export default function App() {
           {isAdmin && <span className="adm-dot">● Admin</span>}
           <button
             className={`nb cta${isAdmin ? " adm" : ""}`}
-            onClick={() => (isAdmin ? go("admin") : go("login"))}
+            onClick={() => {
+              if (isAdmin) {
+                navigate("/admin");
+              } else {
+                navigate("/login");
+              }
+              window.scrollTo(0, 0);
+            }}
           >
             {isAdmin ? "Dashboard" : "Admin Login"}
           </button>
         </div>
       </nav>
 
-      {page === "home" && <HomePage onNav={go} onContact={openContact} />}
-
-      {page === "camp" && (
-        <CampPage
-          camps={camps}
-          onNav={go}
-          showToast={showToast}
-          onRegistered={loadAdminData}
-          onContact={openContact}
+      <Routes>
+        <Route path="/" element={<HomePage onContact={openContact} />} />
+        <Route
+          path="/summercamp"
+          element={
+            <CampPage
+              camps={camps}
+              showToast={showToast}
+              onRegistered={loadAdminData}
+              onContact={openContact}
+            />
+          }
         />
-      )}
-
-      {page === "about" && <AboutPage onNav={go} onContact={openContact} />}
-
-      {page === "team" && <TeamPage onNav={go} onContact={openContact} />}
-
-      {page === "login" && (
-        <LoginPage onLogin={handleLogin} showToast={showToast} />
-      )}
-
-      {page === "admin" && (
-        <AdminPage
-          camps={camps}
-          setCamps={setCamps}
-          campRegs={campRegs}
-          reloadRegs={loadAdminData}
-          onLogout={handleLogout}
-          showToast={showToast}
+        <Route path="/about" element={<AboutPage onContact={openContact} />} />
+        <Route path="/team" element={<TeamPage onContact={openContact} />} />
+        <Route
+          path="/login"
+          element={<LoginPage onLogin={handleLogin} showToast={showToast} />}
         />
-      )}
+
+        <Route
+          path="/admin"
+          element={
+            <RequireAdmin isAdmin={isAdmin}>
+              <AdminPage
+                camps={camps}
+                setCamps={setCamps}
+                campRegs={campRegs}
+                reloadRegs={loadAdminData}
+                onLogout={handleLogout}
+                showToast={showToast}
+              />
+            </RequireAdmin>
+          }
+        />
+
+        {/* Optional: redirect old internal routes if you ever used them */}
+        <Route path="/camp" element={<Navigate to="/summercamp" replace />} />
+        <Route path="/team-page" element={<Navigate to="/team" replace />} />
+
+        {/* 404 -> home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
 
       {contactOpen && (
         <ContactModal onClose={closeContact} showToast={showToast} />
