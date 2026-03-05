@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import Logo from "../public/pieces/logo.png";
 
 /* ══════════════════════════════════════════
       API
@@ -142,7 +141,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 }
 
 /* ── NAV ── */
-.nav{position:fixed;top:0;left:0;width:100%;z-index:999;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(9,19,30,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);}
+.nav{position:fixed;top:0;left:0;width:100%;z-index:999;height:100px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(9,19,30,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--green2);cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;}
 .nav-links{display:flex;gap:2px;flex-wrap:wrap;}
 .nav-right{display:flex;align-items:center;gap:5px;}
@@ -533,7 +532,9 @@ function ChessBoard() {
 function Footer({ onNav, onContact }) {
   return (
     <footer className="footer">
-      <div className="f-logo">{Logo}</div>
+      <div className="f-logo">
+        <img src="/pieces/logo.png" alt="company logo" />
+      </div>
 
       <div className="f-links">
         {[
