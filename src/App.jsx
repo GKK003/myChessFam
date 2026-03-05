@@ -2055,6 +2055,7 @@ export default function App() {
             ["camp", "Summer Camp"],
             ["about", "About"],
             ["team", "Our Team"],
+            ["reviews", "Reviews"],
           ].map(([p, l]) => (
             <button
               key={p}
@@ -2112,6 +2113,15 @@ export default function App() {
 
       {page === "about" && <AboutPage onNav={go} onContact={openContact} />}
       {page === "team" && <TeamPage onNav={go} onContact={openContact} />}
+
+      {page === "reviews" && (
+        <ReviewsPage
+          reviews={reviews}
+          onNav={go}
+          openModal={() => setReviewOpen(true)}
+          onContact={openContact}
+        />
+      )}
 
       {page === "login" && (
         <LoginPage onLogin={handleLogin} showToast={showToast} />
