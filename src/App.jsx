@@ -1017,7 +1017,13 @@ function AboutPage({ onNav, onContact }) {
                 flexWrap: "wrap",
               }}
             >
-              <button className="btn btn-g" onClick={() => onNav("team")}>
+              <button
+                className="btn btn-g"
+                style={{
+                  background: "var(--navy3)",
+                }}
+                onClick={() => onNav("team")}
+              >
                 ♟ Meet Our Team
               </button>
               <button
