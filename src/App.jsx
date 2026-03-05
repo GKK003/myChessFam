@@ -1724,6 +1724,7 @@ function AdminPage({
           {[
             ["camps", "☀️ Manage Camps"],
             ["campregs", "🏕 Camp Sign-Ups"],
+            ["reviews", "⭐ Reviews"], // ✅
           ].map(([id, lbl]) => (
             <button
               key={id}
@@ -2017,6 +2018,98 @@ function AdminPage({
             )}
           </>
         )}
+
+        {tab === "reviews" && (
+          <>
+            <h3
+              style={{
+                fontFamily: "'Playfair Display',serif",
+                fontSize: "1.15rem",
+                marginBottom: ".9rem",
+              }}
+            >
+              Reviews ({adminReviews.length})
+            </h3>
+
+            {!adminReviews.length ? (
+              <div className="empty">
+                <div className="empty-i">⭐</div>
+                <p>No reviews yet.</p>
+              </div>
+            ) : (
+              adminReviews
+                .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+                .map((r) => (
+                  <div className="ei" key={r.id}>
+                    <div style={{ flex: 1 }}>
+                      <div className="ei-name">
+                        {r.childName || "Anonymous"} · {r.rating}/5
+                      </div>
+                      <div className="ei-meta" style={{ marginTop: 6 }}>
+                        {r.text}
+                        <div style={{ marginTop: 6, color: "var(--muted)" }}>
+                          Status:{" "}
+                          <b
+                            style={{
+                              color: r.approved ? "var(--green2)" : "#fc8181",
+                            }}
+                          >
+                            {r.approved ? "Approved" : "Pending"}
+                          </b>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: ".5rem",
+                        alignItems: "center",
+                      }}
+                    >
+                      {!r.approved && (
+                        <button
+                          className="sbtn"
+                          style={{ padding: ".45rem .8rem", width: "auto" }}
+                          onClick={async () => {
+                            try {
+                              await api(`/admin/reviews/${r.id}/approve`, {
+                                method: "PATCH",
+                              });
+                              showToast("✅ Approved!", "s");
+                              await reloadRegs?.();
+                            } catch (e) {
+                              showToast(e.message || "Could not approve.", "e");
+                            }
+                          }}
+                        >
+                          Approve
+                        </button>
+                      )}
+
+                      <button
+                        className="delbtn"
+                        onClick={async () => {
+                          if (!confirm("Delete this review?")) return;
+                          try {
+                            await api(`/admin/reviews/${r.id}`, {
+                              method: "DELETE",
+                            });
+                            showToast("Deleted.", "i");
+                            await reloadRegs?.();
+                          } catch (e) {
+                            showToast(e.message || "Could not delete.", "e");
+                          }
+                        }}
+                      >
+                        🗑
+                      </button>
+                    </div>
+                  </div>
+                ))
+            )}
+          </>
+        )}
       </div>
     </div>
   );
@@ -2028,6 +2121,7 @@ function AdminPage({
 export default function App() {
   const [page, setPage] = useState("home");
   const [reviews, setReviews] = useState([]);
+  const [adminReviews, setAdminReviews] = useState([]);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(
     () => !!localStorage.getItem(AUTH_KEY),
@@ -2092,6 +2186,10 @@ export default function App() {
     try {
       const data = await api("/admin/registrations");
       setCampRegs(data.campRegs || []);
+
+      // ✅ load reviews for admin
+      const r = await api("/admin/reviews");
+      setAdminReviews(r.reviews || []);
     } catch {
       setIsAdmin(false);
       localStorage.removeItem(AUTH_KEY);
@@ -2185,6 +2283,7 @@ export default function App() {
             ["camp", "Summer Camp"],
             ["about", "About"],
             ["team", "Our Team"],
+            ["reviews", "Reviews"], // ✅ add
           ].map(([p, l]) => (
             <button
               key={p}
@@ -2338,6 +2437,8 @@ export default function App() {
           setCamps={setCamps}
           campRegs={campRegs}
           reloadRegs={loadAdminData}
+          adminReviews={adminReviews}
+          setAdminReviews={setAdminReviews}
           onLogout={handleLogout}
           showToast={showToast}
         />
