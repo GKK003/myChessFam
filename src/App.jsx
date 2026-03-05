@@ -138,7 +138,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .adm-dot{font-size:.78rem;color:var(--green3);font-weight:600;}
 
 /* ── PAGE BASE ── */
-.pg{width:100%;min-height:100vh;padding-top:66px;}
+.pg{width:100%;min-height:100vh;padding-top:66px; padding-left: 2%; padding-right: 2%;}
 
 /* ── HERO ── */
 .hero{width:100%;min-height:calc(100vh - 66px);display:flex;align-items:center;background:linear-gradient(135deg,#09131E 0%,#0D1E2C 55%,#091A10 100%);position:relative;overflow:hidden;}
