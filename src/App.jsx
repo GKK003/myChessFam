@@ -215,7 +215,6 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .cc-desc{color:var(--muted);font-size:.85rem;line-height:1.6;margin-bottom:1.1rem;}
 
 
-/* ── MOBILE NAV ── */
 .burger{
   display:none;
   width:42px;height:42px;
@@ -230,13 +229,13 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 }
 .burger:hover{background:rgba(26,94,168,.14);}
 
-.burger-lines{
-  width:18px;height:14px;position:relative;
-}
+.burger-lines{width:18px;height:14px;position:relative;}
 .burger-lines span{
-  position:absolute;left:0;right:0;height:2px;border-radius:2px;
+  position:absolute;left:0;right:0;
+  height:2px;border-radius:2px;
   background:rgba(220,233,245,.9);
   transition:.18s;
+  display:block;
 }
 .burger-lines span:nth-child(1){top:0;}
 .burger-lines span:nth-child(2){top:6px;opacity:.9;}
@@ -246,7 +245,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .burger.on .burger-lines span:nth-child(2){opacity:0;}
 .burger.on .burger-lines span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
 
-/* Drawer */
+/* Overlay */
 .mnav-ovl{
   position:fixed;inset:0;z-index:1200;
   background:rgba(0,0,0,.6);
@@ -256,6 +255,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 }
 .mnav-ovl.on{opacity:1;pointer-events:auto;}
 
+/* Drawer */
 .mnav{
   position:fixed;top:0;right:0;height:100vh;z-index:1250;
   width:min(86vw,360px);
@@ -266,6 +266,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   display:flex;flex-direction:column;
 }
 .mnav.on{transform:translateX(0);}
+
 .mnav-h{
   padding:1.2rem 1.2rem .9rem;
   display:flex;align-items:center;justify-content:space-between;
@@ -310,10 +311,15 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 }
 .mnav-cta .btn{width:100%;justify-content:center;}
 
-/* Hide desktop links on mobile, show burger */
+/* ✅ HARD RULE: burger + drawer ONLY on mobile */
+@media (min-width: 851px){
+  .burger{display:none !important;}
+  .mnav,.mnav-ovl{display:none !important;}
+}
+
 @media(max-width:850px){
-  .nav-links{display:none;}
-  .burger{display:flex;}
+  .nav-links{display:none !important;}  /* hide desktop links */
+  .burger{display:flex !important;}     /* show burger */
 }
 
 /* ── STATUS BADGE ── */
@@ -406,6 +412,8 @@ tr:hover td{background:rgba(26,94,168,.07);}
 
 @keyframes fu{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 @keyframes toastIn{from{opacity:0;transform:translateY(100%);}to{opacity:1;transform:translateY(0);}}
+
+
 
 @media(max-width:850px){
   .hero-inner{grid-template-columns:1fr;}
@@ -1798,9 +1806,8 @@ export default function App() {
 
   // ✅ Mobile burger menu state
   const [mobileOpen, setMobileOpen] = useState(false);
-
+  const toggleMobile = useCallback(() => setMobileOpen((v) => !v), []);
   const closeMobile = useCallback(() => setMobileOpen(false), []);
-  const openMobile = useCallback(() => setMobileOpen(true), []);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -1808,7 +1815,7 @@ export default function App() {
     const onKey = (e) => e.key === "Escape" && setMobileOpen(false);
     window.addEventListener("keydown", onKey);
 
-    // lock scroll
+    // lock scroll while drawer open
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
@@ -1915,17 +1922,62 @@ export default function App() {
           ♔ MyChessFamily
         </div>
 
-        <div className="nav-links">...</div>
+        {/* Desktop links (hidden on mobile by CSS) */}
+        <div className="nav-links">
+          {[
+            ["home", "Home"],
+            ["camp", "Summer Camp"],
+            ["about", "About"],
+            ["team", "Our Team"],
+          ].map(([p, l]) => (
+            <button
+              key={p}
+              className={`nb${page === p ? " on" : ""}`}
+              onClick={() => go(p)}
+              type="button"
+            >
+              {l}
+            </button>
+          ))}
 
-        <div className="nav-right">...</div>
+          <button className="nb" onClick={openContact} type="button">
+            Contact
+          </button>
+        </div>
+
+        <div className="nav-right">
+          {isAdmin && <span className="adm-dot">● Admin</span>}
+
+          <button
+            className={`nb cta${isAdmin ? " adm" : ""}`}
+            onClick={() => (isAdmin ? go("admin") : go("login"))}
+            type="button"
+          >
+            {isAdmin ? "Dashboard" : "Admin Login"}
+          </button>
+
+          {/* ✅ Burger button (ONLY visible on mobile via CSS) */}
+          <button
+            className={`burger${mobileOpen ? " on" : ""}`}
+            onClick={toggleMobile}
+            aria-label="Open menu"
+            type="button"
+          >
+            <div className="burger-lines">
+              <span />
+              <span />
+              <span />
+            </div>
+          </button>
+        </div>
       </nav>
-      {/* ✅ E) START: Mobile overlay */}
+
+      {/* ✅ Mobile overlay + drawer (drawer is hidden on desktop by CSS) */}
       <div
         className={`mnav-ovl${mobileOpen ? " on" : ""}`}
         onClick={closeMobile}
       />
-      {/* ✅ E) END: Mobile overlay */}
-      {/* ✅ E) START: Mobile drawer */}
+
       <div className={`mnav${mobileOpen ? " on" : ""}`}>
         <div className="mnav-h">
           <div
@@ -1940,6 +1992,7 @@ export default function App() {
             className="mnav-close"
             onClick={closeMobile}
             aria-label="Close menu"
+            type="button"
           >
             ×
           </button>
@@ -1955,7 +2008,11 @@ export default function App() {
             <button
               key={p}
               className={`mnav-btn${page === p ? " on" : ""}`}
-              onClick={() => go(p)}
+              onClick={() => {
+                closeMobile();
+                go(p);
+              }}
+              type="button"
             >
               <span>{l}</span>
               <span style={{ color: "var(--muted)", fontWeight: 600 }}>›</span>
@@ -1968,6 +2025,7 @@ export default function App() {
               closeMobile();
               openContact();
             }}
+            type="button"
           >
             <span>Contact</span>
             <span style={{ color: "var(--muted)", fontWeight: 600 }}>✉</span>
@@ -1977,14 +2035,20 @@ export default function App() {
         <div className="mnav-cta">
           <button
             className="btn btn-g btn-w"
-            onClick={() => (isAdmin ? go("admin") : go("login"))}
+            onClick={() => {
+              closeMobile();
+              isAdmin ? go("admin") : go("login");
+            }}
+            type="button"
           >
             {isAdmin ? "Open Dashboard" : "Admin Login"}
           </button>
         </div>
       </div>
-      {/* ✅ E) END: Mobile drawer */}
+
+      {/* ✅ your pages below (keep exactly as you had) */}
       {page === "home" && <HomePage onNav={go} onContact={openContact} />}
+
       {page === "camp" && (
         <CampPage
           camps={camps}
@@ -1994,7 +2058,30 @@ export default function App() {
           onContact={openContact}
         />
       )}
-      ...
+
+      {page === "about" && <AboutPage onNav={go} onContact={openContact} />}
+      {page === "team" && <TeamPage onNav={go} onContact={openContact} />}
+
+      {page === "login" && (
+        <LoginPage onLogin={handleLogin} showToast={showToast} />
+      )}
+
+      {page === "admin" && (
+        <AdminPage
+          camps={camps}
+          setCamps={setCamps}
+          campRegs={campRegs}
+          reloadRegs={loadAdminData}
+          onLogout={handleLogout}
+          showToast={showToast}
+        />
+      )}
+
+      {contactOpen && (
+        <ContactModal onClose={closeContact} showToast={showToast} />
+      )}
+
+      <Toast toasts={toasts} />
     </div>
   );
 }
