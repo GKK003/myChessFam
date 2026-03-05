@@ -128,7 +128,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .nav{position:fixed;top:0;left:0;width:100%;z-index:999;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(9,19,30,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--green3);cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;}
 .nav-links{display:flex;gap:2px;flex-wrap:wrap;}
-.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-right{display:flex;align-items:center;gap:5px;}
 .nb{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:500;padding:.4rem .85rem;border-radius:7px;cursor:pointer;transition:.18s;white-space:nowrap;}
 .nb:hover,.nb.on{color:var(--blue3);background:rgba(74,171,232,0.1);}
 .nb.cta{background:var(--green);color:#fff;font-weight:700;padding:.4rem 1.1rem;}
@@ -229,13 +229,14 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 }
 .burger:hover{background:rgba(26,94,168,.14);}
 
-.burger-lines{width:18px;height:14px;position:relative;}
+.burger-lines{width:18px;height:14px;position:relative; padding-right: 14px;}
 .burger-lines span{
   position:absolute;left:0;right:0;
   height:2px;border-radius:2px;
   background:rgba(220,233,245,.9);
   transition:.18s;
   display:block;
+
 }
 .burger-lines span:nth-child(1){top:0;}
 .burger-lines span:nth-child(2){top:6px;opacity:.9;}
@@ -282,6 +283,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   border:1px solid var(--border);
   background:rgba(26,94,168,.09);
   color:var(--cream);cursor:pointer;
+  padding: 0;
 }
 .mnav-close:hover{background:rgba(26,94,168,.14);}
 
@@ -425,6 +427,7 @@ tr:hover td{background:rgba(26,94,168,.07);}
   .nb{padding:.38rem .5rem;font-size:.8rem;}
   .wrap{padding:3rem 1.2rem;}
   .adm-wrap{padding:1.5rem 1.2rem 3rem;}
+  .nav-logo{font-size: 1.2rem}
 }
 `;
 
