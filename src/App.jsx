@@ -540,6 +540,7 @@ function Footer({ onNav, onContact }) {
           ["camp", "Summer Camp"],
           ["about", "About"],
           ["team", "Our Team"],
+          ["reviews", "Reviews"],
         ].map(([p, l]) => (
           <button key={p} className="flnk" onClick={() => onNav(p)}>
             {l}
@@ -1272,6 +1273,209 @@ function TeamPage({ onNav, onContact }) {
   );
 }
 
+function Stars({ rating = 0 }) {
+  const r = Math.max(0, Math.min(5, Number(rating) || 0));
+  return (
+    <span style={{ letterSpacing: 1 }}>
+      {"★★★★★".slice(0, r)}
+      <span style={{ opacity: 0.25 }}>{"★★★★★".slice(r)}</span>
+    </span>
+  );
+}
+
+function ReviewsPage({ reviews, openModal, onNav, onContact }) {
+  const approved = (reviews || []).filter((r) => r.approved === true);
+  const count = approved.length;
+  const avg = count
+    ? approved.reduce((s, r) => s + (Number(r.rating) || 0), 0) / count
+    : 0;
+
+  return (
+    <div className="pg">
+      <div className="ph">
+        <div className="slbl">Parents & Students</div>
+        <h1 className="stit">Reviews</h1>
+        <p className="ph-sub">
+          Average: <b>{avg.toFixed(1)}</b>/5.0 ({count} review
+          {count !== 1 ? "s" : ""})
+        </p>
+
+        <div style={{ marginTop: "1.2rem" }}>
+          <button className="btn btn-g" onClick={openModal}>
+            ✍️ Write a Review
+          </button>
+          <button
+            className="btn btn-g"
+            style={{
+              marginLeft: ".6rem",
+              background: "rgba(74,171,232,.18)",
+              color: "#EEF5FF",
+            }}
+            onClick={onContact}
+          >
+            ✉️ Contact
+          </button>
+        </div>
+      </div>
+
+      <div className="wrap" style={{ paddingTop: "2.2rem" }}>
+        {!count ? (
+          <div className="empty">
+            <div className="empty-i">📝</div>
+            <p>No approved reviews yet. Be the first!</p>
+          </div>
+        ) : (
+          <div className="g3">
+            {approved
+              .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+              .map((r) => (
+                <div className="prog" key={r.id} style={{ padding: "1.4rem" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      gap: "1rem",
+                    }}
+                  >
+                    <div style={{ fontWeight: 800, color: "#EEF5FF" }}>
+                      {r.childName ? r.childName : "Anonymous"}
+                    </div>
+                    <div style={{ color: "var(--green2)", fontWeight: 800 }}>
+                      <Stars rating={r.rating} />{" "}
+                      <span style={{ marginLeft: 6 }}>{r.rating}/5</span>
+                    </div>
+                  </div>
+                  <p
+                    style={{
+                      marginTop: ".75rem",
+                      color: "var(--muted)",
+                      lineHeight: 1.7,
+                    }}
+                  >
+                    {r.text}
+                  </p>
+                  <div
+                    style={{
+                      marginTop: ".8rem",
+                      fontSize: ".78rem",
+                      color: "var(--muted)",
+                    }}
+                  >
+                    {r.date || ""}
+                  </div>
+                </div>
+              ))}
+          </div>
+        )}
+      </div>
+
+      <Footer onNav={onNav} onContact={onContact} />
+    </div>
+  );
+}
+
+function ReviewModal({ onClose, showToast, reload }) {
+  const [childName, setChildName] = useState("");
+  const [rating, setRating] = useState(5);
+  const [text, setText] = useState("");
+  const [done, setDone] = useState(false);
+
+  const submit = async () => {
+    if (!text.trim() || text.trim().length < 10) {
+      showToast("Write at least 10 characters.", "e");
+      return;
+    }
+
+    try {
+      await api("/reviews", {
+        method: "POST",
+        body: JSON.stringify({
+          childName: childName.trim() || "",
+          rating: Number(rating) || 5,
+          text: text.trim(),
+        }),
+      });
+
+      setDone(true);
+      showToast("✅ Review submitted! Waiting for admin approval.", "s");
+      await reload?.();
+    } catch (e) {
+      showToast(e.message || "Could not submit review.", "e");
+    }
+  };
+
+  return (
+    <div
+      className="ovl"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div className="modal">
+        <button className="mcls" onClick={onClose}>
+          ×
+        </button>
+        <h3>Write a Review</h3>
+
+        {!done ? (
+          <>
+            <div className="fg">
+              <label className="lbl">Child Name (optional)</label>
+              <input
+                className="inp"
+                value={childName}
+                onChange={(e) => setChildName(e.target.value)}
+                placeholder="Optional"
+              />
+            </div>
+
+            <div className="fg">
+              <label className="lbl">Rating</label>
+              <select
+                className="inp"
+                value={rating}
+                onChange={(e) => setRating(e.target.value)}
+              >
+                <option value={5}>★★★★★ (5)</option>
+                <option value={4}>★★★★☆ (4)</option>
+                <option value={3}>★★★☆☆ (3)</option>
+                <option value={2}>★★☆☆☆ (2)</option>
+                <option value={1}>★☆☆☆☆ (1)</option>
+              </select>
+            </div>
+
+            <div className="fg">
+              <label className="lbl">Review *</label>
+              <textarea
+                className="inp"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Share your experience..."
+              />
+            </div>
+
+            <button className="sbtn" onClick={submit}>
+              Submit Review →
+            </button>
+          </>
+        ) : (
+          <div className="ok-box">
+            <div style={{ fontSize: "2rem" }}>✅</div>
+            <strong style={{ marginTop: ".5rem" }}>Submitted!</strong>
+            <p
+              style={{
+                fontSize: ".86rem",
+                color: "var(--muted)",
+                marginTop: ".4rem",
+              }}
+            >
+              Your review will appear after admin approval.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function LoginPage({ onLogin, showToast }) {
   const [u, setU] = useState("");
   const [p, setP] = useState("");
@@ -1824,6 +2028,7 @@ function AdminPage({
 export default function App() {
   const [page, setPage] = useState("home");
   const [reviews, setReviews] = useState([]);
+  const [reviewOpen, setReviewOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(
     () => !!localStorage.getItem(AUTH_KEY),
   );
@@ -2142,6 +2347,13 @@ export default function App() {
         <ContactModal onClose={closeContact} showToast={showToast} />
       )}
 
+      {reviewOpen && (
+        <ReviewModal
+          onClose={() => setReviewOpen(false)}
+          showToast={showToast}
+          reload={loadReviews}
+        />
+      )}
       <Toast toasts={toasts} />
     </div>
   );
