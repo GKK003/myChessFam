@@ -217,109 +217,45 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 
 .burger{
   display:none;
-  width:42px;height:42px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background:rgba(26,94,168,.09);
-  color:var(--cream);
+  width:44px;height:44px;
+  border-radius:12px;
+  border:1px solid rgba(74,171,232,.22);
+  background:rgba(26,94,168,.10);
   cursor:pointer;
   align-items:center;
   justify-content:center;
   transition:.18s;
 }
-.burger:hover{background:rgba(26,94,168,.14);}
+.burger:hover{background:rgba(26,94,168,.16);border-color:rgba(74,171,232,.32);}
 
-.burger-lines{width:18px;height:14px;position:relative;}
-.burger-lines span{
-  position:absolute;left:0;right:0;
-  height:2px;border-radius:2px;
-  background:rgba(220,233,245,.9);
-  transition:.18s;
+.burger-lines{
+  width:20px;height:14px;
+  position:relative;
   display:block;
 }
+.burger-lines span{
+  position:absolute;left:0;right:0;
+  height:2px;border-radius:999px;
+  background:rgba(220,233,245,.95);
+  transition:transform .22s ease, top .22s ease, opacity .18s ease;
+}
 .burger-lines span:nth-child(1){top:0;}
-.burger-lines span:nth-child(2){top:6px;opacity:.9;}
+.burger-lines span:nth-child(2){top:6px;}
 .burger-lines span:nth-child(3){top:12px;}
 
-.burger.on .burger-lines span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+/* ✅ Turn into X when open */
+.burger.on .burger-lines span:nth-child(1){top:6px;transform:rotate(45deg);}
 .burger.on .burger-lines span:nth-child(2){opacity:0;}
-.burger.on .burger-lines span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+.burger.on .burger-lines span:nth-child(3){top:6px;transform:rotate(-45deg);}
 
-/* Overlay */
-.mnav-ovl{
-  position:fixed;inset:0;z-index:1200;
-  background:rgba(0,0,0,.6);
-  backdrop-filter:blur(8px);
-  opacity:0;pointer-events:none;
-  transition:.2s;
+/* mobile only */
+@media(max-width:850px){
+  .nav-links{display:none !important;}
+  .burger{display:flex !important;}
 }
-.mnav-ovl.on{opacity:1;pointer-events:auto;}
-
-/* Drawer */
-.mnav{
-  position:fixed;top:0;right:0;height:100vh;z-index:1250;
-  width:min(86vw,360px);
-  background:#0C1C2E;
-  border-left:1px solid var(--border);
-  transform:translateX(105%);
-  transition:transform .25s cubic-bezier(.2,.9,.2,1);
-  display:flex;flex-direction:column;
-}
-.mnav.on{transform:translateX(0);}
-
-.mnav-h{
-  padding:1.2rem 1.2rem .9rem;
-  display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid rgba(74,171,232,.12);
-}
-.mnav-logo{
-  font-family:'Playfair Display',serif;
-  font-size:1.25rem;font-weight:900;color:var(--green3);
-  display:flex;align-items:center;gap:8px;
-}
-.mnav-close{
-  width:40px;height:40px;border-radius:10px;
-  border:1px solid var(--border);
-  background:rgba(26,94,168,.09);
-  color:var(--cream);cursor:pointer;
-}
-.mnav-close:hover{background:rgba(26,94,168,.14);}
-
-.mnav-links{
-  padding:1rem 1.2rem;
-  display:flex;flex-direction:column;gap:.55rem;
-}
-.mnav-btn{
-  width:100%;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:.85rem 1rem;
-  border-radius:12px;
-  border:1px solid rgba(74,171,232,.14);
-  background:rgba(26,94,168,.07);
-  color:rgba(220,233,245,.92);
-  font-weight:700;
-  cursor:pointer;
-  transition:.18s;
-}
-.mnav-btn:hover{background:rgba(26,94,168,.12);border-color:rgba(74,171,232,.28);}
-.mnav-btn.on{border-color:rgba(45,204,116,.35);background:rgba(21,122,69,.12);color:#EEF5FF;}
-
-.mnav-cta{
-  margin-top:auto;
-  padding:1rem 1.2rem 1.2rem;
-  border-top:1px solid rgba(74,171,232,.12);
-}
-.mnav-cta .btn{width:100%;justify-content:center;}
-
-/* ✅ HARD RULE: burger + drawer ONLY on mobile */
-@media (min-width: 851px){
+@media(min-width:851px){
   .burger{display:none !important;}
   .mnav,.mnav-ovl{display:none !important;}
-}
-
-@media(max-width:850px){
-  .nav-links{display:none !important;}  /* hide desktop links */
-  .burger{display:flex !important;}     /* show burger */
 }
 
 /* ── STATUS BADGE ── */
@@ -1959,15 +1895,15 @@ export default function App() {
           {/* ✅ Burger button (ONLY visible on mobile via CSS) */}
           <button
             className={`burger${mobileOpen ? " on" : ""}`}
-            onClick={toggleMobile}
+            onClick={() => setMobileOpen((v) => !v)}
             aria-label="Open menu"
             type="button"
           >
-            <div className="burger-lines">
+            <span className="burger-lines" aria-hidden="true">
               <span />
               <span />
               <span />
-            </div>
+            </span>
           </button>
         </div>
       </nav>
