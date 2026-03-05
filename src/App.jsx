@@ -1063,37 +1063,7 @@ function TeamPage({ onNav, onContact }) {
         </p>
       </div>
 
-      {/* <div className="wrap" style={{ paddingTop: "3rem" }}>
-        <div className="g3">
-          {[
-            {
-              icon: "🎯",
-              title: "Kid-First Coaching",
-              desc: "We teach clearly, keep it fun, and adjust lessons to every child’s level and personality.",
-              tag: "Supportive + Structured",
-            },
-            {
-              icon: "♟️",
-              title: "Real Chess Progress",
-              desc: "Openings, tactics, endgames, strategy—and practical game decision-making.",
-              tag: "Fundamentals → Results",
-            },
-            {
-              icon: "🤝",
-              title: "Community & Sportsmanship",
-              desc: "We care about respectful competition, teamwork, and long-term confidence.",
-              tag: "Healthy Growth",
-            },
-          ].map((p, i) => (
-            <div className="prog" key={i}>
-              <div className="prog-icon">{p.icon}</div>
-              <h3>{p.title}</h3>
-              <p>{p.desc}</p>
-              <div className="prog-tag">{p.tag}</div>
-            </div>
-          ))}
-        </div>
-
+      <div className="wrap" style={{ paddingTop: "3rem" }}>
         <div style={{ marginTop: "4.5rem" }}>
           <div className="slbl">Meet the Coaches</div>
           <h2 className="stit">Friendly, Professional, Focused</h2>
@@ -1155,7 +1125,7 @@ function TeamPage({ onNav, onContact }) {
             </div>
           </div>
         </div>
-      </div> */}
+      </div>
 
       <Footer onNav={onNav} onContact={onContact} />
     </div>
