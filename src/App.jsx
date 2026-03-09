@@ -840,27 +840,27 @@ function HomePage({ onNav, onContact }) {
     {
       title: "Private Lessons",
       text: "Add your short text here about one-on-one coaching and student progress.",
-      image: "/images/highlight-1.png",
+      image: "/images/info.png",
     },
     {
       title: "Group Classes",
       text: "Add your short text here about group training, levels, and fun learning.",
-      image: "/images/highlight-2.png",
+      image: "/images/info.png",
     },
     {
       title: "Tournaments",
       text: "Add your short text here about events, competition, and experience.",
-      image: "/images/highlight-3.png",
+      image: "/images/info.png",
     },
     {
       title: "Summer Camp",
       text: "Add your short text here about camp activities, schedule, and benefits.",
-      image: "/images/highlight-4.png",
+      image: "/images/info.png",
     },
     {
       title: "School Programs",
       text: "Add your short text here about school partnerships and chess education.",
-      image: "/images/highlight-5.png",
+      image: "/images/info.png",
     },
   ];
 
