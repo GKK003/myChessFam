@@ -1,6 +1,8 @@
 /* global process, Buffer */
 import http from "node:http";
 import crypto from "node:crypto";
+import fs from "node:fs/promises";
+import path from "node:path";
 import { MongoClient } from "mongodb";
 
 /* =========================
@@ -10,7 +12,7 @@ const PORT = process.env.PORT || 4000;
 const MONGODB_URL = process.env.MONGODB_URL || process.env.MONGODB_URI;
 const DB_NAME = process.env.MONGODB_DB || "mychessfamily";
 const TOKEN_SECRET = process.env.TOKEN_SECRET || "change-this-in-render";
-const CORS_ORIGIN = process.env.CORS_ORIGIN || "*"; // set to https://yourdomain.com later
+const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
 
 if (!MONGODB_URL) {
   console.error("❌ Missing MONGODB_URL / MONGODB_URI env var");
@@ -45,13 +47,15 @@ const nowStamp = () => {
   const d = new Date();
   return {
     date: d.toLocaleDateString("en-US"),
-    time: d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
+    time: d.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
   };
 };
 
 /* =========================
-   STATELESS TOKEN (works after refresh/restart)
-   token = base64(payload).hex(hmac)
+   STATELESS TOKEN
 ========================= */
 const b64 = (s) => Buffer.from(s, "utf8").toString("base64url");
 const unb64 = (s) => Buffer.from(s, "base64url").toString("utf8");
@@ -62,7 +66,7 @@ const sign = (data) =>
 const createToken = (username) => {
   const payload = JSON.stringify({
     u: username,
-    exp: Date.now() + 1000 * 60 * 60 * 24 * 30, // 30 days
+    exp: Date.now() + 1000 * 60 * 60 * 24 * 30,
   });
   const p = b64(payload);
   const sig = sign(p);
@@ -78,7 +82,7 @@ const verifyToken = (token) => {
   try {
     const obj = JSON.parse(unb64(p));
     if (!obj.exp || Date.now() > obj.exp) return null;
-    return obj; // {u, exp}
+    return obj;
   } catch {
     return null;
   }
@@ -147,12 +151,10 @@ async function initMongo() {
   colCampRegs = db.collection("campRegs");
   colReviews = db.collection("reviews");
 
-  // seed camps
   if ((await colCamps.countDocuments()) === 0) {
     await colCamps.insertMany(DEFAULT_DB.camps);
   }
 
-  // seed reviews
   if ((await colReviews.countDocuments()) === 0) {
     await colReviews.insertMany(DEFAULT_DB.reviews);
   }
@@ -167,7 +169,9 @@ await initMongo();
 ========================= */
 const server = http.createServer(async (req, res) => {
   try {
-    if (req.method === "OPTIONS") return send(res, 200, { ok: true });
+    if (req.method === "OPTIONS") {
+      return send(res, 200, { ok: true });
+    }
 
     const url = new URL(req.url, "http://localhost");
 
@@ -181,7 +185,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     /* -------------------------
-       PUBLIC: reviews (approved only)
+       PUBLIC: reviews
        GET /api/reviews
     ------------------------- */
     if (req.method === "GET" && url.pathname === "/api/reviews") {
@@ -196,7 +200,6 @@ const server = http.createServer(async (req, res) => {
     /* -------------------------
        PUBLIC: create review
        POST /api/reviews
-       body: { childName, rating, text }
     ------------------------- */
     if (req.method === "POST" && url.pathname === "/api/reviews") {
       const body = await parseBody(req);
@@ -214,7 +217,7 @@ const server = http.createServer(async (req, res) => {
         text,
         date: stamp.date,
         time: stamp.time,
-        approved: false, // ✅ pending by default
+        approved: false,
         createdAt: Date.now(),
       };
 
@@ -240,6 +243,7 @@ const server = http.createServer(async (req, res) => {
         "email",
         "phone",
       ];
+
       for (const k of required) {
         if (!body[k]) return send(res, 400, { error: `Missing ${k}` });
       }
@@ -269,7 +273,6 @@ const server = http.createServer(async (req, res) => {
     /* -------------------------
        ADMIN: login
        POST /api/admin/login
-       body: { username, password }
     ------------------------- */
     if (req.method === "POST" && url.pathname === "/api/admin/login") {
       const body = await parseBody(req);
@@ -278,16 +281,15 @@ const server = http.createServer(async (req, res) => {
         return send(res, 401, { error: "Invalid credentials" });
       }
 
-      const token = createToken("admin"); // ✅ survives refresh + server restart
+      const token = createToken("admin");
       return send(res, 200, { token });
     }
 
     /* -------------------------
-       ADMIN: logout (frontend calls it, but token is stateless)
+       ADMIN: logout
        POST /api/admin/logout
     ------------------------- */
     if (req.method === "POST" && url.pathname === "/api/admin/logout") {
-      // With stateless token, client removes token and that's enough.
       return send(res, 200, { ok: true });
     }
 
@@ -302,6 +304,7 @@ const server = http.createServer(async (req, res) => {
         .find()
         .sort({ createdAt: -1 })
         .toArray();
+
       return send(res, 200, { campRegs });
     }
 
@@ -327,6 +330,7 @@ const server = http.createServer(async (req, res) => {
     ------------------------- */
     if (req.method === "POST" && url.pathname === "/api/admin/camps") {
       if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
+
       const body = await parseBody(req);
 
       if (!body.name || !body.dateStart || !body.dateEnd || !body.location) {
@@ -396,7 +400,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     /* -------------------------
-       ADMIN: list all reviews (approved + pending)
+       ADMIN: list all reviews
        GET /api/admin/reviews
     ------------------------- */
     if (req.method === "GET" && url.pathname === "/api/admin/reviews") {
@@ -436,7 +440,56 @@ const server = http.createServer(async (req, res) => {
       return send(res, 200, { ok: true });
     }
 
-    /* fallback */
+    /* -------------------------
+       STATIC ASSETS FROM DIST
+    ------------------------- */
+    if (req.method === "GET" && !url.pathname.startsWith("/api")) {
+      const safePath = path
+        .normalize(url.pathname)
+        .replace(/^(\.\.[/\\])+/, "");
+      let filePath =
+        safePath === "/" || safePath === ""
+          ? path.join(process.cwd(), "dist", "index.html")
+          : path.join(process.cwd(), "dist", safePath);
+
+      try {
+        const stat = await fs.stat(filePath);
+
+        if (stat.isFile()) {
+          const ext = path.extname(filePath).toLowerCase();
+          const contentTypes = {
+            ".html": "text/html; charset=utf-8",
+            ".js": "application/javascript; charset=utf-8",
+            ".css": "text/css; charset=utf-8",
+            ".json": "application/json; charset=utf-8",
+            ".svg": "image/svg+xml",
+            ".png": "image/png",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".webp": "image/webp",
+            ".ico": "image/x-icon",
+            ".woff": "font/woff",
+            ".woff2": "font/woff2",
+          };
+
+          const data = await fs.readFile(filePath);
+          res.writeHead(200, {
+            "Content-Type": contentTypes[ext] || "application/octet-stream",
+          });
+          res.end(data);
+          return;
+        }
+      } catch {
+        // ignore and fall through to SPA fallback
+      }
+
+      const indexPath = path.join(process.cwd(), "dist", "index.html");
+      const html = await fs.readFile(indexPath, "utf8");
+      res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+      res.end(html);
+      return;
+    }
+
     return send(res, 404, { error: "Not found" });
   } catch (err) {
     console.error(err);
@@ -447,15 +500,3 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, () => {
   console.log(`✅ API running on port ${PORT}`);
 });
-
-if (req.method === "GET" && !url.pathname.startsWith("/api")) {
-  const fs = await import("node:fs/promises");
-  const path = await import("node:path");
-
-  const filePath = path.join(process.cwd(), "dist", "index.html");
-  const html = await fs.readFile(filePath, "utf8");
-
-  res.writeHead(200, { "Content-Type": "text/html" });
-  res.end(html);
-  return;
-}
