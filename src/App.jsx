@@ -968,7 +968,7 @@ function HomePage({ onNav, onContact }) {
 
           <div className="about-home-media">
             <div className="about-home-image-shell">
-              <img src="/images/about-home.png" alt="My Chess Family" />
+              <img src="/images/info.png" alt="My Chess Family" />
             </div>
           </div>
         </div>
