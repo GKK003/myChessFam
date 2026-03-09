@@ -454,6 +454,123 @@ tr:hover td{background:rgba(26,94,168,.07);}
   .adm-wrap{padding:1.5rem 1.2rem 3rem;}
   .nav-logo{font-size: 1.2rem}
 }
+
+
+/* ── HOME SPLIT SECTIONS ── */
+.home-split-sec{
+  width:100%;
+  background:#F5F6F8;
+  padding:5rem 0;
+}
+
+.home-split-wrap{
+  width:100%;
+  max-width:1320px;
+  margin:0 auto;
+  padding:0 2.5rem;
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);
+  gap:3.5rem;
+  align-items:center;
+}
+
+.home-split-wrap.rev{
+  grid-template-columns:minmax(320px,.85fr) minmax(0,1.15fr);
+}
+
+.home-split-wrap.rev .home-split-copy{
+  order:2;
+}
+
+.home-split-wrap.rev .home-split-media{
+  order:1;
+}
+
+.home-split-copy{
+  text-align:left;
+  max-width:620px;
+}
+
+.home-split-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,3.4vw,3rem);
+  line-height:1.08;
+  font-weight:900;
+  color:#1F2B3A;
+  margin-bottom:1rem;
+}
+
+.home-split-p{
+  color:#586273;
+  line-height:1.85;
+  font-size:.98rem;
+  margin-bottom:1rem;
+}
+
+.home-split-btn{
+  margin-top:.6rem;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:none;
+  background:#2E7D5B;
+  color:#fff;
+  font-weight:700;
+  border-radius:10px;
+  padding:.9rem 1.35rem;
+  cursor:pointer;
+  transition:.2s;
+  box-shadow:0 10px 24px rgba(46,125,91,.18);
+}
+
+.home-split-btn:hover{
+  transform:translateY(-2px);
+  background:#276B4D;
+}
+
+.home-split-media{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.home-split-media img{
+  width:100%;
+  max-width:430px;
+  border-radius:18px;
+  display:block;
+  object-fit:cover;
+  box-shadow:0 18px 40px rgba(15,23,42,.10);
+  background:#E6ECF2;
+}
+
+@media(max-width:950px){
+  .home-split-wrap,
+  .home-split-wrap.rev{
+    grid-template-columns:1fr;
+    gap:2rem;
+    padding:0 1.2rem;
+  }
+
+  .home-split-wrap.rev .home-split-copy,
+  .home-split-wrap.rev .home-split-media{
+    order:initial;
+  }
+
+  .home-split-copy{
+    max-width:100%;
+  }
+
+  .home-split-media{
+    justify-content:flex-start;
+  }
+
+  .home-split-media img{
+    max-width:100%;
+  }
+}
+
+
 `;
 
 const injectStyles = () => {
@@ -836,6 +953,59 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
    PAGES
 ══════════════════════════════════════════ */
 function HomePage({ onNav, onContact }) {
+  const homeSections = [
+    {
+      title: "Private Lessons",
+      text1:
+        "Write your first paragraph here about one-on-one chess coaching, personalized training, and student improvement.",
+      text2:
+        "Write your second paragraph here about learning goals, confidence building, and long-term progress.",
+      image: "/images/info.png",
+      button: "Learn More",
+      onClick: () => onNav("about"),
+    },
+    {
+      title: "Group Classes",
+      text1:
+        "Write your first paragraph here about group lessons, shared learning, and structured weekly practice.",
+      text2:
+        "Write your second paragraph here about class levels, chess fundamentals, and a positive learning environment.",
+      image: "/images/info.png",
+      button: "Learn More",
+      onClick: () => onNav("about"),
+    },
+    {
+      title: "Chess Tournaments",
+      text1:
+        "Write your first paragraph here about tournaments, real-game experience, and competitive growth.",
+      text2:
+        "Write your second paragraph here about sportsmanship, confidence, and practical decision-making under pressure.",
+      image: "/images/info.png",
+      button: "Learn More",
+      onClick: () => onNav("reviews"),
+    },
+    {
+      title: "Summer Camp",
+      text1:
+        "Write your first paragraph here about camp activities, daily schedule, and chess training.",
+      text2:
+        "Write your second paragraph here about fun challenges, skill building, and the overall camp experience.",
+      image: "/images/info.png",
+      button: "Join Camp",
+      onClick: () => onNav("camp"),
+    },
+    {
+      title: "School Programs",
+      text1:
+        "Write your first paragraph here about bringing chess education directly into schools.",
+      text2:
+        "Write your second paragraph here about critical thinking, focus, and how students benefit from school chess programs.",
+      image: "/images/info.png",
+      button: "Contact Us",
+      onClick: onContact,
+    },
+  ];
+
   return (
     <div className="pg">
       <div className="hero">
@@ -844,21 +1014,26 @@ function HomePage({ onNav, onContact }) {
             <div key={i} />
           ))}
         </div>
+
         <div className="hero-inner">
           <div>
             <div className="hero-badge">🗽 New York City · Ages 6–16</div>
+
             <h1>
               Where Kids Become <em>Chess Champions</em>
             </h1>
+
             <p className="hero-sub">
               Join MyChessFamily — New York&apos;s premier chess club for young
               minds. We build strategy, confidence, and lasting friendships
               through the timeless game of chess.
             </p>
+
             <div className="hero-btns">
               <button className="btn btn-g" onClick={() => onNav("camp")}>
                 ☀️ Join Summer Camp
               </button>
+
               <button
                 className="btn btn-g"
                 style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
@@ -866,6 +1041,7 @@ function HomePage({ onNav, onContact }) {
               >
                 ♟ Meet Our Team
               </button>
+
               <button
                 className="btn btn-g"
                 style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
@@ -895,84 +1071,59 @@ function HomePage({ onNav, onContact }) {
         </div>
       </div>
 
-      <div className="wrap">
-        <div className="slbl">What We Offer</div>
-        <h2 className="stit">
-          Programs for Every Young
-          <br />
-          Chess Enthusiast
-        </h2>
-        <div className="g3">
-          {[
-            {
-              icon: "♟",
-              title: "Weekly Classes",
-              desc: "Structured lessons from beginner to advanced. Our coaches guide kids through openings, tactics, endgames, and strategy.",
-              tag: "Ages 6–16 · All Levels",
-            },
-            {
-              icon: "☀️",
-              title: "Summer Chess Camp",
-              desc: "Intensive week-long camps featuring chess mastery, team challenges, and tons of fun. Full-day and half-day options available!",
-              tag: "June – August",
-            },
-            {
-              icon: "🧩",
-              title: "Puzzles & Training",
-              desc: "Improve calculation and pattern recognition with fun puzzles and guided practice activities.",
-              tag: "All Skill Levels",
-            },
-          ].map((p, i) => (
-            <div className="prog" key={i}>
-              <div className="prog-icon">{p.icon}</div>
-              <h3>{p.title}</h3>
-              <p>{p.desc}</p>
-              <div className="prog-tag">{p.tag}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {homeSections.map((section, i) => (
+        <section className="home-split-sec" key={section.title}>
+          <div className={`home-split-wrap ${i % 2 === 1 ? "rev" : ""}`}>
+            <div className="home-split-copy">
+              <div className="slbl">My Chess Family</div>
+              <h2 className="home-split-title">{section.title}</h2>
 
-      <div className="sdiv" />
+              <p className="home-split-p">{section.text1}</p>
+              <p className="home-split-p">{section.text2}</p>
 
-      <div className="wrap" style={{ paddingTop: "3rem" }}>
-        <div className="slbl">Why Chess?</div>
-        <h2 className="stit">
-          Chess Builds More Than
-          <br />
-          Just Game Skills
-        </h2>
-        <div className="why">
-          {[
-            {
-              icon: "🧠",
-              title: "Critical Thinking",
-              desc: "Chess teaches kids to think ahead, evaluate options, and make thoughtful decisions under pressure.",
-            },
-            {
-              icon: "📚",
-              title: "Academic Performance",
-              desc: "Chess players often improve in focus, reading, and math skills — great for the classroom.",
-            },
-            {
-              icon: "🤝",
-              title: "Sportsmanship",
-              desc: "Win or lose gracefully. Chess builds respect, patience, and resilience.",
-            },
-            {
-              icon: "🌟",
-              title: "Confidence",
-              desc: "Every improvement builds self-esteem and pride in young players.",
-            },
-          ].map((w, i) => (
-            <div className="why-i" key={i}>
-              <div className="wi">{w.icon}</div>
-              <h4>{w.title}</h4>
-              <p>{w.desc}</p>
+              <button className="home-split-btn" onClick={section.onClick}>
+                {section.button}
+              </button>
             </div>
-          ))}
+
+            <div className="home-split-media">
+              <img src={section.image} alt={section.title} />
+            </div>
+          </div>
+        </section>
+      ))}
+
+      <section className="home-split-sec">
+        <div className="home-split-wrap">
+          <div className="home-split-copy">
+            <div className="slbl">About Us</div>
+            <h2 className="home-split-title">About My Chess Family</h2>
+
+            <p className="home-split-p">
+              Write your first paragraph here about your academy, your mission,
+              and the kind of environment you want to create for students.
+            </p>
+
+            <p className="home-split-p">
+              Write your second paragraph here about coaching, tournaments,
+              growth, and what makes your chess program special.
+            </p>
+
+            <p className="home-split-p">
+              Write your third paragraph here about community, confidence, and
+              long-term student development.
+            </p>
+
+            <button className="home-split-btn" onClick={() => onNav("about")}>
+              Learn More
+            </button>
+          </div>
+
+          <div className="home-split-media">
+            <img src="/images/about.jpg" alt="About My Chess Family" />
+          </div>
         </div>
-      </div>
+      </section>
 
       <Footer onNav={onNav} onContact={onContact} />
     </div>
