@@ -1120,7 +1120,7 @@ function HomePage({ onNav, onContact }) {
           </div>
 
           <div className="home-split-media">
-            <img src="/images/about.jpg" alt="About My Chess Family" />
+            <img src="/pieces/logo.png" alt="About My Chess Family" />
           </div>
         </div>
       </section>
