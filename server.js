@@ -447,3 +447,15 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, () => {
   console.log(`✅ API running on port ${PORT}`);
 });
+
+if (req.method === "GET" && !url.pathname.startsWith("/api")) {
+  const fs = await import("node:fs/promises");
+  const path = await import("node:path");
+
+  const filePath = path.join(process.cwd(), "dist", "index.html");
+  const html = await fs.readFile(filePath, "utf8");
+
+  res.writeHead(200, { "Content-Type": "text/html" });
+  res.end(html);
+  return;
+}

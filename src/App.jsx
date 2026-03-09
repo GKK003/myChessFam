@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 
 /* ══════════════════════════════════════════
       API
@@ -2270,12 +2271,25 @@ function AdminPage({
    ROOT
 ══════════════════════════════════════════ */
 export default function App() {
-  const [page, setPage] = useState("home");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const pathToPage = {
+    "/": "home",
+    "/camp": "camp",
+    "/about": "about",
+    "/team": "team",
+    "/reviews": "reviews",
+    "/login": "login",
+    "/admin": "admin",
+  };
+
+  const page = pathToPage[location.pathname] || "home";
+
   const [reviews, setReviews] = useState([]);
   const [adminReviews, setAdminReviews] = useState([]);
   const [reviewOpen, setReviewOpen] = useState(false);
 
-  // ✅ FIX 1: Start as false, verify token async on mount instead of trusting localStorage blindly
   const [isAdmin, setIsAdmin] = useState(false);
 
   const [toasts, setToasts] = useState([]);
@@ -2333,10 +2347,13 @@ export default function App() {
       const data = await api("/admin/registrations");
       setCampRegs(data.campRegs || []);
 
-      const r = await api("/admin/reviews");
-      setAdminReviews(r.reviews || []);
-    } catch (err) {
-      console.error("Admin data load failed:", err);
+      const rev = await api("/admin/reviews");
+      setAdminReviews(rev.reviews || []);
+    } catch {
+      localStorage.removeItem(AUTH_KEY);
+      setIsAdmin(false);
+      setCampRegs([]);
+      setAdminReviews([]);
     }
   }, []);
 
@@ -2346,7 +2363,6 @@ export default function App() {
     }, 0);
   }, [loadPublicData]);
 
-  // ✅ FIX 2: Verify saved token is still valid on page load/refresh
   useEffect(() => {
     const token = localStorage.getItem(AUTH_KEY);
     if (!token) return;
@@ -2355,18 +2371,16 @@ export default function App() {
       .then((data) => {
         setCampRegs(data.campRegs || []);
         setIsAdmin(true);
-        // Also load reviews while we're at it
         return api("/admin/reviews");
       })
       .then((r) => {
         if (r) setAdminReviews(r.reviews || []);
       })
       .catch(() => {
-        // Token is invalid/expired — clear it
         localStorage.removeItem(AUTH_KEY);
         setIsAdmin(false);
       });
-  }, []); // runs once on mount
+  }, []);
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -2387,13 +2401,15 @@ export default function App() {
       setMobileOpen(false);
 
       if (p === "admin" && !isAdmin) {
-        setPage("login");
+        navigate("/login");
+        window.scrollTo(0, 0);
         return;
       }
-      setPage(p);
+
+      navigate(p === "home" ? "/" : `/${p}`);
       window.scrollTo(0, 0);
     },
-    [isAdmin],
+    [isAdmin, navigate],
   );
 
   const loadReviews = useCallback(async () => {
@@ -2411,7 +2427,7 @@ export default function App() {
 
   const handleLogin = async () => {
     setIsAdmin(true);
-    setPage("admin");
+    navigate("/admin");
     await loadAdminData();
   };
 
@@ -2424,7 +2440,7 @@ export default function App() {
     localStorage.removeItem(AUTH_KEY);
     setIsAdmin(false);
     setCampRegs([]);
-    setPage("home");
+    navigate("/");
     showToast("👋 Logged out.", "i");
   };
 
@@ -2442,7 +2458,6 @@ export default function App() {
           />
         </div>
 
-        {/* Desktop links (hidden on mobile by CSS) */}
         <div className="nav-links">
           {[
             ["home", "Home"],
@@ -2566,46 +2581,72 @@ export default function App() {
         </div>
       </div>
 
-      {page === "home" && <HomePage onNav={go} onContact={openContact} />}
-
-      {page === "camp" && (
-        <CampPage
-          camps={camps}
-          onNav={go}
-          showToast={showToast}
-          onRegistered={loadAdminData}
-          onContact={openContact}
+      <Routes>
+        <Route
+          path="/"
+          element={<HomePage onNav={go} onContact={openContact} />}
         />
-      )}
 
-      {page === "about" && <AboutPage onNav={go} onContact={openContact} />}
-      {page === "team" && <TeamPage onNav={go} onContact={openContact} />}
-
-      {page === "reviews" && (
-        <ReviewsPage
-          reviews={reviews}
-          onNav={go}
-          openModal={() => setReviewOpen(true)}
-          onContact={openContact}
+        <Route
+          path="/camp"
+          element={
+            <CampPage
+              camps={camps}
+              onNav={go}
+              showToast={showToast}
+              onRegistered={loadAdminData}
+              onContact={openContact}
+            />
+          }
         />
-      )}
 
-      {page === "login" && (
-        <LoginPage onLogin={handleLogin} showToast={showToast} />
-      )}
-
-      {page === "admin" && (
-        <AdminPage
-          camps={camps}
-          setCamps={setCamps}
-          campRegs={campRegs}
-          reloadRegs={loadAdminData}
-          adminReviews={adminReviews}
-          setAdminReviews={setAdminReviews}
-          onLogout={handleLogout}
-          showToast={showToast}
+        <Route
+          path="/about"
+          element={<AboutPage onNav={go} onContact={openContact} />}
         />
-      )}
+
+        <Route
+          path="/team"
+          element={<TeamPage onNav={go} onContact={openContact} />}
+        />
+
+        <Route
+          path="/reviews"
+          element={
+            <ReviewsPage
+              reviews={reviews}
+              onNav={go}
+              openModal={() => setReviewOpen(true)}
+              onContact={openContact}
+            />
+          }
+        />
+
+        <Route
+          path="/login"
+          element={<LoginPage onLogin={handleLogin} showToast={showToast} />}
+        />
+
+        <Route
+          path="/admin"
+          element={
+            isAdmin ? (
+              <AdminPage
+                camps={camps}
+                setCamps={setCamps}
+                campRegs={campRegs}
+                reloadRegs={loadAdminData}
+                adminReviews={adminReviews}
+                setAdminReviews={setAdminReviews}
+                onLogout={handleLogout}
+                showToast={showToast}
+              />
+            ) : (
+              <LoginPage onLogin={handleLogin} showToast={showToast} />
+            )
+          }
+        />
+      </Routes>
 
       {contactOpen && (
         <ContactModal onClose={closeContact} showToast={showToast} />
@@ -2618,6 +2659,7 @@ export default function App() {
           reload={loadReviews}
         />
       )}
+
       <Toast toasts={toasts} />
     </div>
   );
