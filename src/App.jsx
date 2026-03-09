@@ -941,38 +941,25 @@ function HomePage({ onNav, onContact }) {
         </div>
       </section>
 
-      <section className="about-home">
-        <div className="about-home-wrap">
-          <div className="about-home-text">
-            <h2 className="about-home-title">About My Chess Family</h2>
+      <div className="about-section">
+        <div className="about-container">
+          <div className="about-text">
+            <h2 className="about-title">Your Title</h2>
 
-            <p className="about-home-p">
-              Put your first paragraph here. This area is designed for your own
-              text and can be changed any time.
-            </p>
+            <p className="about-paragraph">Your first paragraph here.</p>
 
-            <p className="about-home-p">
-              Put your second paragraph here. You can describe your mission,
-              coaching style, or what makes your program special.
-            </p>
+            <p className="about-paragraph">Your second paragraph here.</p>
 
-            <p className="about-home-p">
-              Put your third paragraph here. Keep it short, clean, and easy to
-              read.
-            </p>
+            <p className="about-paragraph">Your third paragraph here.</p>
 
-            <button className="about-home-btn" onClick={() => onNav("about")}>
-              Learn More
-            </button>
+            <button className="about-btn">Learn More</button>
           </div>
 
-          <div className="about-home-media">
-            <div className="about-home-image-shell">
-              <img src="/images/info.png" alt="My Chess Family" />
-            </div>
+          <div className="about-image">
+            <img src="/images/info.png" alt="about" />
           </div>
         </div>
-      </section>
+      </div>
 
       <section className="home-stats-sec">
         <div className="wrap">

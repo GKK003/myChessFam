@@ -359,6 +359,57 @@
   color: #586273;
 }
 
+/* ── ABOUT SECTION LIKE DESIGN ── */
+
+.about-section {
+  background: #f3f4f6;
+  padding: 70px 0;
+}
+
+.about-container {
+  max-width: 1100px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 40px;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.about-text {
+  text-align: left;
+}
+
+.about-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  color: #1f2937;
+}
+
+.about-paragraph {
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.about-btn {
+  margin-top: 15px;
+  background: #2e7d5b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.about-image img {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 12px;
+  display: block;
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 1100px) {
   .home-highlights-grid {
