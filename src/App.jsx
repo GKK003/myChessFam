@@ -841,31 +841,31 @@ function HomePage({ onNav, onContact }) {
       id: 1,
       title: "Thing 1",
       text: "Write short information here about this part of your club, program, service, or event.",
-      image: "/images/thing1.jpg",
+      image: "/images/info.png",
     },
     {
       id: 2,
       title: "Thing 2",
       text: "Write short information here about this part of your club, program, service, or event.",
-      image: "/images/thing2.jpg",
+      image: "/images/info.png",
     },
     {
       id: 3,
       title: "Thing 3",
       text: "Write short information here about this part of your club, program, service, or event.",
-      image: "/images/thing3.jpg",
+      image: "/images/info.png",
     },
     {
       id: 4,
       title: "Thing 4",
       text: "Write short information here about this part of your club, program, service, or event.",
-      image: "/images/thing4.jpg",
+      image: "/images/info.png",
     },
     {
       id: 5,
       title: "Thing 5",
       text: "Write short information here about this part of your club, program, service, or event.",
-      image: "/images/thing5.jpg",
+      image: "/images/info.png",
     },
   ];
 
