@@ -836,6 +836,39 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
    PAGES
 ══════════════════════════════════════════ */
 function HomePage({ onNav, onContact }) {
+  const homeHighlights = [
+    {
+      id: 1,
+      title: "Thing 1",
+      text: "Write short information here about this part of your club, program, service, or event.",
+      image: "/images/thing1.jpg",
+    },
+    {
+      id: 2,
+      title: "Thing 2",
+      text: "Write short information here about this part of your club, program, service, or event.",
+      image: "/images/thing2.jpg",
+    },
+    {
+      id: 3,
+      title: "Thing 3",
+      text: "Write short information here about this part of your club, program, service, or event.",
+      image: "/images/thing3.jpg",
+    },
+    {
+      id: 4,
+      title: "Thing 4",
+      text: "Write short information here about this part of your club, program, service, or event.",
+      image: "/images/thing4.jpg",
+    },
+    {
+      id: 5,
+      title: "Thing 5",
+      text: "Write short information here about this part of your club, program, service, or event.",
+      image: "/images/thing5.jpg",
+    },
+  ];
+
   return (
     <div className="pg">
       <div className="hero">
@@ -844,6 +877,7 @@ function HomePage({ onNav, onContact }) {
             <div key={i} />
           ))}
         </div>
+
         <div className="hero-inner">
           <div>
             <div className="hero-badge">🗽 New York City · Ages 6–16</div>
@@ -855,10 +889,12 @@ function HomePage({ onNav, onContact }) {
               minds. We build strategy, confidence, and lasting friendships
               through the timeless game of chess.
             </p>
+
             <div className="hero-btns">
               <button className="btn btn-g" onClick={() => onNav("camp")}>
                 ☀️ Join Summer Camp
               </button>
+
               <button
                 className="btn btn-g"
                 style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
@@ -866,6 +902,7 @@ function HomePage({ onNav, onContact }) {
               >
                 ♟ Meet Our Team
               </button>
+
               <button
                 className="btn btn-g"
                 style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
@@ -895,6 +932,31 @@ function HomePage({ onNav, onContact }) {
         </div>
       </div>
 
+      {/* NEW 5 BLANK INFO BLOCKS */}
+      <div className="wrap">
+        <div className="slbl">Quick Overview</div>
+        <h2 className="stit">Add Your Main 5 Things Here</h2>
+
+        <div className="home-info-grid">
+          {homeHighlights.map((item) => (
+            <div className="home-info-card" key={item.id}>
+              <div className="home-info-image-wrap">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="home-info-image"
+                />
+              </div>
+
+              <div className="home-info-body">
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="wrap">
         <div className="slbl">What We Offer</div>
         <h2 className="stit">
@@ -920,61 +982,18 @@ function HomePage({ onNav, onContact }) {
               icon: "🧩",
               title: "Puzzles & Training",
               desc: "Improve calculation and pattern recognition with fun puzzles and guided practice activities.",
-              tag: "All Skill Levels",
+              tag: "All Year",
             },
-          ].map((p, i) => (
+          ].map((item, i) => (
             <div className="prog" key={i}>
-              <div className="prog-icon">{p.icon}</div>
-              <h3>{p.title}</h3>
-              <p>{p.desc}</p>
-              <div className="prog-tag">{p.tag}</div>
+              <div className="prog-icon">{item.icon}</div>
+              <h3>{item.title}</h3>
+              <p>{item.desc}</p>
+              <div className="prog-tag">{item.tag}</div>
             </div>
           ))}
         </div>
       </div>
-
-      <div className="sdiv" />
-
-      <div className="wrap" style={{ paddingTop: "3rem" }}>
-        <div className="slbl">Why Chess?</div>
-        <h2 className="stit">
-          Chess Builds More Than
-          <br />
-          Just Game Skills
-        </h2>
-        <div className="why">
-          {[
-            {
-              icon: "🧠",
-              title: "Critical Thinking",
-              desc: "Chess teaches kids to think ahead, evaluate options, and make thoughtful decisions under pressure.",
-            },
-            {
-              icon: "📚",
-              title: "Academic Performance",
-              desc: "Chess players often improve in focus, reading, and math skills — great for the classroom.",
-            },
-            {
-              icon: "🤝",
-              title: "Sportsmanship",
-              desc: "Win or lose gracefully. Chess builds respect, patience, and resilience.",
-            },
-            {
-              icon: "🌟",
-              title: "Confidence",
-              desc: "Every improvement builds self-esteem and pride in young players.",
-            },
-          ].map((w, i) => (
-            <div className="why-i" key={i}>
-              <div className="wi">{w.icon}</div>
-              <h4>{w.title}</h4>
-              <p>{w.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <Footer onNav={onNav} onContact={onContact} />
     </div>
   );
 }
