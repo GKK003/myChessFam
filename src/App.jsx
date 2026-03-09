@@ -541,8 +541,6 @@ tr:hover td{background:rgba(26,94,168,.07);}
   border-radius:18px;
   display:block;
   object-fit:cover;
-  box-shadow:0 18px 40px rgba(15,23,42,.10);
-  background:#E6ECF2;
 }
 
 @media(max-width:950px){
