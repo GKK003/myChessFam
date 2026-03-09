@@ -836,58 +836,64 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
    PAGES
 ══════════════════════════════════════════ */
 function HomePage({ onNav, onContact }) {
-  const homeHighlights = [
+  const highlights = [
     {
-      id: 1,
-      title: "Thing 1",
-      text: "Write short information here about this part of your club, program, service, or event.",
-      image: "/images/info.png",
+      title: "Private Lessons",
+      text: "Add your short text here about one-on-one coaching and student progress.",
+      image: "/images/highlight-1.png",
     },
     {
-      id: 2,
-      title: "Thing 2",
-      text: "Write short information here about this part of your club, program, service, or event.",
-      image: "/images/info.png",
+      title: "Group Classes",
+      text: "Add your short text here about group training, levels, and fun learning.",
+      image: "/images/highlight-2.png",
     },
     {
-      id: 3,
-      title: "Thing 3",
-      text: "Write short information here about this part of your club, program, service, or event.",
-      image: "/images/info.png",
+      title: "Tournaments",
+      text: "Add your short text here about events, competition, and experience.",
+      image: "/images/highlight-3.png",
     },
     {
-      id: 4,
-      title: "Thing 4",
-      text: "Write short information here about this part of your club, program, service, or event.",
-      image: "/images/info.png",
+      title: "Summer Camp",
+      text: "Add your short text here about camp activities, schedule, and benefits.",
+      image: "/images/highlight-4.png",
     },
     {
-      id: 5,
-      title: "Thing 5",
-      text: "Write short information here about this part of your club, program, service, or event.",
-      image: "/images/info.png",
+      title: "School Programs",
+      text: "Add your short text here about school partnerships and chess education.",
+      image: "/images/highlight-5.png",
     },
   ];
 
   return (
     <div className="pg">
-      <div className="hero">
+      <section className="hero hero-home">
         <div className="hero-bg">
           {Array.from({ length: 64 }, (_, i) => (
             <div key={i} />
           ))}
         </div>
 
-        <div className="hero-inner">
-          <div>
-            <div className="hero-badge">🗽 New York City · Ages 6–16</div>
-            <h1>
-              Where Kids Become <em>Chess Champions</em>
+        <div className="hero-inner hero-home-inner">
+          <div className="hero-copy">
+            <div className="hero-badge">New York City · Ages 6–16</div>
+
+            <h1 className="hero-title">
+              Where Kids
+              <br />
+              Become <em>Chess</em>
+              <br />
+              <em>Champions</em>
             </h1>
-            <p className="hero-sub">
-              Join MyChessFamily — New York&apos;s premier chess club for young
-              minds. We build strategy, confidence, and lasting friendships
-              through the timeless game of chess.
+
+            <p className="hero-sub hero-sub-home">
+              A chess education community helping children grow through
+              strategic thinking, confidence, and character.
+            </p>
+
+            <p className="hero-mini">
+              My Chess Family is a chess education program where students learn
+              chess through dedicated training, tournament experience, and a
+              supportive learning community.
             </p>
 
             <div className="hero-btns">
@@ -895,105 +901,99 @@ function HomePage({ onNav, onContact }) {
                 ☀️ Join Summer Camp
               </button>
 
-              <button
-                className="btn btn-g"
-                style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
-                onClick={() => onNav("team")}
-              >
-                ♟ Meet Our Team
+              <button className="btn btn-s" onClick={() => onNav("team")}>
+                ♟ Meet Our Coaches
               </button>
-
-              <button
-                className="btn btn-g"
-                style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
-                onClick={onContact}
-              >
-                ✉️ Contact
-              </button>
-            </div>
-
-            <div className="stats">
-              <div className="stat">
-                <div className="stat-n">500+</div>
-                <div className="stat-l">Young Players</div>
-              </div>
-              <div className="stat">
-                <div className="stat-n">8+</div>
-                <div className="stat-l">Years Running</div>
-              </div>
-              <div className="stat">
-                <div className="stat-n">3</div>
-                <div className="stat-l">Camps / Year</div>
-              </div>
             </div>
           </div>
 
-          <ChessBoard />
+          <div className="hero-board-card">
+            <ChessBoard />
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* NEW 5 BLANK INFO BLOCKS */}
-      <div className="wrap">
-        <div className="slbl">Quick Overview</div>
-        <h2 className="stit">Add Your Main 5 Things Here</h2>
+      <section className="home-highlights-sec">
+        <div className="wrap">
+          <div className="home-head">
+            <div className="slbl">Quick Overview</div>
+            <h2 className="stit">What We Offer</h2>
+          </div>
 
-        <div className="home-info-grid">
-          {homeHighlights.map((item) => (
-            <div className="home-info-card" key={item.id}>
-              <div className="home-info-image-wrap">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="home-info-image"
-                />
+          <div className="home-highlights-grid">
+            {highlights.map((item) => (
+              <div className="home-highlight-card" key={item.title}>
+                <div className="home-highlight-image">
+                  {item.image ? (
+                    <img src={item.image} alt={item.title} />
+                  ) : (
+                    <div className="home-highlight-placeholder">Image</div>
+                  )}
+                </div>
+
+                <div className="home-highlight-body">
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </div>
               </div>
-
-              <div className="home-info-body">
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div className="wrap">
-        <div className="slbl">What We Offer</div>
-        <h2 className="stit">
-          Programs for Every Young
-          <br />
-          Chess Enthusiast
-        </h2>
-        <div className="g3">
-          {[
-            {
-              icon: "♟",
-              title: "Weekly Classes",
-              desc: "Structured lessons from beginner to advanced. Our coaches guide kids through openings, tactics, endgames, and strategy.",
-              tag: "Ages 6–16 · All Levels",
-            },
-            {
-              icon: "☀️",
-              title: "Summer Chess Camp",
-              desc: "Intensive week-long camps featuring chess mastery, team challenges, and tons of fun. Full-day and half-day options available!",
-              tag: "June – August",
-            },
-            {
-              icon: "🧩",
-              title: "Puzzles & Training",
-              desc: "Improve calculation and pattern recognition with fun puzzles and guided practice activities.",
-              tag: "All Year",
-            },
-          ].map((item, i) => (
-            <div className="prog" key={i}>
-              <div className="prog-icon">{item.icon}</div>
-              <h3>{item.title}</h3>
-              <p>{item.desc}</p>
-              <div className="prog-tag">{item.tag}</div>
+      <section className="about-home">
+        <div className="about-home-wrap">
+          <div className="about-home-text">
+            <h2 className="about-home-title">About My Chess Family</h2>
+
+            <p className="about-home-p">
+              Put your first paragraph here. This area is designed for your own
+              text and can be changed any time.
+            </p>
+
+            <p className="about-home-p">
+              Put your second paragraph here. You can describe your mission,
+              coaching style, or what makes your program special.
+            </p>
+
+            <p className="about-home-p">
+              Put your third paragraph here. Keep it short, clean, and easy to
+              read.
+            </p>
+
+            <button className="about-home-btn" onClick={() => onNav("about")}>
+              Learn More
+            </button>
+          </div>
+
+          <div className="about-home-media">
+            <div className="about-home-image-shell">
+              <img src="/images/about-home.png" alt="My Chess Family" />
             </div>
-          ))}
+          </div>
         </div>
-      </div>
+      </section>
+
+      <section className="home-stats-sec">
+        <div className="wrap">
+          <div className="stats stats-home">
+            <div className="stat">
+              <div className="stat-n">500+</div>
+              <div className="stat-l">Young Players</div>
+            </div>
+            <div className="stat">
+              <div className="stat-n">8+</div>
+              <div className="stat-l">Years Running</div>
+            </div>
+            <div className="stat">
+              <div className="stat-n">3</div>
+              <div className="stat-l">Camps / Year</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer onNav={onNav} onContact={onContact} />
     </div>
   );
 }
