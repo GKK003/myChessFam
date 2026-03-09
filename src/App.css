@@ -20,20 +20,26 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-/* ── HOME SPLIT SECTIONS ── */
+/* ── HOME SPLIT SECTIONS — updated to match reference layout ── */
 
 .home-split-section {
-  background: #f3f4f6;
-  padding: 70px 0;
+  background: #ffffff; /* white background, not grey */
+  padding: 64px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* alternate sections get a very light grey to break up the wall of white */
+.home-split-section:nth-child(even) {
+  background: #f9fafb;
 }
 
 .home-split-container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 40px;
   display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 42px;
+  grid-template-columns: 1fr 1fr; /* equal columns, like the screenshot */
+  gap: 56px;
   align-items: center;
 }
 
@@ -43,49 +49,75 @@
 
 .home-split-title {
   font-family: "Playfair Display", serif;
-  font-size: 2.2rem;
-  line-height: 1.15;
+  font-size: 2rem;
+  line-height: 1.18;
   font-weight: 900;
-  color: #1f2937;
-  margin-bottom: 18px;
+  color: #111827; /* near-black, matches screenshot */
+  margin-bottom: 16px;
 }
 
 .home-split-paragraph {
-  color: #4b5563;
-  line-height: 1.8;
-  font-size: 0.98rem;
-  margin-bottom: 12px;
+  color: #374151; /* medium grey, readable */
+  line-height: 1.78;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
 }
 
 .home-split-btn {
-  margin-top: 14px;
-  background: #2e7d5b;
-  color: white;
+  display: inline-block;
+  margin-top: 20px;
+  background: #157a45; /* green matching your brand */
+  color: #ffffff;
   border: none;
-  padding: 12px 22px;
+  padding: 13px 26px;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 0.92rem;
   cursor: pointer;
-  transition: 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.15s;
+  font-family: "DM Sans", sans-serif;
 }
 
 .home-split-btn:hover {
-  background: #25684c;
+  background: #1fa85e;
+  transform: translateY(-2px);
 }
 
 .home-split-image {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .home-split-image img {
   width: 100%;
-  max-width: 420px;
-  border-radius: 14px;
+  max-width: 480px;
+  height: 320px; /* fixed height so all images are uniform */
+  border-radius: 16px;
   display: block;
-  object-fit: cover;
+  object-fit: cover; /* crop to fill without stretching */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .home-split-container {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 0 24px;
+  }
+
+  .home-split-title {
+    font-size: 1.65rem;
+  }
+
+  .home-split-image img {
+    max-width: 100%;
+    height: 240px;
+  }
+}
 /* ── OPTIONAL OLD INFO BLOCKS ── */
 
 .home-info-grid {
@@ -156,24 +188,6 @@
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
-  }
-}
-
-@media (max-width: 900px) {
-  .home-split-container {
-    grid-template-columns: 1fr;
-  }
-
-  .home-split-title {
-    font-size: 1.9rem;
-  }
-
-  .home-split-image {
-    justify-content: flex-start;
-  }
-
-  .home-split-image img {
-    max-width: 100%;
   }
 }
 
