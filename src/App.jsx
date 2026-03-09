@@ -456,12 +456,10 @@ tr:hover td{background:rgba(26,94,168,.07);}
 }
 
 
-
 /* ── HOME SPLIT SECTIONS ── */
-
 .home-split-sec{
   width:100%;
-  background:#FFFFF;
+  background:#F5F6F8;
   padding:5rem 0;
 }
 
@@ -574,8 +572,6 @@ tr:hover td{background:rgba(26,94,168,.07);}
 
 
 `;
-
-// background:#F5F6F8;
 
 const injectStyles = () => {
   if (document.getElementById("mcf-css")) return;
