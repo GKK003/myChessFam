@@ -836,61 +836,87 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
    PAGES
 ══════════════════════════════════════════ */
 function HomePage({ onNav, onContact }) {
-  const highlights = [
+  const infoSections = [
     {
       title: "Private Lessons",
-      text: "Add your short text here about one-on-one coaching and student progress.",
+      text1:
+        "Write your first paragraph here about private coaching and how students improve with one-on-one lessons.",
+      text2:
+        "Write your second paragraph here. You can explain your teaching style, student progress, and benefits.",
       image: "/images/info.png",
+      button: "Learn More",
+      action: () => onNav("about"),
     },
     {
       title: "Group Classes",
-      text: "Add your short text here about group training, levels, and fun learning.",
+      text1:
+        "Write your first paragraph here about group classes, shared learning, and structured weekly training.",
+      text2:
+        "Write your second paragraph here. You can explain levels, class environment, and learning goals.",
       image: "/images/info.png",
+      button: "Learn More",
+      action: () => onNav("about"),
     },
     {
-      title: "Tournaments",
-      text: "Add your short text here about events, competition, and experience.",
+      title: "Chess Tournaments",
+      text1:
+        "Write your first paragraph here about tournament play, competition, and student experience.",
+      text2:
+        "Write your second paragraph here. You can explain how tournaments build confidence and practical skill.",
       image: "/images/info.png",
+      button: "Learn More",
+      action: () => onNav("reviews"),
     },
     {
       title: "Summer Camp",
-      text: "Add your short text here about camp activities, schedule, and benefits.",
+      text1:
+        "Write your first paragraph here about your summer camp, daily activities, and chess learning.",
+      text2:
+        "Write your second paragraph here. You can explain camp structure, fun activities, and who it is for.",
       image: "/images/info.png",
+      button: "Join Camp",
+      action: () => onNav("camp"),
     },
     {
       title: "School Programs",
-      text: "Add your short text here about school partnerships and chess education.",
+      text1:
+        "Write your first paragraph here about chess in schools and educational partnerships.",
+      text2:
+        "Write your second paragraph here. You can explain how students benefit from chess inside school programs.",
       image: "/images/info.png",
+      button: "Contact Us",
+      action: onContact,
     },
   ];
 
   return (
     <div className="pg">
-      <section className="hero hero-home">
+      <section className="hero">
         <div className="hero-bg">
           {Array.from({ length: 64 }, (_, i) => (
             <div key={i} />
           ))}
         </div>
 
-        <div className="hero-inner hero-home-inner">
-          <div className="hero-copy">
+        <div className="hero-inner">
+          <div>
             <div className="hero-badge">New York City · Ages 6–16</div>
 
-            <h1 className="hero-title">
+            <h1>
               Where Kids
               <br />
-              Become <em>Chess</em>
-              <br />
-              <em>Champions</em>
+              Become <em>Chess Champions</em>
             </h1>
 
-            <p className="hero-sub hero-sub-home">
+            <p className="hero-sub">
               A chess education community helping children grow through
               strategic thinking, confidence, and character.
             </p>
 
-            <p className="hero-mini">
+            <p
+              className="hero-sub"
+              style={{ fontSize: ".95rem", opacity: 0.9 }}
+            >
               My Chess Family is a chess education program where students learn
               chess through dedicated training, tournament experience, and a
               supportive learning community.
@@ -901,86 +927,74 @@ function HomePage({ onNav, onContact }) {
                 ☀️ Join Summer Camp
               </button>
 
-              <button className="btn btn-s" onClick={() => onNav("team")}>
+              <button
+                className="btn btn-g"
+                style={{
+                  background: "rgba(74,171,232,.18)",
+                  color: "#EEF5FF",
+                }}
+                onClick={() => onNav("team")}
+              >
                 ♟ Meet Our Coaches
               </button>
             </div>
           </div>
 
-          <div className="hero-board-card">
-            <ChessBoard />
-          </div>
+          <ChessBoard />
         </div>
       </section>
 
-      <section className="home-highlights-sec">
-        <div className="wrap">
-          <div className="home-head">
-            <div className="slbl">Quick Overview</div>
-            <h2 className="stit">What We Offer</h2>
+      {infoSections.map((item, i) => (
+        <section className="home-split-section" key={i}>
+          <div className="home-split-container">
+            <div className="home-split-text">
+              <h2 className="home-split-title">{item.title}</h2>
+
+              <p className="home-split-paragraph">{item.text1}</p>
+              <p className="home-split-paragraph">{item.text2}</p>
+
+              <button className="home-split-btn" onClick={item.action}>
+                {item.button}
+              </button>
+            </div>
+
+            <div className="home-split-image">
+              <img src={item.image} alt={item.title} />
+            </div>
+          </div>
+        </section>
+      ))}
+
+      <section className="home-split-section">
+        <div className="home-split-container">
+          <div className="home-split-text">
+            <h2 className="home-split-title">About My Chess Family</h2>
+
+            <p className="home-split-paragraph">
+              Write your first paragraph here about your chess academy,
+              community, and mission.
+            </p>
+
+            <p className="home-split-paragraph">
+              Write your second paragraph here about coaching, tournaments, and
+              how students improve through your program.
+            </p>
+
+            <p className="home-split-paragraph">
+              Write your third paragraph here about the environment, growth, and
+              support students receive.
+            </p>
+
+            <button className="home-split-btn" onClick={() => onNav("about")}>
+              Learn More
+            </button>
           </div>
 
-          <div className="home-highlights-grid">
-            {highlights.map((item) => (
-              <div className="home-highlight-card" key={item.title}>
-                <div className="home-highlight-image">
-                  {item.image ? (
-                    <img src={item.image} alt={item.title} />
-                  ) : (
-                    <div className="home-highlight-placeholder">Image</div>
-                  )}
-                </div>
-
-                <div className="home-highlight-body">
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
-                </div>
-              </div>
-            ))}
+          <div className="home-split-image">
+            <img src="/images/info.png" alt="About My Chess Family" />
           </div>
         </div>
       </section>
-
-      <div className="about-section">
-        <div className="about-container">
-          <div className="about-text">
-            <h2 className="about-title">Your Title</h2>
-
-            <p className="about-paragraph">Your first paragraph here.</p>
-
-            <p className="about-paragraph">Your second paragraph here.</p>
-
-            <p className="about-paragraph">Your third paragraph here.</p>
-
-            <button className="about-btn">Learn More</button>
-          </div>
-
-          <div className="about-image">
-            <img src="/images/info.png" alt="about" />
-          </div>
-        </div>
-      </div>
-
-      <section className="home-stats-sec">
-        <div className="wrap">
-          <div className="stats stats-home">
-            <div className="stat">
-              <div className="stat-n">500+</div>
-              <div className="stat-l">Young Players</div>
-            </div>
-            <div className="stat">
-              <div className="stat-n">8+</div>
-              <div className="stat-l">Years Running</div>
-            </div>
-            <div className="stat">
-              <div className="stat-n">3</div>
-              <div className="stat-l">Camps / Year</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Footer onNav={onNav} onContact={onContact} />
     </div>
   );
 }
