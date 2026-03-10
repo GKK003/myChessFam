@@ -501,23 +501,10 @@ tr:hover td{background:rgba(26,94,168,.07);}
   text-align:center;
   color:#1F2B3A;
   padding:4rem 2rem 2rem 2rem;
-  padding-top:3rem;
   margin:0;
 }
 
-.hero::after{
-  content:'';
-  position:absolute;
-  bottom:-1px;
-  left:0;
-  width:100%;
-  height:35px;
-  background:linear-gradient(
-    to bottom,
-    rgba(9,19,30,0) 0%,
-    #F5F6F8 100%
-  );
-}
+
 
 .home-split-btn:hover{transform:translateY(-2px);background:#276B4D;}
 .home-split-media{display:flex;justify-content:center;align-items:center;}
