@@ -530,8 +530,8 @@ tr:hover td{background:rgba(26,94,168,.07);}
 }
 
 .offer-img{
-  width:60px;
-  height:60px;
+  width:120px;
+  height:120px;
   object-fit:contain;
   margin-bottom:0.6rem;
 }
@@ -1091,7 +1091,7 @@ function HomePage({ onNav, onContact }) {
 
         <div className="offer-card">
           <img
-            src="/images/tournament.png"
+            src="/images/tournamentpreparation.png"
             alt="Tournament Preparation"
             className="offer-img"
           />
@@ -1104,7 +1104,7 @@ function HomePage({ onNav, onContact }) {
 
         <div className="offer-card">
           <img
-            src="/images/team.png"
+            src="/images/teamtrain.png"
             alt="Team Training"
             className="offer-img"
           />
@@ -1116,7 +1116,11 @@ function HomePage({ onNav, onContact }) {
         </div>
 
         <div className="offer-card">
-          <img src="/images/camp.png" alt="Chess Camps" className="offer-img" />
+          <img
+            src="/images/chesscamps.png"
+            alt="Chess Camps"
+            className="offer-img"
+          />
           <h3>Chess Camps</h3>
           <p>
             Immersive chess camps combining training, tournaments, and social
