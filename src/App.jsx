@@ -25,7 +25,7 @@ const api = async (path, options = {}) => {
 };
 
 /* ══════════════════════════════════════════
-   CONTENT / SETTINGS (good practice: centralize)
+   CONTENT / SETTINGS
 ══════════════════════════════════════════ */
 const CONTACT = {
   city: "New York City",
@@ -159,10 +159,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   transform:translateY(0);
   transition:transform .35s ease;
 }
-
-.nav-hide{
-  transform:translateY(-100%);
-}
+.nav-hide{transform:translateY(-100%);}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--green2);cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;}
 .nav-links{display:flex;gap:2px;flex-wrap:wrap;}
 .nav-right{display:flex;align-items:center;gap:5px;}
@@ -176,6 +173,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 
 /* ── PAGE BASE ── */
 .pg{width:100%;min-height:100vh;padding-top:100px;}
+
 /* ── HERO ── */
 .hero{width:100%;min-height:calc(100vh - 66px);display:flex;align-items:center;background:linear-gradient(135deg,#09131E 0%,#0D1E2C 55%,#091A10 100%);position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 68% 50%,rgba(21,122,69,.1) 0%,transparent 55%),radial-gradient(ellipse at 20% 75%,rgba(26,94,168,.12) 0%,transparent 50%);}
@@ -183,9 +181,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .hero-bg div{background:var(--blue3);}
 .hero-bg div:nth-child(even){background:transparent;}
 .hero-inner{position:relative;z-index:2;width:100%;max-width:1320px;margin:0 auto;padding:3rem 2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background: rgba(74, 171, 232, 0.18);
-;border:1px solid rgba(74, 171, 232, 0.18);
-;color:rgb(238, 245, 255);font-size:.73rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:.32rem .95rem;border-radius:100px;margin-bottom:1.35rem;animation:fu .6s ease both;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(74,171,232,0.18);border:1px solid rgba(74,171,232,0.18);color:rgb(238,245,255);font-size:.73rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:.32rem .95rem;border-radius:100px;margin-bottom:1.35rem;animation:fu .6s ease both;}
 .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.3rem,4.8vw,4.2rem);font-weight:900;line-height:1.07;margin-bottom:1.3rem;animation:fu .6s ease .1s both;}
 .hero h1 em{color:var(--green2);font-style:normal;}
 .hero-sub{font-size:1.02rem;color:var(--muted);line-height:1.78;margin-bottom:2rem;animation:fu .6s ease .2s both;}
@@ -234,11 +230,18 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .prog p{color:var(--muted);line-height:1.65;font-size:.91rem;}
 .prog-tag{display:inline-block;margin-top:.85rem;background:rgba(21,122,69,.14);color:var(--green2);font-size:.7rem;font-weight:700;letter-spacing:1px;padding:.22rem .7rem;border-radius:100px;}
 
-/* ── WHY GRID ── */
-.why{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.8rem;margin-top:1.8rem;}
-.why-i .wi{font-size:1.8rem;margin-bottom:.65rem;}
-.why-i h4{font-weight:700;margin-bottom:.38rem;color:var(--cream);}
-.why-i p{color:var(--muted);font-size:.88rem;line-height:1.65;}
+/* ── SERVICES PAGE ── */
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.4rem;margin-top:2rem;}
+.svc-card{background:rgba(26,94,168,.07);border:1px solid var(--border);border-radius:16px;padding:1.7rem;transition:.25s;}
+.svc-card:hover{transform:translateY(-4px);box-shadow:0 18px 50px rgba(0,0,0,.28);border-color:rgba(74,171,232,.28);}
+.svc-icon{font-size:2rem;margin-bottom:.85rem;}
+.svc-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:#EEF5FF;margin-bottom:.55rem;}
+.svc-text{color:var(--muted);line-height:1.7;font-size:.91rem;}
+.svc-list{display:grid;gap:.55rem;margin-top:1rem;}
+.svc-li{color:rgba(220,233,245,.9);font-size:.88rem;}
+.svc-band{margin-top:2.5rem;background:rgba(21,122,69,.08);border:1px solid var(--borderg);border-radius:18px;padding:1.6rem;}
+.svc-band-title{font-weight:800;color:#EEF5FF;margin-bottom:.5rem;}
+.svc-band-text{color:var(--muted);line-height:1.7;font-size:.92rem;}
 
 /* ── CAMP CARD ── */
 .cc{background:rgba(21,122,69,.08);border:1px solid var(--borderg);border-radius:18px;overflow:hidden;transition:.28s;}
@@ -252,13 +255,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .cc-price span{font-size:.85rem;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400;}
 .cc-desc{color:var(--muted);font-size:.85rem;line-height:1.6;margin-bottom:1.1rem;}
 
-.piece{
-  width: 75%;
-  height: 75%;
-  object-fit: contain;
-  pointer-events: none;
-}
-
+.piece{width:75%;height:75%;object-fit:contain;pointer-events:none;}
 
 .burger{
   display:none;
@@ -273,20 +270,14 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   transition:.18s;
 }
 .burger:hover{background:rgba(26,94,168,.14);}
-
-.burger-lines{width:18px;height:14px;position:relative; padding-right: 14px;}
+.burger-lines{width:18px;height:14px;position:relative;padding-right:14px;}
 .burger-lines span{
-  position:absolute;left:0;right:0;
-  height:2px;border-radius:2px;
-  background:rgba(220,233,245,.9);
-  transition:.18s;
-  display:block;
-
+  position:absolute;left:0;right:0;height:2px;border-radius:2px;
+  background:rgba(220,233,245,.9);transition:.18s;display:block;
 }
 .burger-lines span:nth-child(1){top:0;}
 .burger-lines span:nth-child(2){top:6px;opacity:.9;}
 .burger-lines span:nth-child(3){top:12px;}
-
 .burger.on .burger-lines span:nth-child(1){transform:translateY(6px) rotate(45deg);}
 .burger.on .burger-lines span:nth-child(2){opacity:0;}
 .burger.on .burger-lines span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
@@ -312,7 +303,6 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   display:flex;flex-direction:column;
 }
 .mnav.on{transform:translateX(0);}
-
 .mnav-h{
   padding:1.2rem 1.2rem .9rem;
   display:flex;align-items:center;justify-content:space-between;
@@ -327,15 +317,10 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   width:40px;height:40px;border-radius:10px;
   border:1px solid var(--border);
   background:rgba(26,94,168,.09);
-  color:var(--cream);cursor:pointer;
-  padding: 0;
+  color:var(--cream);cursor:pointer;padding:0;
 }
 .mnav-close:hover{background:rgba(26,94,168,.14);}
-
-.mnav-links{
-  padding:1rem 1.2rem;
-  display:flex;flex-direction:column;gap:.55rem;
-}
+.mnav-links{padding:1rem 1.2rem;display:flex;flex-direction:column;gap:.55rem;}
 .mnav-btn{
   width:100%;
   display:flex;align-items:center;justify-content:space-between;
@@ -350,7 +335,6 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 }
 .mnav-btn:hover{background:rgba(26,94,168,.12);border-color:rgba(74,171,232,.28);}
 .mnav-btn.on{border-color:rgba(45,204,116,.35);background:rgba(21,122,69,.12);color:#EEF5FF;}
-
 .mnav-cta{
   margin-top:auto;
   padding:1rem 1.2rem 1.2rem;
@@ -358,15 +342,13 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 }
 .mnav-cta .btn{width:100%;justify-content:center;}
 
-/* ✅ HARD RULE: burger + drawer ONLY on mobile */
 @media (min-width: 851px){
   .burger{display:none !important;}
   .mnav,.mnav-ovl{display:none !important;}
 }
-
 @media(max-width:850px){
-  .nav-links{display:none !important;}  /* hide desktop links */
-  .burger{display:flex !important;}     /* show burger */
+  .nav-links{display:none !important;}
+  .burger{display:flex !important;}
 }
 
 /* ── STATUS BADGE ── */
@@ -403,7 +385,7 @@ textarea.inp{min-height:85px;resize:vertical;}
 .mcls:hover{color:var(--cream);}
 
 /* ── ADMIN ── */
-.login-box{max-width:430px;margin:4rem auto;background:rgba(13,30,48,.85);border:1px solid var(--border);border-radius:18px;padding:2.3rem;text-align:center; margin-left: 2%; margin-right: 2%;}
+.login-box{max-width:430px;margin:4rem auto;background:rgba(13,30,48,.85);border:1px solid var(--border);border-radius:18px;padding:2.3rem;text-align:center;margin-left:2%;margin-right:2%;}
 .adm-wrap{width:100%;max-width:1200px;margin:0 auto;padding:2rem 2.5rem 4rem;}
 .adm-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
 .atabs{display:flex;gap:6px;margin-bottom:1.8rem;border-bottom:1px solid rgba(74,171,232,.12);padding-bottom:.85rem;flex-wrap:wrap;}
@@ -460,29 +442,8 @@ tr:hover td{background:rgba(26,94,168,.07);}
 @keyframes fu{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 @keyframes toastIn{from{opacity:0;transform:translateY(100%);}to{opacity:1;transform:translateY(0);}}
 
-
-
-@media(max-width:850px){
-  .hero-inner{grid-template-columns:1fr;}
-  .board-wrap{display:none;}
-  .about-g{grid-template-columns:1fr;}
-  .fgrid{grid-template-columns:1fr;}
-  .fg.full{grid-column:1;}
-  .nav{padding:0 1rem;}
-  .nb{padding:.38rem .5rem;font-size:.8rem;}
-  .wrap{padding:3rem 1.2rem;}
-  .adm-wrap{padding:1.5rem 1.2rem 3rem;}
-  .nav-logo{font-size: 1.2rem}
-}
-
-
 /* ── HOME SPLIT SECTIONS ── */
-.home-split-sec{
-  width:100%;
-  background:#F5F6F8;
-  padding:5rem 0;
-}
-
+.home-split-sec{width:100%;background:#F5F6F8;padding:5rem 0;}
 .home-split-wrap{
   width:100%;
   max-width:1320px;
@@ -493,24 +454,10 @@ tr:hover td{background:rgba(26,94,168,.07);}
   gap:3.5rem;
   align-items:center;
 }
-
-.home-split-wrap.rev{
-  grid-template-columns:minmax(320px,.85fr) minmax(0,1.15fr);
-}
-
-.home-split-wrap.rev .home-split-copy{
-  order:2;
-}
-
-.home-split-wrap.rev .home-split-media{
-  order:1;
-}
-
-.home-split-copy{
-  text-align:left;
-  max-width:620px;
-}
-
+.home-split-wrap.rev{grid-template-columns:minmax(320px,.85fr) minmax(0,1.15fr);}
+.home-split-wrap.rev .home-split-copy{order:2;}
+.home-split-wrap.rev .home-split-media{order:1;}
+.home-split-copy{text-align:left;max-width:620px;}
 .home-split-title{
   font-family:'Playfair Display',serif;
   font-size:clamp(2rem,3.4vw,3rem);
@@ -519,14 +466,7 @@ tr:hover td{background:rgba(26,94,168,.07);}
   color:#1F2B3A;
   margin-bottom:1rem;
 }
-
-.home-split-p{
-  color:#586273;
-  line-height:1.85;
-  font-size:.98rem;
-  margin-bottom:1rem;
-}
-
+.home-split-p{color:#586273;line-height:1.85;font-size:.98rem;margin-bottom:1rem;}
 .home-split-btn{
   margin-top:.6rem;
   display:inline-flex;
@@ -542,25 +482,9 @@ tr:hover td{background:rgba(26,94,168,.07);}
   transition:.2s;
   box-shadow:0 10px 24px rgba(46,125,91,.18);
 }
-
-.home-split-btn:hover{
-  transform:translateY(-2px);
-  background:#276B4D;
-}
-
-.home-split-media{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-.home-split-media img{
-  width:100%;
-  max-width:430px;
-  border-radius:18px;
-  display:block;
-  object-fit:cover;
-}
+.home-split-btn:hover{transform:translateY(-2px);background:#276B4D;}
+.home-split-media{display:flex;justify-content:center;align-items:center;}
+.home-split-media img{width:100%;max-width:430px;border-radius:18px;display:block;object-fit:cover;}
 
 @media(max-width:950px){
   .home-split-wrap,
@@ -575,20 +499,23 @@ tr:hover td{background:rgba(26,94,168,.07);}
     order:initial;
   }
 
-  .home-split-copy{
-    max-width:100%;
-  }
-
-  .home-split-media{
-    justify-content:flex-start;
-  }
-
-  .home-split-media img{
-    max-width:100%;
-  }
+  .home-split-copy{max-width:100%;}
+  .home-split-media{justify-content:flex-start;}
+  .home-split-media img{max-width:100%;}
 }
 
-
+@media(max-width:850px){
+  .hero-inner{grid-template-columns:1fr;}
+  .board-wrap{display:none;}
+  .about-g{grid-template-columns:1fr;}
+  .fgrid{grid-template-columns:1fr;}
+  .fg.full{grid-column:1;}
+  .nav{padding:0 1rem;}
+  .nb{padding:.38rem .5rem;font-size:.8rem;}
+  .wrap{padding:3rem 1.2rem;}
+  .adm-wrap{padding:1.5rem 1.2rem 3rem;}
+  .nav-logo{font-size:1.2rem}
+}
 `;
 
 const injectStyles = () => {
@@ -672,10 +599,11 @@ function Footer({ onNav, onContact }) {
       <div className="f-links">
         {[
           ["home", "Home"],
+          ["services", "Services"],
           ["camp", "Summer Camp"],
-          ["about", "About"],
           ["team", "Our Team"],
           ["reviews", "Reviews"],
+          ["about", "About"],
         ].map(([p, l]) => (
           <button key={p} className="flnk" onClick={() => onNav(p)}>
             {l}
@@ -697,7 +625,6 @@ function Footer({ onNav, onContact }) {
   );
 }
 
-/* Contact popup modal */
 function ContactModal({ onClose, showToast }) {
   const copyEmail = async () => {
     try {
@@ -783,7 +710,6 @@ function ContactModal({ onClose, showToast }) {
   );
 }
 
-/* Camp Registration modal (camp-only) */
 function CampRegModal({ item, onClose, showToast, onRegistered }) {
   const [f, setF] = useState({
     fname: "",
@@ -975,39 +901,39 @@ function HomePage({ onNav, onContact }) {
     {
       title: "Private Lessons",
       text1:
-        "Write your first paragraph here about one-on-one chess coaching, personalized training, and student improvement.",
+        "One-on-one coaching built around each child’s level, pace, and goals. Students receive focused instruction, tactical practice, and game review that helps them improve faster.",
       text2:
-        "Write your second paragraph here about learning goals, confidence building, and long-term progress.",
+        "Private lessons are ideal for beginners who need a strong foundation and for tournament players who want more personalized preparation and steady long-term progress.",
       image: "/images/info.png",
       button: "Learn More",
-      onClick: () => onNav("about"),
+      onClick: () => onNav("services"),
     },
     {
       title: "Group Classes",
       text1:
-        "Write your first paragraph here about group lessons, shared learning, and structured weekly practice.",
+        "Our group classes combine structured lessons with shared learning, practical games, and guided exercises in a supportive environment.",
       text2:
-        "Write your second paragraph here about class levels, chess fundamentals, and a positive learning environment.",
+        "Students build confidence, strengthen fundamentals, and enjoy learning with others at a similar level while staying motivated week after week.",
       image: "/images/info.png",
-      button: "Learn More",
-      onClick: () => onNav("about"),
+      button: "Explore Services",
+      onClick: () => onNav("services"),
     },
     {
       title: "Chess Tournaments",
       text1:
-        "Write your first paragraph here about tournaments, real-game experience, and competitive growth.",
+        "Tournaments give students real-game experience and help them apply what they learn under pressure. They develop focus, resilience, and better decision-making.",
       text2:
-        "Write your second paragraph here about sportsmanship, confidence, and practical decision-making under pressure.",
+        "We encourage healthy competition, sportsmanship, and steady growth through events that challenge players while keeping the experience positive and rewarding.",
       image: "/images/info.png",
-      button: "Learn More",
+      button: "Read Reviews",
       onClick: () => onNav("reviews"),
     },
     {
       title: "Summer Camp",
       text1:
-        "Write your first paragraph here about camp activities, daily schedule, and chess training.",
+        "Our summer camp blends chess training with fun challenges, team activities, and a welcoming community atmosphere for young players.",
       text2:
-        "Write your second paragraph here about fun challenges, skill building, and the overall camp experience.",
+        "Each session is designed to help students learn, compete, make friends, and enjoy a memorable chess experience during school break.",
       image: "/images/info.png",
       button: "Join Camp",
       onClick: () => onNav("camp"),
@@ -1015,9 +941,9 @@ function HomePage({ onNav, onContact }) {
     {
       title: "School Programs",
       text1:
-        "Write your first paragraph here about bringing chess education directly into schools.",
+        "We bring chess directly into schools through structured programs that support focus, patience, problem-solving, and confidence.",
       text2:
-        "Write your second paragraph here about critical thinking, focus, and how students benefit from school chess programs.",
+        "School partnerships make high-quality chess education more accessible and help students benefit from the game in an academic setting.",
       image: "/images/info.png",
       button: "Contact Us",
       onClick: onContact,
@@ -1048,16 +974,12 @@ function HomePage({ onNav, onContact }) {
             </p>
 
             <div className="hero-btns">
-              <button className="btn btn-g" onClick={() => onNav("camp")}>
-                ☀️ Join Summer Camp
+              <button className="btn btn-g" onClick={() => onNav("services")}>
+                ♟ Explore Services
               </button>
 
-              <button
-                className="btn btn-g"
-                style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
-                onClick={() => onNav("team")}
-              >
-                ♟ Meet Our Team
+              <button className="btn btn-g" onClick={() => onNav("camp")}>
+                ☀️ Join Summer Camp
               </button>
 
               <button
@@ -1158,18 +1080,20 @@ function HomePage({ onNav, onContact }) {
             <h2 className="home-split-title">About My Chess Family</h2>
 
             <p className="home-split-p">
-              Write your first paragraph here about your academy, your mission,
-              and the kind of environment you want to create for students.
+              MyChessFamily is a youth chess community built to help students
+              grow in skill, confidence, and character through thoughtful,
+              engaging instruction.
             </p>
 
             <p className="home-split-p">
-              Write your second paragraph here about coaching, tournaments,
-              growth, and what makes your chess program special.
+              From first lessons to competitive preparation, we focus on making
+              each student feel supported, challenged, and excited to improve.
             </p>
 
             <p className="home-split-p">
-              Write your third paragraph here about community, confidence, and
-              long-term student development.
+              Our goal is not only to teach chess well, but also to create a
+              strong, positive environment where students and families feel part
+              of something meaningful.
             </p>
 
             <button className="home-split-btn" onClick={() => onNav("about")}>
@@ -1182,6 +1106,150 @@ function HomePage({ onNav, onContact }) {
           </div>
         </div>
       </section>
+
+      <Footer onNav={onNav} onContact={onContact} />
+    </div>
+  );
+}
+
+function ServicesPage({ onNav, onContact }) {
+  const services = [
+    {
+      icon: "♟",
+      title: "Private Lessons",
+      text: "Personalized one-on-one coaching for students who need focused support, stronger fundamentals, and faster improvement.",
+      items: [
+        "Customized lesson plans",
+        "Game analysis and feedback",
+        "Tournament preparation",
+      ],
+    },
+    {
+      icon: "👥",
+      title: "Group Classes",
+      text: "Structured weekly classes that combine instruction, guided practice, and a fun social learning environment.",
+      items: [
+        "Beginner to advanced levels",
+        "Interactive group learning",
+        "Confidence through practice",
+      ],
+    },
+    {
+      icon: "🏆",
+      title: "Tournaments",
+      text: "Competitive opportunities that help students apply their skills, build resilience, and learn sportsmanship.",
+      items: [
+        "Real-game experience",
+        "Healthy competition",
+        "Post-game reflection",
+      ],
+    },
+    {
+      icon: "☀️",
+      title: "Summer Camp",
+      text: "Immersive camp sessions that blend chess instruction, activities, and community-building in an exciting format.",
+      items: [
+        "Daily chess training",
+        "Fun challenges and games",
+        "Memorable camp experience",
+      ],
+    },
+    {
+      icon: "🏫",
+      title: "School Programs",
+      text: "School-based chess instruction designed to support academic focus, critical thinking, and student engagement.",
+      items: [
+        "On-campus enrichment",
+        "Flexible program formats",
+        "Strong educational value",
+      ],
+    },
+    {
+      icon: "🧠",
+      title: "Skill Development",
+      text: "Our teaching approach helps students improve not only in chess, but in patience, concentration, and decision-making.",
+      items: [
+        "Strategic thinking",
+        "Focus and discipline",
+        "Confidence and growth",
+      ],
+    },
+  ];
+
+  return (
+    <div className="pg">
+      <div
+        className="ph"
+        style={{
+          background:
+            "linear-gradient(180deg,rgba(74,171,232,.1) 0%,transparent 100%)",
+        }}
+      >
+        <div className="slbl">What We Offer</div>
+        <h1 className="stit">Services</h1>
+        <p className="ph-sub">
+          Chess programs designed to help young players learn, compete, and grow
+          with confidence.
+        </p>
+      </div>
+
+      <div className="wrap" style={{ paddingTop: "3rem" }}>
+        <div className="svc-grid">
+          {services.map((s) => (
+            <div className="svc-card" key={s.title}>
+              <div className="svc-icon">{s.icon}</div>
+              <div className="svc-title">{s.title}</div>
+              <div className="svc-text">{s.text}</div>
+
+              <div className="svc-list">
+                {s.items.map((item) => (
+                  <div className="svc-li" key={item}>
+                    • {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="svc-band">
+          <div className="svc-band-title">
+            Need help choosing the right program?
+          </div>
+          <div className="svc-band-text">
+            Whether your child is just starting out or already competing, we can
+            help you find the best fit. Explore our summer camp, meet our team,
+            or contact us directly for guidance.
+          </div>
+
+          <div
+            style={{
+              marginTop: "1.2rem",
+              display: "flex",
+              gap: ".8rem",
+              flexWrap: "wrap",
+            }}
+          >
+            <button className="btn btn-g" onClick={() => onNav("camp")}>
+              ☀️ View Summer Camp
+            </button>
+            <button
+              className="btn btn-g"
+              style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+              onClick={() => onNav("team")}
+            >
+              ♟ Meet Our Team
+            </button>
+            <button
+              className="btn btn-g"
+              style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+              onClick={onContact}
+            >
+              ✉️ Contact
+            </button>
+          </div>
+        </div>
+      </div>
 
       <Footer onNav={onNav} onContact={onContact} />
     </div>
@@ -1458,7 +1526,7 @@ function TeamPage({ onNav, onContact }) {
               }}
             >
               Ask about the right class level, camp schedule, or tournament
-              preparation. We'll help you choose what fits your child best.
+              preparation. We&apos;ll help you choose what fits your child best.
             </div>
             <div style={{ display: "flex", gap: ".8rem", flexWrap: "wrap" }}>
               <button className="btn btn-g" onClick={onContact}>
@@ -2333,10 +2401,11 @@ export default function App() {
 
   const pathToPage = {
     "/": "home",
+    "/services": "services",
     "/camp": "camp",
-    "/about": "about",
     "/team": "team",
     "/reviews": "reviews",
+    "/about": "about",
     "/login": "login",
     "/admin": "admin",
   };
@@ -2393,7 +2462,6 @@ export default function App() {
     };
 
     window.addEventListener("scroll", handleScroll);
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -2539,10 +2607,11 @@ export default function App() {
         <div className="nav-links">
           {[
             ["home", "Home"],
+            ["services", "Services"],
             ["camp", "Summer Camp"],
-            ["about", "About"],
             ["team", "Our Team"],
             ["reviews", "Reviews"],
+            ["about", "About"],
           ].map(([p, l]) => (
             <button
               key={p}
@@ -2613,10 +2682,11 @@ export default function App() {
         <div className="mnav-links">
           {[
             ["home", "Home"],
+            ["services", "Services"],
             ["camp", "Summer Camp"],
-            ["about", "About"],
             ["team", "Our Team"],
             ["reviews", "Reviews"],
+            ["about", "About"],
           ].map(([p, l]) => (
             <button
               key={p}
@@ -2666,6 +2736,11 @@ export default function App() {
         />
 
         <Route
+          path="/services"
+          element={<ServicesPage onNav={go} onContact={openContact} />}
+        />
+
+        <Route
           path="/camp"
           element={
             <CampPage
@@ -2676,11 +2751,6 @@ export default function App() {
               onContact={openContact}
             />
           }
-        />
-
-        <Route
-          path="/about"
-          element={<AboutPage onNav={go} onContact={openContact} />}
         />
 
         <Route
@@ -2701,6 +2771,11 @@ export default function App() {
         />
 
         <Route
+          path="/about"
+          element={<AboutPage onNav={go} onContact={openContact} />}
+        />
+
+        <Route
           path="/login"
           element={<LoginPage onLogin={handleLogin} showToast={showToast} />}
         />
@@ -2715,7 +2790,6 @@ export default function App() {
                 campRegs={campRegs}
                 reloadRegs={loadAdminData}
                 adminReviews={adminReviews}
-                setAdminReviews={setAdminReviews}
                 onLogout={handleLogout}
                 showToast={showToast}
               />
