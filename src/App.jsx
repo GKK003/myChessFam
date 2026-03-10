@@ -1834,6 +1834,15 @@ box-shadow:0 8px 26px rgba(21,122,69,.45);
 }
 
 
+.nav-logo-img{
+  transition: transform .28s ease, filter .28s ease;
+  transform-origin: center;
+}
+
+.nav-logo:hover .nav-logo-img{
+  transform: scale(1.08);
+}
+
 
 `;
 
@@ -4279,9 +4288,11 @@ export default function App() {
           <img
             src="/pieces/logo.png"
             alt="company logo"
+            className="nav-logo-img"
             style={{
               width: "145px",
               height: "115px",
+              marginBottom: "10px",
             }}
           />
         </div>
