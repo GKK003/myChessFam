@@ -1028,7 +1028,7 @@ function HomePage({ onNav, onContact }) {
           <ChessBoard />
         </div>
       </div>
-      <h1 className="home-main-title">What We Offer</h1>;
+      <h1 className="home-main-title">What We Offer</h1>
       {homeSections.map((section, i) => (
         <div key={section.title}>
           <section className="home-split-sec">
