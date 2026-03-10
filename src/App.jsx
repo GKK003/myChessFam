@@ -490,21 +490,28 @@ tr:hover td{background:rgba(26,94,168,.07);}
 }
 
 .home-main-title{
-  background:linear-gradient(
-    to bottom,
-    #09131E 0%,
-    #0F1E2E 20%,
-    #E9EDF2 80%,
-    #F5F6F8 100%
-  );
-
+  background:#F5F6F8;
   font-family:'Playfair Display',serif;
   font-size:clamp(2.6rem,4vw,3.6rem);
   font-weight:900;
   text-align:center;
   color:#1F2B3A;
-  padding:5rem 2rem 3rem 2rem;
+  padding:4rem 2rem 2rem 2rem;
   margin:0;
+}
+
+.hero::after{
+  content:'';
+  position:absolute;
+  bottom:-1px;
+  left:0;
+  width:100%;
+  height:120px;
+  background:linear-gradient(
+    to bottom,
+    rgba(9,19,30,0) 0%,
+    #F5F6F8 100%
+  );
 }
 
 .home-split-btn:hover{transform:translateY(-2px);background:#276B4D;}
