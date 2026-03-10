@@ -530,6 +530,18 @@ tr:hover td{background:rgba(26,94,168,.07);}
 margin-top:10px;
 }
 
+.offer-card span {
+color:white;
+margin-top: 15px
+background-color: var(--green);
+}
+
+.offer-card span:hover {
+background:var(--green2);
+transform:translateY(-2px);
+box-shadow:0 8px 26px rgba(21,122,69,.45);
+}
+
 .offer-card:hover{
   transform:translateY(-4px);
   box-shadow:0 14px 30px rgba(0,0,0,0.12);
@@ -1080,6 +1092,7 @@ function HomePage({ onNav, onContact }) {
             After-school chess programs where students learn the fundamentals of
             chess and gradually develop strategic thinking.
           </p>
+          <span>See More</span>
         </div>
 
         <div className="offer-card" onClick={() => onNav("programs")}>
@@ -1093,6 +1106,7 @@ function HomePage({ onNav, onContact }) {
             Individual training tailored to each student’s level, pace, and
             goals.
           </p>
+          <span>See More</span>
         </div>
 
         <div className="offer-card" onClick={() => onNav("programs")}>
@@ -1106,6 +1120,7 @@ function HomePage({ onNav, onContact }) {
             Structured training for students preparing to compete in scholastic
             tournaments.
           </p>
+          <span>See More</span>
         </div>
 
         <div className="offer-card" onClick={() => onNav("programs")}>
@@ -1119,6 +1134,7 @@ function HomePage({ onNav, onContact }) {
             Group training sessions where students prepare together for
             tournaments and strengthen their skills as a team.
           </p>
+          <span>See More</span>
         </div>
 
         <div className="offer-card" onClick={() => onNav("programs")}>
@@ -1132,6 +1148,7 @@ function HomePage({ onNav, onContact }) {
             Immersive chess camps combining training, tournaments, and social
             activities.
           </p>
+          <span>See More</span>
         </div>
       </div>
 
