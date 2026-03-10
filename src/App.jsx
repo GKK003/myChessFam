@@ -893,6 +893,8 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
   );
 }
 
+<h1 className="home-main-title">What We Offer</h1>;
+
 /* ══════════════════════════════════════════
    PAGES
 ══════════════════════════════════════════ */
