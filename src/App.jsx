@@ -944,6 +944,310 @@ box-shadow:0 8px 26px rgba(21,122,69,.45);
 }
 
 
+
+.team-hero{
+  background:linear-gradient(135deg,#0B1624 0%, #102033 55%, #0E1D17 100%);
+  padding:5rem 0 4rem;
+  position:relative;
+  overflow:hidden;
+}
+
+.team-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(74,171,232,.16), transparent 32%),
+    radial-gradient(circle at 80% 20%, rgba(31,168,94,.14), transparent 28%);
+  pointer-events:none;
+}
+
+.team-hero-inner{
+  width:100%;
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 2.5rem;
+  position:relative;
+  z-index:1;
+  text-align:center;
+}
+
+.team-hero-kicker{
+  display:inline-block;
+  font-size:.75rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--green2);
+  font-weight:700;
+  margin-bottom:1rem;
+}
+
+.team-hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.4rem,4.5vw,4rem);
+  line-height:1.08;
+  color:#F4F8FC;
+  margin-bottom:1rem;
+}
+
+.team-hero-sub{
+  max-width:760px;
+  margin:0 auto;
+  color:rgba(220,233,245,.78);
+  line-height:1.8;
+  font-size:1rem;
+}
+
+.team-hero-actions{
+  margin-top:1.8rem;
+  display:flex;
+  justify-content:center;
+  gap:.8rem;
+  flex-wrap:wrap;
+}
+
+.team-wrap-light{
+  background:#F5F6F8;
+  padding:4rem 0;
+}
+
+.team-inner-light{
+  width:100%;
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 2.5rem;
+}
+
+.founder-card{
+  display:grid;
+  grid-template-columns:300px 1fr;
+  gap:2rem;
+  background:#fff;
+  border:1px solid #E2E8F0;
+  border-radius:24px;
+  padding:1.5rem;
+  box-shadow:0 14px 40px rgba(15,23,42,.06);
+  align-items:center;
+}
+
+.founder-visual{
+  background:linear-gradient(135deg,#13263B,#0F3A28);
+  border-radius:20px;
+  min-height:320px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:1.5rem;
+  overflow:hidden;
+}
+
+.founder-visual img{
+  width:100%;
+  max-width:220px;
+  object-fit:contain;
+}
+
+.founder-copy h2{
+  font-family:'Playfair Display',serif;
+  font-size:2rem;
+  color:#1F2B3A;
+  margin-bottom:.6rem;
+}
+
+.founder-role{
+  display:inline-block;
+  background:#E8F7EF;
+  color:#1F7A53;
+  border:1px solid #CBEBD8;
+  padding:.35rem .7rem;
+  border-radius:999px;
+  font-size:.8rem;
+  font-weight:700;
+  margin-bottom:1rem;
+}
+
+.founder-copy p{
+  color:#5C6B7C;
+  line-height:1.82;
+  margin-bottom:.9rem;
+}
+
+.team-section-head{
+  text-align:center;
+  margin-bottom:2rem;
+}
+
+.team-section-head h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,3vw,2.8rem);
+  color:#1F2B3A;
+  margin-bottom:.7rem;
+}
+
+.team-section-head p{
+  max-width:700px;
+  margin:0 auto;
+  color:#5C6B7C;
+  line-height:1.8;
+}
+
+.team-grid-modern{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:1.4rem;
+}
+
+.team-card-modern{
+  background:#fff;
+  border:1px solid #E2E8F0;
+  border-radius:22px;
+  padding:1.4rem;
+  box-shadow:0 12px 30px rgba(15,23,42,.05);
+  transition:.25s;
+  text-align:left;
+}
+
+.team-card-modern:hover{
+  transform:translateY(-6px);
+  box-shadow:0 22px 44px rgba(15,23,42,.10);
+}
+
+.team-card-top{
+  display:flex;
+  align-items:center;
+  gap:.9rem;
+  margin-bottom:1rem;
+}
+
+.team-avatar-modern{
+  width:62px;
+  height:62px;
+  border-radius:18px;
+  background:linear-gradient(135deg,#16314D,#215E46);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-size:1.6rem;
+  flex-shrink:0;
+}
+
+.team-name-modern{
+  font-weight:800;
+  color:#1F2B3A;
+  font-size:1.02rem;
+}
+
+.team-role-modern{
+  display:inline-block;
+  margin-top:.22rem;
+  font-size:.76rem;
+  font-weight:700;
+  color:#2E7D5B;
+  background:#ECFDF3;
+  border:1px solid #D1F2DF;
+  padding:.22rem .55rem;
+  border-radius:999px;
+}
+
+.team-bio-modern{
+  color:#5C6B7C;
+  line-height:1.72;
+  font-size:.92rem;
+  margin-bottom:1rem;
+}
+
+.team-tags-modern{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.45rem;
+}
+
+.team-tags-modern span{
+  font-size:.72rem;
+  font-weight:700;
+  color:#3A4A5B;
+  background:#F8FAFC;
+  border:1px solid #E2E8F0;
+  padding:.3rem .55rem;
+  border-radius:999px;
+}
+
+.team-features{
+  margin-top:3.2rem;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1rem;
+}
+
+.team-feature{
+  background:#fff;
+  border:1px solid #E2E8F0;
+  border-radius:20px;
+  padding:1.4rem;
+  box-shadow:0 10px 24px rgba(15,23,42,.04);
+}
+
+.team-feature h3{
+  font-size:1.05rem;
+  color:#1F2B3A;
+  margin-bottom:.55rem;
+}
+
+.team-feature p{
+  color:#5C6B7C;
+  line-height:1.75;
+  font-size:.92rem;
+}
+
+.team-cta{
+  margin-top:3rem;
+  background:linear-gradient(135deg,#12253B,#143524);
+  border-radius:26px;
+  padding:2rem;
+  text-align:center;
+  color:#EEF5FF;
+}
+
+.team-cta h3{
+  font-family:'Playfair Display',serif;
+  font-size:2rem;
+  margin-bottom:.65rem;
+}
+
+.team-cta p{
+  color:rgba(220,233,245,.78);
+  line-height:1.8;
+  max-width:700px;
+  margin:0 auto;
+}
+
+.team-cta-actions{
+  margin-top:1.3rem;
+  display:flex;
+  justify-content:center;
+  gap:.8rem;
+  flex-wrap:wrap;
+}
+
+@media(max-width:900px){
+  .founder-card{
+    grid-template-columns:1fr;
+  }
+
+  .team-features{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:850px){
+  .team-hero-inner,
+  .team-inner-light{
+    padding:0 1.2rem;
+  }
+}
+
+
 @media(max-width:950px){
   .home-split-wrap,
   .home-split-wrap.rev{
@@ -2007,89 +2311,160 @@ function AboutPage({ onNav, onContact }) {
 
 function TeamPage({ onNav, onContact }) {
   return (
-    <div className="pg">
-      <div
-        className="ph"
-        style={{
-          background:
-            "linear-gradient(180deg,rgba(45,204,116,.08) 0%,transparent 100%)",
-        }}
-      >
-        <div className="slbl" style={{ color: "var(--green2)" }}>
-          The People Behind The Program
-        </div>
-        <h1 className="stit">Our Team</h1>
-        <p className="ph-sub">
-          Coaches who teach chess skills—and the confidence to use them.
-        </p>
-      </div>
+    <>
+      <div className="pg" style={{ background: "#09131E" }}>
+        <section className="team-hero">
+          <div className="team-hero-inner">
+            <div className="team-hero-kicker">Meet Our Team</div>
+            <h1 className="team-hero-title">
+              Experienced Coaches. Personal Guidance. Real Growth.
+            </h1>
+            <p className="team-hero-sub">
+              My Chess Family brings together dedicated teachers, competitive
+              players, and experienced mentors who help students grow in skill,
+              confidence, and character through chess.
+            </p>
 
-      <div className="wrap" style={{ paddingTop: "3rem" }}>
-        <div style={{ marginTop: "4.5rem" }}>
-          <div className="slbl">Meet the Coaches</div>
-          <h2 className="stit">Friendly, Professional, Focused</h2>
-          <div className="sdiv" style={{ marginTop: "1.2rem" }} />
-
-          <div className="tgrid">
-            {TEAM.map((c) => (
-              <div className="tcard" key={c.name}>
-                <div className="tav">{c.av}</div>
-                <h4>{c.name}</h4>
-                <div className="role">{c.role}</div>
-                <div className="bio">{c.bio}</div>
-                <div className="tagrow">
-                  {c.tags.map((t) => (
-                    <span className="tag" key={t}>
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div
-            style={{
-              marginTop: "2.3rem",
-              background: "rgba(26,94,168,.07)",
-              border: "1px solid var(--border)",
-              borderRadius: 16,
-              padding: "1.6rem",
-              display: "grid",
-              gap: ".9rem",
-            }}
-          >
-            <div style={{ fontWeight: 700, color: "#EEF5FF" }}>
-              Want to talk to a coach?
-            </div>
-            <div
-              style={{
-                color: "var(--muted)",
-                lineHeight: 1.7,
-                fontSize: ".92rem",
-              }}
-            >
-              Ask about the right class level, camp schedule, or tournament
-              preparation. We&apos;ll help you choose what fits your child best.
-            </div>
-            <div style={{ display: "flex", gap: ".8rem", flexWrap: "wrap" }}>
+            <div className="team-hero-actions">
               <button className="btn btn-g" onClick={onContact}>
                 ✉️ Contact Us
               </button>
               <button
                 className="btn btn-g"
-                style={{ background: "rgba(45,204,116,.18)", color: "#EEF5FF" }}
-                onClick={() => onNav("camp")}
+                style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+                onClick={() => onNav("programs")}
               >
-                ☀️ View Camps
+                ♟ View Programs
               </button>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      <Footer onNav={onNav} onContact={onContact} />
-    </div>
+        <section className="team-wrap-light">
+          <div className="team-inner-light">
+            <div className="founder-card">
+              <div className="founder-visual">
+                <img src="/pieces/logo.png" alt="Dmitri Shevelev" />
+              </div>
+
+              <div className="founder-copy">
+                <div className="founder-role">Founder & Head Coach</div>
+                <h2>Dmitri Shevelev</h2>
+
+                <p>
+                  My Chess Family was founded by FIDE Master Dmitri Shevelev, an
+                  experienced chess educator who has spent decades teaching
+                  children how to think strategically, compete with confidence,
+                  and grow through the game.
+                </p>
+
+                <p>
+                  His teaching philosophy is built on empathy, discipline, and
+                  personal connection. Every student is different, and the goal
+                  is to match each child with the right support, the right pace,
+                  and the right environment for long-term growth.
+                </p>
+
+                <p>
+                  Under his leadership, My Chess Family has grown into a
+                  community where students receive strong chess instruction
+                  while also developing resilience, focus, and character.
+                </p>
+              </div>
+            </div>
+
+            <div style={{ height: "3rem" }} />
+
+            <div className="team-section-head">
+              <h2>Our Coaching Team</h2>
+              <p>
+                Our team includes friendly, professional coaches who know how to
+                make chess challenging, supportive, and engaging for students at
+                every level.
+              </p>
+            </div>
+
+            <div className="team-grid-modern">
+              {TEAM.map((c) => (
+                <div className="team-card-modern" key={c.name}>
+                  <div className="team-card-top">
+                    <div className="team-avatar-modern">{c.av}</div>
+
+                    <div>
+                      <div className="team-name-modern">{c.name}</div>
+                      <div className="team-role-modern">{c.role}</div>
+                    </div>
+                  </div>
+
+                  <div className="team-bio-modern">{c.bio}</div>
+
+                  <div className="team-tags-modern">
+                    {c.tags.map((t) => (
+                      <span key={t}>{t}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="team-features">
+              <div className="team-feature">
+                <h3>Personalized Teaching</h3>
+                <p>
+                  Coaches focus on each student’s personality, level, and
+                  learning style to create a more effective and encouraging
+                  experience.
+                </p>
+              </div>
+
+              <div className="team-feature">
+                <h3>Competitive Experience</h3>
+                <p>
+                  Students learn from coaches who understand tournament play and
+                  can help them prepare with strategy, discipline, and practical
+                  guidance.
+                </p>
+              </div>
+
+              <div className="team-feature">
+                <h3>Supportive Community</h3>
+                <p>
+                  Beyond instruction, our team helps create a welcoming
+                  environment where students feel motivated, respected, and
+                  excited to improve.
+                </p>
+              </div>
+            </div>
+
+            <div className="team-cta">
+              <h3>Want help choosing the right coach?</h3>
+              <p>
+                We can help you choose the best fit based on your child’s age,
+                level, goals, and learning style.
+              </p>
+
+              <div className="team-cta-actions">
+                <button className="btn btn-g" onClick={onContact}>
+                  ✉️ Contact Us
+                </button>
+                <button
+                  className="btn btn-g"
+                  style={{
+                    background: "rgba(74,171,232,.18)",
+                    color: "#EEF5FF",
+                  }}
+                  onClick={() => onNav("camp")}
+                >
+                  ☀️ View Camps
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <Footer onNav={onNav} onContact={onContact} />
+      </div>
+    </>
   );
 }
 
