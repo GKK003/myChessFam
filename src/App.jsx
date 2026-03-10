@@ -1071,25 +1071,47 @@ function HomePage({ onNav, onContact }) {
       </div>
 
       {homeSections.map((section, i) => (
-        <section className="home-split-sec" key={section.title}>
-          <div className={`home-split-wrap ${i % 2 === 1 ? "rev" : ""}`}>
-            <div className="home-split-copy">
-              <div className="slbl">My Chess Family</div>
-              <h2 className="home-split-title">{section.title}</h2>
+        <div key={section.title}>
+          <section className="home-split-sec">
+            <div className={`home-split-wrap ${i % 2 === 1 ? "rev" : ""}`}>
+              <div className="home-split-copy">
+                <div className="slbl">My Chess Family</div>
+                <h2 className="home-split-title">{section.title}</h2>
 
-              <p className="home-split-p">{section.text1}</p>
-              <p className="home-split-p">{section.text2}</p>
+                <p className="home-split-p">{section.text1}</p>
+                <p className="home-split-p">{section.text2}</p>
 
-              <button className="home-split-btn" onClick={section.onClick}>
-                {section.button}
-              </button>
+                <button className="home-split-btn" onClick={section.onClick}>
+                  {section.button}
+                </button>
+              </div>
+
+              <div className="home-split-media">
+                <img src={section.image} alt={section.title} />
+              </div>
             </div>
+          </section>
 
-            <div className="home-split-media">
-              <img src={section.image} alt={section.title} />
+          {i !== homeSections.length - 1 && (
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                background: "#F5F6F8",
+              }}
+            >
+              <div
+                style={{
+                  width: "80%",
+                  height: "2px",
+                  background: "rgba(34,114,204,0.35)",
+                  margin: "0 0 3rem 0",
+                }}
+              />
             </div>
-          </div>
-        </section>
+          )}
+        </div>
       ))}
 
       <section className="home-split-sec">
