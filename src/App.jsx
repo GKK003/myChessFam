@@ -522,6 +522,7 @@ tr:hover td{background:rgba(26,94,168,.07);}
   text-align:center;
   box-shadow:0 6px 18px rgba(0,0,0,0.08);
   transition:0.25s;
+  color: #1F2B3A;
 }
 
 .offer-card:hover{
