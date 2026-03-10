@@ -1844,6 +1844,113 @@ box-shadow:0 8px 26px rgba(21,122,69,.45);
 }
 
 
+
+.about-faq-section{
+  background:#F5F6F8;
+  padding:0 0 4rem 0;
+}
+
+.about-faq-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1rem;
+}
+
+.about-faq-card{
+  background:#fff;
+  border:1px solid #E2E8F0;
+  border-radius:22px;
+  box-shadow:0 10px 24px rgba(15,23,42,.05);
+  overflow:hidden;
+  transition:.25s;
+}
+
+.about-faq-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 18px 38px rgba(15,23,42,.08);
+}
+
+.about-faq-card.open{
+  border-color:#CBEBD8;
+  box-shadow:0 18px 40px rgba(31,168,94,.10);
+}
+
+.about-faq-top{
+  width:100%;
+  border:none;
+  outline:none;
+  box-shadow:none;
+  appearance:none;
+  -webkit-appearance:none;
+  background:transparent;
+  padding:1.15rem 1.2rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  cursor:pointer;
+  text-align:left;
+  font-family:'DM Sans',sans-serif;
+  font-size:1rem;
+  font-weight:800;
+  color:#1F2B3A;
+}
+
+.about-faq-top:focus,
+.about-faq-top:focus-visible,
+.about-faq-top:active{
+  outline:none;
+  border:none;
+  box-shadow:none;
+  background:transparent;
+}
+
+.about-faq-card{
+  background:#fff;
+  border:1px solid #E2E8F0;
+  border-radius:22px;
+  box-shadow:0 10px 24px rgba(15,23,42,.05);
+  overflow:hidden;
+  transition:.25s;
+  position:relative;
+}
+.about-faq-plus{
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#16314D,#215E46);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  font-size:1.2rem;
+  line-height:1;
+}
+
+.about-faq-body{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .32s ease;
+}
+
+.about-faq-card.open .about-faq-body{
+  max-height:220px;
+}
+
+.about-faq-body p{
+  padding:0 1.2rem 1.2rem 1.2rem;
+  color:#5C6B7C;
+  line-height:1.8;
+  font-size:.95rem;
+}
+
+@media(max-width:850px){
+  .about-faq-grid{
+    grid-template-columns:1fr;
+  }
+}
+
 `;
 
 const injectStyles = () => {
@@ -2742,6 +2849,77 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
   );
 }
 
+function AboutFaqSection() {
+  const faqs = [
+    {
+      q: "What age groups do you teach?",
+      a: "My Chess Family works with children ages 6–16 through school programs, private lessons, camps, and tournament training.",
+    },
+    {
+      q: "Does my child need chess experience before joining?",
+      a: "No. We welcome complete beginners as well as experienced tournament players, and we guide each child based on their level and pace.",
+    },
+    {
+      q: "Do you offer private lessons?",
+      a: "Yes. We offer private coaching for students who want more personalized attention, faster improvement, or targeted tournament preparation.",
+    },
+    {
+      q: "What happens during summer camp?",
+      a: "Our summer camps combine structured lessons, practice games, puzzle solving, fun activities, and a supportive environment that keeps students engaged.",
+    },
+    {
+      q: "Do you work with schools and organizations?",
+      a: "Yes. We partner with schools to provide after-school chess programs and can help create the right setup for students and communities.",
+    },
+    {
+      q: "How do I choose the right program for my child?",
+      a: "We help families choose the best fit based on age, current level, goals, and learning style. You can contact us and we’ll guide you personally.",
+    },
+  ];
+
+  const [openIndex, setOpenIndex] = useState(0);
+
+  return (
+    <section className="about-faq-section">
+      <div className="about-inner-light">
+        <div className="about-section-head" style={{ marginTop: 0 }}>
+          <h2>Frequently Asked Questions</h2>
+          <p>
+            A few common questions parents ask before getting started with My
+            Chess Family.
+          </p>
+        </div>
+
+        <div className="about-faq-grid">
+          {faqs.map((item, i) => {
+            const isOpen = openIndex === i;
+
+            return (
+              <div
+                key={item.q}
+                className={`about-faq-card${isOpen ? " open" : ""}`}
+              >
+                <button
+                  type="button"
+                  className="about-faq-top"
+                  onClick={() => setOpenIndex(isOpen ? -1 : i)}
+                >
+                  <span>{item.q}</span>
+                  <span className="about-faq-plus">{isOpen ? "−" : "+"}</span>
+                </button>
+
+                <div className="about-faq-body">
+                  <p>{item.a}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function AboutPage({ onNav, onContact }) {
   return (
     <div className="pg" style={{ background: "#09131E" }}>
@@ -2911,6 +3089,7 @@ function AboutPage({ onNav, onContact }) {
           </div>
         </div>
       </section>
+      <AboutFaqSection />
 
       <Footer onNav={onNav} onContact={onContact} />
     </div>
