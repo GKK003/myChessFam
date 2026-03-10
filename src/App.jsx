@@ -504,6 +504,38 @@ tr:hover td{background:rgba(26,94,168,.07);}
 .home-split-media{display:flex;justify-content:center;align-items:center;}
 .home-split-media img{width:100%;max-width:430px;border-radius:18px;display:block;object-fit:cover;}
 
+
+.offer-grid{
+  background:#F5F6F8;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:1.5rem;
+  padding:2rem 2.5rem 4rem;
+  max-width:1200px;
+  margin:0 auto;
+}
+
+.offer-card{
+  background:white;
+  padding:1.8rem 1.5rem;
+  border-radius:12px;
+  text-align:center;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  transition:0.25s;
+}
+
+.offer-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 14px 30px rgba(0,0,0,0.12);
+}
+
+.offer-img{
+  width:60px;
+  height:60px;
+  object-fit:contain;
+  margin-bottom:0.6rem;
+}
+
 @media(max-width:950px){
   .home-split-wrap,
   .home-split-wrap.rev{
@@ -1029,6 +1061,70 @@ function HomePage({ onNav, onContact }) {
         </div>
       </div>
       <h1 className="home-main-title">What We Offer</h1>
+
+      <div className="offer-grid">
+        <div className="offer-card">
+          <img
+            src="/images/schoolprogramsicon.png"
+            alt="School Chess Programs"
+            className="offer-img"
+          />
+          <h3>School Chess Programs</h3>
+          <p>
+            After-school chess programs where students learn the fundamentals of
+            chess and gradually develop strategic thinking.
+          </p>
+        </div>
+
+        <div className="offer-card">
+          <img
+            src="/images/privateicon.png"
+            alt="Private Lessons"
+            className="offer-img"
+          />
+          <h3>Private Lessons</h3>
+          <p>
+            Individual training tailored to each student’s level, pace, and
+            goals.
+          </p>
+        </div>
+
+        <div className="offer-card">
+          <img
+            src="/images/tournament.png"
+            alt="Tournament Preparation"
+            className="offer-img"
+          />
+          <h3>Tournament Preparation</h3>
+          <p>
+            Structured training for students preparing to compete in scholastic
+            tournaments.
+          </p>
+        </div>
+
+        <div className="offer-card">
+          <img
+            src="/images/team.png"
+            alt="Team Training"
+            className="offer-img"
+          />
+          <h3>Team Training</h3>
+          <p>
+            Group training sessions where students prepare together for
+            tournaments and strengthen their skills as a team.
+          </p>
+        </div>
+
+        <div className="offer-card">
+          <img src="/images/camp.png" alt="Chess Camps" className="offer-img" />
+          <h3>Chess Camps</h3>
+          <p>
+            Immersive chess camps combining training, tournaments, and social
+            activities.
+          </p>
+        </div>
+      </div>
+
       {homeSections.map((section, i) => (
         <div key={section.title}>
           <section className="home-split-sec">
