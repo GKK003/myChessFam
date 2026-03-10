@@ -27,9 +27,15 @@ const api = async (path, options = {}) => {
 /* ══════════════════════════════════════════
    CONTENT / SETTINGS
 ══════════════════════════════════════════ */
+const SOCIALS = {
+  instagram: "https://www.instagram.com/mychessfamily/",
+  facebook: "https://www.facebook.com/Mychessfamily",
+  linkedin: "https://www.linkedin.com/in/dmitri-shevelev-145ba7/",
+};
+
 const CONTACT = {
   city: "New York City",
-  email: "info@mychessfamily.org",
+  email: "mychessfamily@gmail.com",
 };
 
 const TEAM = [
@@ -578,6 +584,54 @@ box-shadow:0 8px 26px rgba(21,122,69,.45);
   margin-bottom:0.6rem;
 }
 
+
+.social-row{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:.9rem;
+  flex-wrap:wrap;
+  margin:1.2rem 0 0.6rem;
+}
+
+.social-link{
+  text-decoration:none;
+  color:rgba(220,233,245,.82);
+  border:1px solid rgba(255,255,255,.08);
+  background:rgba(255,255,255,.03);
+  padding:.62rem 1rem;
+  border-radius:999px;
+  font-size:.88rem;
+  font-weight:700;
+  transition:.22s ease;
+  box-shadow:0 6px 18px rgba(0,0,0,.14);
+}
+
+.social-link:hover{
+  transform:translateY(-2px);
+}
+
+.social-link.ig:hover{
+  color:#fff;
+  border-color:#E1306C;
+  background:#E1306C;
+  box-shadow:0 10px 24px rgba(225,48,108,.32);
+}
+
+.social-link.fb:hover{
+  color:#fff;
+  border-color:#1877F2;
+  background:#1877F2;
+  box-shadow:0 10px 24px rgba(24,119,242,.32);
+}
+
+.social-link.li:hover{
+  color:#fff;
+  border-color:#0A66C2;
+  background:#0A66C2;
+  box-shadow:0 10px 24px rgba(10,102,194,.32);
+}
+
 @media(max-width:950px){
   .home-split-wrap,
   .home-split-wrap.rev{
@@ -709,9 +763,35 @@ function Footer({ onNav, onContact }) {
       <p>
         📍 {CONTACT.city} &nbsp;·&nbsp; ✉ {CONTACT.email}
       </p>
-      <p style={{ marginTop: ".7rem" }}>
-        © 2025 MyChessFamily. All rights reserved.
-      </p>
+
+      <div className="social-row">
+        <a
+          href={SOCIALS.instagram}
+          target="_blank"
+          rel="noreferrer"
+          className="social-link ig"
+        >
+          Instagram
+        </a>
+
+        <a
+          href={SOCIALS.facebook}
+          target="_blank"
+          rel="noreferrer"
+          className="social-link fb"
+        >
+          Facebook
+        </a>
+
+        <a
+          href={SOCIALS.linkedin}
+          target="_blank"
+          rel="noreferrer"
+          className="social-link li"
+        >
+          LinkedIn
+        </a>
+      </div>
     </footer>
   );
 }
