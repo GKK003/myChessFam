@@ -1326,66 +1326,60 @@ function HomePage({ onNav, onContact }) {
 }
 
 function ProgramsPage({ onNav, onContact }) {
-  const programs = [
+  const programSections = [
     {
-      icon: "♟",
+      title: "School Chess Programs",
+      text1:
+        "After-school chess programs where students learn the fundamentals of chess in a structured and engaging environment. These programs focus on developing strategic thinking, problem-solving skills, and confidence while making the learning process enjoyable for children.",
+      text2:
+        "Students gradually build strong foundations in the game while learning to think ahead, analyze positions, and make thoughtful decisions during play.",
+      image: "/images/schoolprogramsicon.png",
+      button: "Contact Us",
+      onClick: onContact,
+    },
+
+    {
       title: "Private Lessons",
-      text: "Personalized one-on-one coaching for students who need focused support, stronger fundamentals, and faster improvement.",
-      items: [
-        "Customized lesson plans",
-        "Game analysis and feedback",
-        "Tournament preparation",
-      ],
+      text1:
+        "Individual chess lessons tailored to each student’s level, pace, and goals. Private coaching allows students to work closely with a coach on specific areas of improvement.",
+      text2:
+        "Whether they are beginners building strong foundations or advanced players preparing for tournaments, students receive focused attention and personalized training.",
+      image: "/images/privateicon.png",
+      button: "Meet Our Team",
+      onClick: () => onNav("team"),
     },
+
     {
-      icon: "👥",
-      title: "Group Classes",
-      text: "Structured weekly classes that combine instruction, guided practice, and a fun social learning environment.",
-      items: [
-        "Beginner to advanced levels",
-        "Interactive group learning",
-        "Confidence through practice",
-      ],
+      title: "Tournament Preparation",
+      text1:
+        "Structured training designed for students who participate in competitive chess tournaments. Students learn advanced strategies, opening preparation, and game analysis.",
+      text2:
+        "Tournament preparation also focuses on psychological readiness, helping students stay confident, focused, and resilient during competitive play.",
+      image: "/images/tournamentpreparation.png",
+      button: "Contact Us",
+      onClick: onContact,
     },
+
     {
-      icon: "🏆",
-      title: "Tournaments",
-      text: "Competitive opportunities that help students apply their skills, build resilience, and learn sportsmanship.",
-      items: [
-        "Real-game experience",
-        "Healthy competition",
-        "Post-game reflection",
-      ],
+      title: "Team Training",
+      text1:
+        "Group training sessions where students prepare for tournaments together in a collaborative learning environment.",
+      text2:
+        "Players analyze games, practice strategic ideas, and learn from each other while building strong teamwork and competitive spirit.",
+      image: "/images/teamtrain.png",
+      button: "Contact Us",
+      onClick: onContact,
     },
+
     {
-      icon: "☀️",
-      title: "Summer Camp",
-      text: "Immersive camp sessions that blend chess instruction, activities, and community-building in an exciting format.",
-      items: [
-        "Daily chess training",
-        "Fun challenges and games",
-        "Memorable camp experience",
-      ],
-    },
-    {
-      icon: "🏫",
-      title: "School Programs",
-      text: "School-based chess instruction designed to support academic focus, critical thinking, and student engagement.",
-      items: [
-        "On-campus enrichment",
-        "Flexible program formats",
-        "Strong educational value",
-      ],
-    },
-    {
-      icon: "🧠",
-      title: "Skill Development",
-      text: "Our teaching approach helps students improve not only in chess, but in patience, concentration, and decision-making.",
-      items: [
-        "Strategic thinking",
-        "Focus and discipline",
-        "Confidence and growth",
-      ],
+      title: "Chess Camps",
+      text1:
+        "Intensive chess camps that combine training sessions, tournaments, and social activities in an exciting learning environment.",
+      text2:
+        "Students improve their chess skills, make new friends, and enjoy an immersive experience that strengthens both their passion for chess and their confidence.",
+      image: "/images/chesscamps.png",
+      button: "View Summer Camp",
+      onClick: () => onNav("camp"),
     },
   ];
 
@@ -1398,71 +1392,57 @@ function ProgramsPage({ onNav, onContact }) {
             "linear-gradient(180deg,rgba(74,171,232,.1) 0%,transparent 100%)",
         }}
       >
-        <div className="slbl">What We Offer</div>
-        <h1 className="stit">Programms</h1>
+        <div className="slbl">Our Programs</div>
+        <h1 className="stit">Programs</h1>
         <p className="ph-sub">
-          Chess programs designed to help young players learn, compete, and grow
-          with confidence.
+          Structured chess training designed to help students learn, compete,
+          and grow through the game of chess.
         </p>
       </div>
 
-      <div className="wrap" style={{ paddingTop: "3rem" }}>
-        <div className="svc-grid">
-          {programs.map((s) => (
-            <div className="svc-card" key={s.title}>
-              <div className="svc-icon">{s.icon}</div>
-              <div className="svc-title">{s.title}</div>
-              <div className="svc-text">{s.text}</div>
+      {programSections.map((section, i) => (
+        <div key={section.title}>
+          <section className="home-split-sec">
+            <div className={`home-split-wrap ${i % 2 === 1 ? "rev" : ""}`}>
+              <div className="home-split-copy">
+                <div className="slbl">My Chess Family</div>
+                <h2 className="home-split-title">{section.title}</h2>
 
-              <div className="svc-list">
-                {s.items.map((item) => (
-                  <div className="svc-li" key={item}>
-                    • {item}
-                  </div>
-                ))}
+                <p className="home-split-p">{section.text1}</p>
+                <p className="home-split-p">{section.text2}</p>
+
+                <button className="home-split-btn" onClick={section.onClick}>
+                  {section.button}
+                </button>
+              </div>
+
+              <div className="home-split-media">
+                <img src={section.image} alt={section.title} />
               </div>
             </div>
-          ))}
-        </div>
+          </section>
 
-        <div className="svc-band">
-          <div className="svc-band-title">
-            Need help choosing the right program?
-          </div>
-          <div className="svc-band-text">
-            Whether your child is just starting out or already competing, we can
-            help you find the best fit. Explore our summer camp, meet our team,
-            or contact us directly for guidance.
-          </div>
-
-          <div
-            style={{
-              marginTop: "1.2rem",
-              display: "flex",
-              gap: ".8rem",
-              flexWrap: "wrap",
-            }}
-          >
-            <button className="btn btn-g" onClick={() => onNav("camp")}>
-              ☀️ View Summer Camp
-            </button>
-            <button
-              className="btn btn-g"
-              style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
-              onClick={() => onNav("team")}
+          {i !== programSections.length - 1 && (
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                background: "#F5F6F8",
+              }}
             >
-              ♟ Meet Our Team
-            </button>
-            <button
-              className="btn btn-g"
-              style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
-              onClick={onContact}
-            >
-              ✉️ Contact
-            </button>
-          </div>
+              <div
+                style={{
+                  width: "90%",
+                  height: "2px",
+                  margin: "0 auto 3rem auto",
+                  background: "#D8DEE6",
+                }}
+              />
+            </div>
+          )}
         </div>
-      </div>
+      ))}
 
       <Footer onNav={onNav} onContact={onContact} />
     </div>
