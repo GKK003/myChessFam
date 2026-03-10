@@ -29,8 +29,6 @@ const api = async (path, options = {}) => {
 ══════════════════════════════════════════ */
 const CONTACT = {
   city: "New York City",
-  phoneDisplay: "(212) 555-0182",
-  phoneLink: "+12125550182",
   email: "info@mychessfamily.org",
 };
 
@@ -709,8 +707,7 @@ function Footer({ onNav, onContact }) {
       </div>
 
       <p>
-        📍 {CONTACT.city} &nbsp;·&nbsp; 📞 {CONTACT.phoneDisplay} &nbsp;·&nbsp;
-        ✉ {CONTACT.email}
+        📍 {CONTACT.city} &nbsp;·&nbsp; ✉ {CONTACT.email}
       </p>
       <p style={{ marginTop: ".7rem" }}>
         © 2025 MyChessFamily. All rights reserved.
@@ -752,24 +749,6 @@ function ContactModal({ onClose, showToast }) {
         <h3>Contact Us</h3>
 
         <div style={{ display: "grid", gap: ".85rem" }}>
-          <a
-            href={`tel:${CONTACT.phoneLink}`}
-            className="inp"
-            style={{
-              textDecoration: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              cursor: "pointer",
-            }}
-            onClick={() => showToast("📞 Opening dialer…", "i")}
-          >
-            <span>📞 {CONTACT.phoneDisplay}</span>
-            <span style={{ color: "var(--muted)", fontSize: ".85rem" }}>
-              Tap to call
-            </span>
-          </a>
-
           <button
             type="button"
             className="inp"
