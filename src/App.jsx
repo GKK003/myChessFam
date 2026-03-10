@@ -599,7 +599,7 @@ function Footer({ onNav, onContact }) {
       <div className="f-links">
         {[
           ["home", "Home"],
-          ["services", "Services"],
+          ["programs", "Programs"],
           ["camp", "Summer Camp"],
           ["team", "Our Team"],
           ["reviews", "Reviews"],
@@ -906,7 +906,7 @@ function HomePage({ onNav, onContact }) {
         "Private lessons are ideal for beginners who need a strong foundation and for tournament players who want more personalized preparation and steady long-term progress.",
       image: "/images/info.png",
       button: "Learn More",
-      onClick: () => onNav("services"),
+      onClick: () => onNav("programs"),
     },
     {
       title: "Group Classes",
@@ -915,8 +915,8 @@ function HomePage({ onNav, onContact }) {
       text2:
         "Students build confidence, strengthen fundamentals, and enjoy learning with others at a similar level while staying motivated week after week.",
       image: "/images/info.png",
-      button: "Explore Services",
-      onClick: () => onNav("services"),
+      button: "Explore programs",
+      onClick: () => onNav("programs"),
     },
     {
       title: "Chess Tournaments",
@@ -974,8 +974,8 @@ function HomePage({ onNav, onContact }) {
             </p>
 
             <div className="hero-btns">
-              <button className="btn btn-g" onClick={() => onNav("services")}>
-                ♟ Explore Services
+              <button className="btn btn-g" onClick={() => onNav("programs")}>
+                ♟ Explore Programs
               </button>
 
               <button className="btn btn-g" onClick={() => onNav("camp")}>
@@ -1112,8 +1112,8 @@ function HomePage({ onNav, onContact }) {
   );
 }
 
-function ServicesPage({ onNav, onContact }) {
-  const services = [
+function ProgramsPage({ onNav, onContact }) {
+  const programs = [
     {
       icon: "♟",
       title: "Private Lessons",
@@ -1186,7 +1186,7 @@ function ServicesPage({ onNav, onContact }) {
         }}
       >
         <div className="slbl">What We Offer</div>
-        <h1 className="stit">Services</h1>
+        <h1 className="stit">Programms</h1>
         <p className="ph-sub">
           Chess programs designed to help young players learn, compete, and grow
           with confidence.
@@ -1195,7 +1195,7 @@ function ServicesPage({ onNav, onContact }) {
 
       <div className="wrap" style={{ paddingTop: "3rem" }}>
         <div className="svc-grid">
-          {services.map((s) => (
+          {programs.map((s) => (
             <div className="svc-card" key={s.title}>
               <div className="svc-icon">{s.icon}</div>
               <div className="svc-title">{s.title}</div>
@@ -2401,7 +2401,7 @@ export default function App() {
 
   const pathToPage = {
     "/": "home",
-    "/services": "services",
+    "/programs": "programs",
     "/camp": "camp",
     "/team": "team",
     "/reviews": "reviews",
@@ -2607,7 +2607,7 @@ export default function App() {
         <div className="nav-links">
           {[
             ["home", "Home"],
-            ["services", "Services"],
+            ["programs", "Programs"],
             ["camp", "Summer Camp"],
             ["team", "Our Team"],
             ["reviews", "Reviews"],
@@ -2682,7 +2682,7 @@ export default function App() {
         <div className="mnav-links">
           {[
             ["home", "Home"],
-            ["services", "Services"],
+            ["programs", "Programs"],
             ["camp", "Summer Camp"],
             ["team", "Our Team"],
             ["reviews", "Reviews"],
@@ -2736,8 +2736,8 @@ export default function App() {
         />
 
         <Route
-          path="/services"
-          element={<ServicesPage onNav={go} onContact={openContact} />}
+          path="/programs"
+          element={<ProgramsPage onNav={go} onContact={openContact} />}
         />
 
         <Route
