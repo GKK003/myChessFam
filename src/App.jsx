@@ -1805,7 +1805,9 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
                       c.image
                         ? c.image.startsWith("http")
                           ? c.image
-                          : `${BASE}${c.image}`
+                          : c.image.startsWith("/uploads/")
+                            ? `${BASE}${c.image}`
+                            : c.image
                         : "/images/camp-default.jpg"
                     }
                     alt={c.name}
@@ -2394,6 +2396,7 @@ function AdminPage({
   showToast,
 }) {
   const [tab, setTab] = useState("camps");
+  const [editingCampId, setEditingCampId] = useState(null);
 
   const [cf, setCf] = useState({
     name: "",
@@ -2409,6 +2412,42 @@ function AdminPage({
     image: "",
   });
 
+  const startEditCamp = (camp) => {
+    setEditingCampId(camp.id);
+    setCf({
+      name: camp.name || "",
+      dateStart: camp.dateStart || "",
+      dateEnd: camp.dateEnd || "",
+      loc: camp.location || "",
+      age: camp.age || "All Ages (6–16)",
+      type: camp.type || "Half Day (9AM–1PM)",
+      price: String(camp.price ?? ""),
+      spots: String(camp.spots ?? ""),
+      status: camp.status || "open",
+      desc: camp.desc || "",
+      image: camp.image || "",
+    });
+    setCampFile(null);
+  };
+
+  const resetCampForm = () => {
+    setEditingCampId(null);
+    setCf({
+      name: "",
+      dateStart: "",
+      dateEnd: "",
+      loc: "",
+      age: "All Ages (6–16)",
+      type: "Half Day (9AM–1PM)",
+      price: "",
+      spots: "",
+      status: "open",
+      desc: "",
+      image: "",
+    });
+    setCampFile(null);
+  };
+
   const [campFile, setCampFile] = useState(null);
 
   const setC = (k) => (e) => setCf((p) => ({ ...p, [k]: e.target.value }));
@@ -2423,7 +2462,7 @@ function AdminPage({
     }
 
     try {
-      let imagePath = "/images/camp-default.jpg";
+      let imagePath = cf.image || "/images/camp-default.jpg";
 
       if (campFile) {
         const fd = new FormData();
@@ -2448,48 +2487,44 @@ function AdminPage({
         console.log("Uploaded image path:", imagePath);
       }
 
-      console.log("Creating camp with image:", imagePath);
+      console.log("Creating/updating camp with image:", imagePath);
 
-      const data = await api("/admin/camps", {
-        method: "POST",
-        body: JSON.stringify({
-          name: cf.name,
-          dateStart: cf.dateStart,
-          dateEnd: cf.dateEnd,
-          location: cf.loc,
-          age: cf.age,
-          type: cf.type,
-          price: parseInt(cf.price) || 0,
-          spots: parseInt(cf.spots) || 20,
-          status: cf.status,
-          desc: cf.desc || "Registration open!",
-          image: imagePath,
-        }),
-      });
+      const payload = {
+        name: cf.name,
+        dateStart: cf.dateStart,
+        dateEnd: cf.dateEnd,
+        location: cf.loc,
+        age: cf.age,
+        type: cf.type,
+        price: parseInt(cf.price) || 0,
+        spots: parseInt(cf.spots) || 20,
+        status: cf.status,
+        desc: cf.desc || "Registration open!",
+        image: imagePath,
+      };
+
+      const data = editingCampId
+        ? await api(`/admin/camps/${editingCampId}`, {
+            method: "PATCH",
+            body: JSON.stringify(payload),
+          })
+        : await api("/admin/camps", {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
 
       setCamps(data.camps);
       setCDone(true);
       setTimeout(() => setCDone(false), 3000);
 
-      setCf({
-        name: "",
-        dateStart: "",
-        dateEnd: "",
-        loc: "",
-        age: "All Ages (6–16)",
-        type: "Half Day (9AM–1PM)",
-        price: "",
-        spots: "",
-        status: "open",
-        desc: "",
-        image: "",
-      });
+      resetCampForm();
 
-      setCampFile(null);
-
-      showToast("✅ Camp session published!", "s");
+      showToast(
+        editingCampId ? "✅ Camp updated!" : "✅ Camp session published!",
+        "s",
+      );
     } catch (error) {
-      showToast(error.message || "Could not add camp session.", "e");
+      showToast(error.message || "Could not save camp session.", "e");
     }
   };
 
@@ -2602,7 +2637,9 @@ function AdminPage({
                   marginBottom: "1.3rem",
                 }}
               >
-                ➕ Add New Camp Session
+                {editingCampId
+                  ? "✏️ Edit Camp Session"
+                  : "➕ Add New Camp Session"}
               </h3>
 
               <div className="fgrid">
@@ -2725,8 +2762,18 @@ function AdminPage({
               </div>
 
               <button className="sbtn" onClick={addCamp}>
-                Add Camp Session →
+                {editingCampId ? "Update Camp Session →" : "Add Camp Session →"}
               </button>
+              {editingCampId && (
+                <button
+                  className="delbtn"
+                  style={{ marginTop: ".8rem" }}
+                  onClick={resetCampForm}
+                  type="button"
+                >
+                  Cancel Edit
+                </button>
+              )}
 
               {cDone && (
                 <div className="ok-box">
@@ -2769,7 +2816,9 @@ function AdminPage({
                           c.image
                             ? c.image.startsWith("http")
                               ? c.image
-                              : `${import.meta.env.VITE_API_URL || ""}${c.image}`
+                              : c.image.startsWith("/uploads/")
+                                ? `${import.meta.env.VITE_API_URL || ""}${c.image}`
+                                : c.image
                             : "/images/camp-default.jpg"
                         }
                         alt={c.name}
@@ -2805,8 +2854,22 @@ function AdminPage({
                         gap: ".5rem",
                         flexShrink: 0,
                         alignItems: "center",
+                        flexWrap: "wrap",
                       }}
                     >
+                      <button
+                        className="sbtn"
+                        style={{
+                          padding: ".45rem .8rem",
+                          width: "auto",
+                          marginTop: 0,
+                        }}
+                        onClick={() => startEditCamp(c)}
+                        type="button"
+                      >
+                        Edit
+                      </button>
+
                       <select
                         className="ssel"
                         value={c.status}

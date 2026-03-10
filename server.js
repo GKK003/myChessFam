@@ -431,16 +431,35 @@ app.post("/api/admin/camps", requireAuth, async (req, res) => {
   }
 });
 
-app.patch("/api/admin/camps/:id/status", requireAuth, async (req, res) => {
+app.patch("/api/admin/camps/:id", requireAuth, async (req, res) => {
   try {
     const id = Number(req.params.id);
-    const status = String(req.body?.status || "");
+    const body = req.body || {};
 
-    if (!["open", "upcoming", "full"].includes(status)) {
-      return res.status(400).json({ error: "Invalid status" });
+    if (!body.name || !body.dateStart || !body.dateEnd || !body.location) {
+      return res.status(400).json({
+        error: "Missing name/dateStart/dateEnd/location",
+      });
     }
 
-    await colCamps.updateOne({ id }, { $set: { status } });
+    await colCamps.updateOne(
+      { id },
+      {
+        $set: {
+          name: String(body.name),
+          dateStart: String(body.dateStart),
+          dateEnd: String(body.dateEnd),
+          location: String(body.location),
+          type: String(body.type || ""),
+          age: String(body.age || ""),
+          price: Number(body.price) || 0,
+          spots: Number(body.spots) || 20,
+          desc: String(body.desc || ""),
+          status: String(body.status || "open"),
+          image: String(body.image || "/images/camp-default.jpg"),
+        },
+      },
+    );
 
     const camps = await colCamps.find().sort({ id: -1 }).toArray();
     res.json({ camps });
