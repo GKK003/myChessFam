@@ -1125,8 +1125,7 @@ function HomePage({ onNav, onContact }) {
                   width: "90%",
                   height: "1px",
                   margin: "0 auto 3rem auto",
-                  background:
-                    "linear-gradient(90deg, transparent, rgba(74,171,232,.35), transparent)",
+                  background: "var(--border)",
                 }}
               />
             </div>
