@@ -683,8 +683,6 @@ box-shadow:0 8px 26px rgba(21,122,69,.45);
 }
 
 .camp-row-media{
-  background:#F8FAFC;
-  border:1px solid #E2E8F0;
   border-radius:16px;
   min-height:210px;
   display:flex;
