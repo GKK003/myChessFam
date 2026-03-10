@@ -1,9 +1,25 @@
 /* global process, Buffer */
-import http from "node:http";
+import express from "express";
+import cors from "cors";
 import crypto from "node:crypto";
-import fs from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import fs from "node:fs";
+import fsp from "node:fs/promises";
 import path from "node:path";
+import multer from "multer";
 import { MongoClient } from "mongodb";
+
+/* =========================
+   PATHS
+========================= */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadsDir = path.join(__dirname, "uploads");
+const distDir = path.join(process.cwd(), "dist");
+
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 /* =========================
    ENV
@@ -20,29 +36,27 @@ if (!MONGODB_URL) {
 }
 
 /* =========================
+   APP
+========================= */
+const app = express();
+
+app.use(
+  cors({
+    origin: CORS_ORIGIN === "*" ? true : CORS_ORIGIN,
+    credentials: false,
+  }),
+);
+app.use(express.json({ limit: "2mb" }));
+
+/* =========================
+   STATIC FILES
+========================= */
+app.use("/uploads", express.static(uploadsDir));
+app.use(express.static(distDir));
+
+/* =========================
    HELPERS
 ========================= */
-const send = (res, status, payload) => {
-  res.writeHead(status, {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": CORS_ORIGIN,
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    "Access-Control-Allow-Methods": "GET,POST,PATCH,DELETE,OPTIONS",
-  });
-  res.end(JSON.stringify(payload));
-};
-
-const parseBody = async (req) => {
-  const chunks = [];
-  for await (const c of req) chunks.push(c);
-  if (!chunks.length) return {};
-  try {
-    return JSON.parse(Buffer.concat(chunks).toString("utf8"));
-  } catch {
-    return {};
-  }
-};
-
 const nowStamp = () => {
   const d = new Date();
   return {
@@ -93,6 +107,41 @@ const authed = (req) => {
   return !!verifyToken(token);
 };
 
+const requireAuth = (req, res, next) => {
+  if (!authed(req)) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+  next();
+};
+
+/* =========================
+   MULTER UPLOAD
+========================= */
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname || "").toLowerCase();
+    const safeExt = ext || ".jpg";
+    cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${safeExt}`);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    const ok = /^image\/(jpeg|jpg|png|webp|gif|svg\+xml)$/.test(
+      file.mimetype || "",
+    );
+    if (!ok) {
+      return cb(new Error("Only image files are allowed"));
+    }
+    cb(null, true);
+  },
+});
+
 /* =========================
    DEFAULT DATA
 ========================= */
@@ -110,6 +159,7 @@ const DEFAULT_DB = {
       spots: 20,
       desc: "Chess fundamentals and puzzles.",
       status: "open",
+      image: "/images/camp-default.jpg",
       createdAt: Date.now(),
     },
   ],
@@ -141,7 +191,10 @@ const DEFAULT_DB = {
    MONGO
 ========================= */
 const client = new MongoClient(MONGODB_URL);
-let db, colCamps, colCampRegs, colReviews;
+let db;
+let colCamps;
+let colCampRegs;
+let colReviews;
 
 async function initMongo() {
   await client.connect();
@@ -165,338 +218,330 @@ async function initMongo() {
 await initMongo();
 
 /* =========================
-   SERVER
+   PUBLIC ROUTES
 ========================= */
-const server = http.createServer(async (req, res) => {
+app.get("/api/bootstrap", async (_req, res) => {
   try {
-    if (req.method === "OPTIONS") {
-      return send(res, 200, { ok: true });
-    }
-
-    const url = new URL(req.url, "http://localhost");
-
-    /* -------------------------
-       PUBLIC: bootstrap
-       GET /api/bootstrap
-    ------------------------- */
-    if (req.method === "GET" && url.pathname === "/api/bootstrap") {
-      const camps = await colCamps.find().sort({ id: -1 }).toArray();
-      return send(res, 200, { camps });
-    }
-
-    /* -------------------------
-       PUBLIC: reviews
-       GET /api/reviews
-    ------------------------- */
-    if (req.method === "GET" && url.pathname === "/api/reviews") {
-      const reviews = await colReviews
-        .find({ approved: true })
-        .sort({ createdAt: -1 })
-        .toArray();
-
-      return send(res, 200, { reviews });
-    }
-
-    /* -------------------------
-       PUBLIC: create review
-       POST /api/reviews
-    ------------------------- */
-    if (req.method === "POST" && url.pathname === "/api/reviews") {
-      const body = await parseBody(req);
-      const stamp = nowStamp();
-
-      const text = String(body.text || "").trim();
-      if (text.length < 10) {
-        return send(res, 400, { error: "Review too short" });
-      }
-
-      const review = {
-        id: Date.now(),
-        childName: String(body.childName || "").trim(),
-        rating: Math.max(1, Math.min(5, Number(body.rating) || 5)),
-        text,
-        date: stamp.date,
-        time: stamp.time,
-        approved: false,
-        createdAt: Date.now(),
-      };
-
-      await colReviews.insertOne(review);
-      return send(res, 201, { ok: true });
-    }
-
-    /* -------------------------
-       PUBLIC: camp registration
-       POST /api/registrations/camp
-    ------------------------- */
-    if (req.method === "POST" && url.pathname === "/api/registrations/camp") {
-      const body = await parseBody(req);
-      const stamp = nowStamp();
-
-      const required = [
-        "campId",
-        "campName",
-        "childName",
-        "dob",
-        "level",
-        "parent",
-        "email",
-        "phone",
-      ];
-
-      for (const k of required) {
-        if (!body[k]) return send(res, 400, { error: `Missing ${k}` });
-      }
-
-      const reg = {
-        id: Date.now(),
-        campId: Number(body.campId),
-        campName: String(body.campName),
-        childName: String(body.childName),
-        dob: String(body.dob),
-        level: String(body.level),
-        parent: String(body.parent),
-        email: String(body.email),
-        phone: String(body.phone),
-        emergency: String(body.emergency || "—"),
-        medical: String(body.medical || "None"),
-        price: Number(body.price) || 0,
-        date: stamp.date,
-        time: stamp.time,
-        createdAt: Date.now(),
-      };
-
-      await colCampRegs.insertOne(reg);
-      return send(res, 201, { ok: true });
-    }
-
-    /* -------------------------
-       ADMIN: login
-       POST /api/admin/login
-    ------------------------- */
-    if (req.method === "POST" && url.pathname === "/api/admin/login") {
-      const body = await parseBody(req);
-
-      if (body.username !== "admin" || body.password !== "chess123") {
-        return send(res, 401, { error: "Invalid credentials" });
-      }
-
-      const token = createToken("admin");
-      return send(res, 200, { token });
-    }
-
-    /* -------------------------
-       ADMIN: logout
-       POST /api/admin/logout
-    ------------------------- */
-    if (req.method === "POST" && url.pathname === "/api/admin/logout") {
-      return send(res, 200, { ok: true });
-    }
-
-    /* -------------------------
-       ADMIN: registrations
-       GET /api/admin/registrations
-    ------------------------- */
-    if (req.method === "GET" && url.pathname === "/api/admin/registrations") {
-      if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
-
-      const campRegs = await colCampRegs
-        .find()
-        .sort({ createdAt: -1 })
-        .toArray();
-
-      return send(res, 200, { campRegs });
-    }
-
-    /* -------------------------
-       ADMIN: delete camp registration
-       DELETE /api/admin/registrations/camp/:id
-    ------------------------- */
-    const delCampReg = url.pathname.match(
-      /^\/api\/admin\/registrations\/camp\/(\d+)$/,
-    );
-    if (req.method === "DELETE" && delCampReg) {
-      if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
-
-      const id = Number(delCampReg[1]);
-      await colCampRegs.deleteOne({ id });
-
-      return send(res, 200, { ok: true });
-    }
-
-    /* -------------------------
-       ADMIN: add camp
-       POST /api/admin/camps
-    ------------------------- */
-    if (req.method === "POST" && url.pathname === "/api/admin/camps") {
-      if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
-
-      const body = await parseBody(req);
-
-      if (!body.name || !body.dateStart || !body.dateEnd || !body.location) {
-        return send(res, 400, {
-          error: "Missing name/dateStart/dateEnd/location",
-        });
-      }
-
-      const camp = {
-        id: Date.now(),
-        name: String(body.name),
-        dateStart: String(body.dateStart),
-        dateEnd: String(body.dateEnd),
-        location: String(body.location),
-        type: String(body.type || ""),
-        age: String(body.age || ""),
-        price: Number(body.price) || 0,
-        spots: Number(body.spots) || 20,
-        desc: String(body.desc || ""),
-        status: String(body.status || "open"),
-        createdAt: Date.now(),
-      };
-
-      await colCamps.insertOne(camp);
-
-      const camps = await colCamps.find().sort({ id: -1 }).toArray();
-      return send(res, 200, { camps });
-    }
-
-    /* -------------------------
-       ADMIN: update camp status
-       PATCH /api/admin/camps/:id/status
-    ------------------------- */
-    const campStatus = url.pathname.match(
-      /^\/api\/admin\/camps\/(\d+)\/status$/,
-    );
-    if (req.method === "PATCH" && campStatus) {
-      if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
-
-      const id = Number(campStatus[1]);
-      const body = await parseBody(req);
-      const status = String(body.status || "");
-
-      if (!["open", "upcoming", "full"].includes(status)) {
-        return send(res, 400, { error: "Invalid status" });
-      }
-
-      await colCamps.updateOne({ id }, { $set: { status } });
-
-      const camps = await colCamps.find().sort({ id: -1 }).toArray();
-      return send(res, 200, { camps });
-    }
-
-    /* -------------------------
-       ADMIN: delete camp
-       DELETE /api/admin/camps/:id
-    ------------------------- */
-    const delCamp = url.pathname.match(/^\/api\/admin\/camps\/(\d+)$/);
-    if (req.method === "DELETE" && delCamp) {
-      if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
-
-      const id = Number(delCamp[1]);
-      await colCamps.deleteOne({ id });
-
-      const camps = await colCamps.find().sort({ id: -1 }).toArray();
-      return send(res, 200, { camps });
-    }
-
-    /* -------------------------
-       ADMIN: list all reviews
-       GET /api/admin/reviews
-    ------------------------- */
-    if (req.method === "GET" && url.pathname === "/api/admin/reviews") {
-      if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
-
-      const reviews = await colReviews.find().sort({ createdAt: -1 }).toArray();
-      return send(res, 200, { reviews });
-    }
-
-    /* -------------------------
-       ADMIN: approve review
-       PATCH /api/admin/reviews/:id/approve
-    ------------------------- */
-    const approveReview = url.pathname.match(
-      /^\/api\/admin\/reviews\/(\d+)\/approve$/,
-    );
-    if (req.method === "PATCH" && approveReview) {
-      if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
-
-      const id = Number(approveReview[1]);
-      await colReviews.updateOne({ id }, { $set: { approved: true } });
-
-      return send(res, 200, { ok: true });
-    }
-
-    /* -------------------------
-       ADMIN: delete review
-       DELETE /api/admin/reviews/:id
-    ------------------------- */
-    const delReview = url.pathname.match(/^\/api\/admin\/reviews\/(\d+)$/);
-    if (req.method === "DELETE" && delReview) {
-      if (!authed(req)) return send(res, 401, { error: "Unauthorized" });
-
-      const id = Number(delReview[1]);
-      await colReviews.deleteOne({ id });
-
-      return send(res, 200, { ok: true });
-    }
-
-    /* -------------------------
-       STATIC ASSETS FROM DIST
-    ------------------------- */
-    if (req.method === "GET" && !url.pathname.startsWith("/api")) {
-      const safePath = path
-        .normalize(url.pathname)
-        .replace(/^(\.\.[/\\])+/, "");
-      let filePath =
-        safePath === "/" || safePath === ""
-          ? path.join(process.cwd(), "dist", "index.html")
-          : path.join(process.cwd(), "dist", safePath);
-
-      try {
-        const stat = await fs.stat(filePath);
-
-        if (stat.isFile()) {
-          const ext = path.extname(filePath).toLowerCase();
-          const contentTypes = {
-            ".html": "text/html; charset=utf-8",
-            ".js": "application/javascript; charset=utf-8",
-            ".css": "text/css; charset=utf-8",
-            ".json": "application/json; charset=utf-8",
-            ".svg": "image/svg+xml",
-            ".png": "image/png",
-            ".jpg": "image/jpeg",
-            ".jpeg": "image/jpeg",
-            ".webp": "image/webp",
-            ".ico": "image/x-icon",
-            ".woff": "font/woff",
-            ".woff2": "font/woff2",
-          };
-
-          const data = await fs.readFile(filePath);
-          res.writeHead(200, {
-            "Content-Type": contentTypes[ext] || "application/octet-stream",
-          });
-          res.end(data);
-          return;
-        }
-      } catch {
-        // ignore and fall through to SPA fallback
-      }
-
-      const indexPath = path.join(process.cwd(), "dist", "index.html");
-      const html = await fs.readFile(indexPath, "utf8");
-      res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
-      res.end(html);
-      return;
-    }
-
-    return send(res, 404, { error: "Not found" });
+    const camps = await colCamps.find().sort({ id: -1 }).toArray();
+    res.json({ camps });
   } catch (err) {
     console.error(err);
-    return send(res, 500, { error: "Server error" });
+    res.status(500).json({ error: "Server error" });
   }
 });
 
-server.listen(PORT, () => {
-  console.log(`✅ API running on port ${PORT}`);
+app.get("/api/reviews", async (_req, res) => {
+  try {
+    const reviews = await colReviews
+      .find({ approved: true })
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    res.json({ reviews });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.post("/api/reviews", async (req, res) => {
+  try {
+    const body = req.body || {};
+    const stamp = nowStamp();
+
+    const text = String(body.text || "").trim();
+    if (text.length < 10) {
+      return res.status(400).json({ error: "Review too short" });
+    }
+
+    const review = {
+      id: Date.now(),
+      childName: String(body.childName || "").trim(),
+      rating: Math.max(1, Math.min(5, Number(body.rating) || 5)),
+      text,
+      date: stamp.date,
+      time: stamp.time,
+      approved: false,
+      createdAt: Date.now(),
+    };
+
+    await colReviews.insertOne(review);
+    res.status(201).json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.post("/api/registrations/camp", async (req, res) => {
+  try {
+    const body = req.body || {};
+    const stamp = nowStamp();
+
+    const required = [
+      "campId",
+      "campName",
+      "childName",
+      "dob",
+      "level",
+      "parent",
+      "email",
+      "phone",
+    ];
+
+    for (const k of required) {
+      if (!body[k]) {
+        return res.status(400).json({ error: `Missing ${k}` });
+      }
+    }
+
+    const reg = {
+      id: Date.now(),
+      campId: Number(body.campId),
+      campName: String(body.campName),
+      childName: String(body.childName),
+      dob: String(body.dob),
+      level: String(body.level),
+      parent: String(body.parent),
+      email: String(body.email),
+      phone: String(body.phone),
+      emergency: String(body.emergency || "—"),
+      medical: String(body.medical || "None"),
+      price: Number(body.price) || 0,
+      date: stamp.date,
+      time: stamp.time,
+      createdAt: Date.now(),
+    };
+
+    await colCampRegs.insertOne(reg);
+    res.status(201).json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+/* =========================
+   ADMIN AUTH
+========================= */
+app.post("/api/admin/login", (req, res) => {
+  const body = req.body || {};
+
+  if (body.username !== "admin" || body.password !== "chess123") {
+    return res.status(401).json({ error: "Invalid credentials" });
+  }
+
+  const token = createToken("admin");
+  res.json({ token });
+});
+
+app.post("/api/admin/logout", (_req, res) => {
+  res.json({ ok: true });
+});
+
+/* =========================
+   ADMIN UPLOAD
+========================= */
+app.post(
+  "/api/admin/upload",
+  requireAuth,
+  (req, res, next) => {
+    upload.single("image")(req, res, (err) => {
+      if (err) {
+        return res.status(400).json({ error: err.message || "Upload failed" });
+      }
+      next();
+    });
+  },
+  (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: "No image uploaded" });
+    }
+
+    return res.json({
+      image: `/uploads/${req.file.filename}`,
+    });
+  },
+);
+
+/* =========================
+   ADMIN REGISTRATIONS
+========================= */
+app.get("/api/admin/registrations", requireAuth, async (_req, res) => {
+  try {
+    const campRegs = await colCampRegs.find().sort({ createdAt: -1 }).toArray();
+    res.json({ campRegs });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.delete(
+  "/api/admin/registrations/camp/:id",
+  requireAuth,
+  async (req, res) => {
+    try {
+      const id = Number(req.params.id);
+      await colCampRegs.deleteOne({ id });
+      res.json({ ok: true });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Server error" });
+    }
+  },
+);
+
+/* =========================
+   ADMIN CAMPS
+========================= */
+app.post("/api/admin/camps", requireAuth, async (req, res) => {
+  try {
+    const body = req.body || {};
+
+    if (!body.name || !body.dateStart || !body.dateEnd || !body.location) {
+      return res.status(400).json({
+        error: "Missing name/dateStart/dateEnd/location",
+      });
+    }
+
+    const camp = {
+      id: Date.now(),
+      name: String(body.name),
+      dateStart: String(body.dateStart),
+      dateEnd: String(body.dateEnd),
+      location: String(body.location),
+      type: String(body.type || ""),
+      age: String(body.age || ""),
+      price: Number(body.price) || 0,
+      spots: Number(body.spots) || 20,
+      desc: String(body.desc || ""),
+      status: String(body.status || "open"),
+      image: String(body.image || "/images/camp-default.jpg"),
+      createdAt: Date.now(),
+    };
+
+    await colCamps.insertOne(camp);
+
+    const camps = await colCamps.find().sort({ id: -1 }).toArray();
+    res.json({ camps });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.patch("/api/admin/camps/:id/status", requireAuth, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const status = String(req.body?.status || "");
+
+    if (!["open", "upcoming", "full"].includes(status)) {
+      return res.status(400).json({ error: "Invalid status" });
+    }
+
+    await colCamps.updateOne({ id }, { $set: { status } });
+
+    const camps = await colCamps.find().sort({ id: -1 }).toArray();
+    res.json({ camps });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.delete("/api/admin/camps/:id", requireAuth, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    const camp = await colCamps.findOne({ id });
+
+    if (
+      camp?.image &&
+      typeof camp.image === "string" &&
+      camp.image.startsWith("/uploads/")
+    ) {
+      const filename = camp.image.replace("/uploads/", "");
+      const filePath = path.join(uploadsDir, filename);
+
+      try {
+        await fsp.unlink(filePath);
+      } catch {
+        // ignore missing file
+      }
+    }
+
+    await colCamps.deleteOne({ id });
+
+    const camps = await colCamps.find().sort({ id: -1 }).toArray();
+    res.json({ camps });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+/* =========================
+   ADMIN REVIEWS
+========================= */
+app.get("/api/admin/reviews", requireAuth, async (_req, res) => {
+  try {
+    const reviews = await colReviews.find().sort({ createdAt: -1 }).toArray();
+    res.json({ reviews });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.patch("/api/admin/reviews/:id/approve", requireAuth, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    await colReviews.updateOne({ id }, { $set: { approved: true } });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.delete("/api/admin/reviews/:id", requireAuth, async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    await colReviews.deleteOne({ id });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+/* =========================
+   SPA FALLBACK
+========================= */
+app.get("*", async (req, res) => {
+  try {
+    const requestedPath = path.join(distDir, req.path);
+
+    if (
+      req.path !== "/" &&
+      fs.existsSync(requestedPath) &&
+      fs.statSync(requestedPath).isFile()
+    ) {
+      return res.sendFile(requestedPath);
+    }
+
+    const indexPath = path.join(distDir, "index.html");
+    return res.sendFile(indexPath);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+/* =========================
+   START
+========================= */
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
 });

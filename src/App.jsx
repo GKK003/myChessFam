@@ -84,6 +84,7 @@ const DEF_CAMPS = [
     spots: 20,
     desc: "Chess fundamentals, puzzle competitions, board games, snacks. Certificate of completion included.",
     status: "open",
+    image: "/images/camp-default.jpg",
   },
   {
     id: 2,
@@ -97,6 +98,7 @@ const DEF_CAMPS = [
     spots: 20,
     desc: "Advanced strategy, tournament simulations, team challenges, lunch, guest grandmaster visit, trophy ceremony.",
     status: "open",
+    image: "/images/camp-default.jpg",
   },
 ];
 
@@ -1798,7 +1800,10 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
             {camps.map((c) => (
               <div className="camp-row-card" key={c.id}>
                 <div className="camp-row-media">
-                  <img src="/images/info.png" alt={c.name} />
+                  <img
+                    src={c.image || "/images/camp-default.jpg"}
+                    alt={c.name}
+                  />{" "}
                 </div>
 
                 <div className="camp-row-main">
@@ -2395,7 +2400,11 @@ function AdminPage({
     spots: "",
     status: "open",
     desc: "",
+    image: "",
   });
+
+  const [campFile, setCampFile] = useState(null);
+
   const setC = (k) => (e) => setCf((p) => ({ ...p, [k]: e.target.value }));
   const [cDone, setCDone] = useState(false);
 
@@ -2408,6 +2417,30 @@ function AdminPage({
     }
 
     try {
+      let imagePath = "/images/camp-default.jpg";
+
+      if (campFile) {
+        const fd = new FormData();
+        fd.append("image", campFile);
+
+        const BASE = import.meta.env.VITE_API_URL || "";
+        const token = localStorage.getItem(AUTH_KEY);
+
+        const uploadRes = await fetch(`${BASE}/api/admin/upload`, {
+          method: "POST",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          body: fd,
+        });
+
+        const uploadData = await uploadRes.json().catch(() => ({}));
+
+        if (!uploadRes.ok) {
+          throw new Error(uploadData.error || "Image upload failed");
+        }
+
+        imagePath = uploadData.image;
+      }
+
       const data = await api("/admin/camps", {
         method: "POST",
         body: JSON.stringify({
@@ -2421,6 +2454,7 @@ function AdminPage({
           spots: parseInt(cf.spots) || 20,
           status: cf.status,
           desc: cf.desc || "Registration open!",
+          image: imagePath,
         }),
       });
 
@@ -2439,7 +2473,10 @@ function AdminPage({
         spots: "",
         status: "open",
         desc: "",
+        image: "",
       });
+
+      setCampFile(null);
 
       showToast("✅ Camp session published!", "s");
     } catch (error) {
@@ -2655,6 +2692,16 @@ function AdminPage({
                     <option value="upcoming">Upcoming</option>
                     <option value="full">Full</option>
                   </select>
+                </div>
+
+                <div className="fg full">
+                  <label className="lbl">Camp Image</label>
+                  <input
+                    className="inp"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setCampFile(e.target.files?.[0] || null)}
+                  />
                 </div>
 
                 <div className="fg full">
