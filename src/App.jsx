@@ -1774,7 +1774,7 @@ function ProgramsPage({ onNav, onContact }) {
 
 function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
   const [modal, setModal] = useState(null);
-
+  const BASE = import.meta.env.VITE_API_URL || "";
   return (
     <div className="pg" style={{ background: "#F5F6F8" }}>
       <section className="camp-page-top">
@@ -1801,7 +1801,13 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
               <div className="camp-row-card" key={c.id}>
                 <div className="camp-row-media">
                   <img
-                    src={c.image || "/images/camp-default.jpg"}
+                    src={
+                      c.image
+                        ? c.image.startsWith("http")
+                          ? c.image
+                          : `${BASE}${c.image}`
+                        : "/images/camp-default.jpg"
+                    }
                     alt={c.name}
                   />{" "}
                 </div>
@@ -2439,7 +2445,10 @@ function AdminPage({
         }
 
         imagePath = uploadData.image;
+        console.log("Uploaded image path:", imagePath);
       }
+
+      console.log("Creating camp with image:", imagePath);
 
       const data = await api("/admin/camps", {
         method: "POST",
@@ -2747,12 +2756,46 @@ function AdminPage({
                 const rc = campRegs.filter((r) => r.campId === c.id).length;
                 return (
                   <div className="ei" key={c.id}>
-                    <div style={{ flex: 1 }}>
-                      <div className="ei-name">{c.name}</div>
-                      <div className="ei-meta">
-                        📅 {fmtDShort(c.dateStart)} – {fmtDShort(c.dateEnd)} ·
-                        📍 {c.location} · {c.type} · 💵 ${c.price} · 📝 {rc}{" "}
-                        sign-up{rc !== 1 ? "s" : ""}
+                    <div
+                      style={{
+                        flex: 1,
+                        display: "flex",
+                        gap: "1rem",
+                        alignItems: "center",
+                      }}
+                    >
+                      <img
+                        src={
+                          c.image
+                            ? c.image.startsWith("http")
+                              ? c.image
+                              : `${import.meta.env.VITE_API_URL || ""}${c.image}`
+                            : "/images/camp-default.jpg"
+                        }
+                        alt={c.name}
+                        style={{
+                          width: "90px",
+                          height: "70px",
+                          objectFit: "cover",
+                          borderRadius: "10px",
+                          border: "1px solid rgba(255,255,255,.08)",
+                          flexShrink: 0,
+                        }}
+                      />
+
+                      <div>
+                        <div className="ei-name">{c.name}</div>
+                        <div className="ei-meta">
+                          📅 {fmtDShort(c.dateStart)} – {fmtDShort(c.dateEnd)} ·
+                          📍 {c.location} · {c.type} · 💵 ${c.price} · 📝 {rc}{" "}
+                          sign-up{rc !== 1 ? "s" : ""}
+                        </div>
+                        <div
+                          className="ei-meta"
+                          style={{ marginTop: ".25rem" }}
+                        >
+                          Image: {c.image || "none"}
+                        </div>
                       </div>
                     </div>
 
