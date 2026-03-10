@@ -29,6 +29,12 @@ const api = async (path, options = {}) => {
    CONTENT / SETTINGS
 ══════════════════════════════════════════ */
 
+const SOCIALS = {
+  instagram: "https://www.instagram.com/mychessfamily/",
+  facebook: "https://www.facebook.com/Mychessfamily",
+  linkedin: "https://www.linkedin.com/in/dmitri-shevelev-145ba7/",
+};
+
 const CONTACT = {
   city: "New York City",
   email: "mychessfamily@gmail.com",
@@ -594,7 +600,6 @@ box-shadow:0 8px 26px rgba(21,122,69,.45);
   transform:translateY(-3px);
   box-shadow:0 10px 25px rgba(0,0,0,0.4);
 }
-  
 /* Instagram */
 .social-icon.ig:hover{
   background:#E1306C;
