@@ -1230,6 +1230,253 @@ box-shadow:0 8px 26px rgba(21,122,69,.45);
   flex-wrap:wrap;
 }
 
+.reviews-page{
+  background:#F5F6F8;
+  min-height:100vh;
+}
+
+.reviews-hero{
+  background:linear-gradient(135deg,#0B1624 0%, #102033 55%, #0E1D17 100%);
+  padding:5rem 0 4rem;
+  position:relative;
+  overflow:hidden;
+}
+
+.reviews-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(74,171,232,.16), transparent 32%),
+    radial-gradient(circle at 80% 20%, rgba(31,168,94,.14), transparent 28%);
+  pointer-events:none;
+}
+
+.reviews-hero-inner{
+  width:100%;
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 2.5rem;
+  position:relative;
+  z-index:1;
+  text-align:center;
+}
+
+.reviews-kicker{
+  display:inline-block;
+  font-size:.75rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--green2);
+  font-weight:700;
+  margin-bottom:1rem;
+}
+
+.reviews-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.4rem,4.5vw,4rem);
+  line-height:1.08;
+  color:#F4F8FC;
+  margin-bottom:1rem;
+}
+
+.reviews-sub{
+  max-width:760px;
+  margin:0 auto;
+  color:rgba(220,233,245,.78);
+  line-height:1.8;
+  font-size:1rem;
+}
+
+.reviews-hero-actions{
+  margin-top:1.8rem;
+  display:flex;
+  justify-content:center;
+  gap:.8rem;
+  flex-wrap:wrap;
+}
+
+.reviews-rating-big{
+  margin-top:1.8rem;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:.9rem;
+  flex-wrap:wrap;
+}
+
+.reviews-rating-score{
+  font-family:'Playfair Display',serif;
+  font-size:2.4rem;
+  color:#fff;
+}
+
+.reviews-rating-stars{
+  color:#FACC15;
+  font-size:1.15rem;
+  letter-spacing:2px;
+}
+
+.reviews-rating-meta{
+  color:rgba(220,233,245,.75);
+  font-size:.95rem;
+}
+
+.reviews-content{
+  width:100%;
+  max-width:1200px;
+  margin:0 auto;
+  padding:3rem 2.5rem 4.5rem;
+}
+
+.reviews-stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1rem;
+  margin-top:-2rem;
+  margin-bottom:2.2rem;
+  position:relative;
+  z-index:2;
+}
+
+.reviews-stat{
+  background:#fff;
+  border:1px solid #E2E8F0;
+  border-radius:20px;
+  padding:1.4rem;
+  text-align:center;
+  box-shadow:0 10px 24px rgba(15,23,42,.05);
+}
+
+.reviews-stat-number{
+  font-family:'Playfair Display',serif;
+  font-size:2rem;
+  color:#1F2B3A;
+  margin-bottom:.3rem;
+}
+
+.reviews-stat-label{
+  color:#5C6B7C;
+  font-size:.92rem;
+}
+
+.reviews-grid-modern{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.3rem;
+}
+
+.review-card-modern{
+  background:#fff;
+  border:1px solid #E2E8F0;
+  border-radius:22px;
+  padding:1.4rem;
+  box-shadow:0 10px 26px rgba(15,23,42,.05);
+  transition:.25s;
+}
+
+.review-card-modern:hover{
+  transform:translateY(-5px);
+  box-shadow:0 20px 40px rgba(15,23,42,.09);
+}
+
+.review-card-head{
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  align-items:flex-start;
+  margin-bottom:.8rem;
+}
+
+.review-card-name{
+  font-weight:800;
+  color:#1F2B3A;
+  font-size:1rem;
+}
+
+.review-card-date{
+  font-size:.75rem;
+  color:#64748B;
+  background:#F8FAFC;
+  border:1px solid #E2E8F0;
+  padding:.3rem .55rem;
+  border-radius:999px;
+  white-space:nowrap;
+}
+
+.review-card-stars{
+  color:#FACC15;
+  font-size:1rem;
+  letter-spacing:2px;
+  margin-bottom:.8rem;
+}
+
+.review-card-text{
+  color:#5C6B7C;
+  line-height:1.8;
+  font-size:.95rem;
+}
+
+.reviews-empty-modern{
+  background:#fff;
+  border:1px solid #E2E8F0;
+  border-radius:22px;
+  padding:3rem 1.5rem;
+  text-align:center;
+  color:#5C6B7C;
+  box-shadow:0 10px 26px rgba(15,23,42,.05);
+}
+
+.reviews-empty-modern .icon{
+  font-size:2.5rem;
+  margin-bottom:.7rem;
+}
+
+.reviews-cta{
+  margin-top:3rem;
+  background:linear-gradient(135deg,#12253B,#143524);
+  border-radius:26px;
+  padding:2rem;
+  text-align:center;
+  color:#EEF5FF;
+}
+
+.reviews-cta h3{
+  font-family:'Playfair Display',serif;
+  font-size:2rem;
+  margin-bottom:.65rem;
+}
+
+.reviews-cta p{
+  color:rgba(220,233,245,.78);
+  line-height:1.8;
+  max-width:700px;
+  margin:0 auto;
+}
+
+.reviews-cta-actions{
+  margin-top:1.3rem;
+  display:flex;
+  justify-content:center;
+  gap:.8rem;
+  flex-wrap:wrap;
+}
+
+@media(max-width:900px){
+  .reviews-stats{
+    grid-template-columns:1fr;
+    margin-top:2rem;
+  }
+}
+
+@media(max-width:850px){
+  .reviews-hero-inner,
+  .reviews-content{
+    padding-left:1.2rem;
+    padding-right:1.2rem;
+  }
+}
+
 @media(max-width:900px){
   .founder-card{
     grid-template-columns:1fr;
@@ -2486,82 +2733,111 @@ function ReviewsPage({ reviews, openModal, onNav, onContact }) {
     : 0;
 
   return (
-    <div className="pg">
-      <div className="ph">
-        <div className="slbl">Parents & Students</div>
-        <h1 className="stit">Reviews</h1>
-        <p className="ph-sub">
-          Average: <b>{avg.toFixed(1)}</b>/5.0 ({count} review
-          {count !== 1 ? "s" : ""})
-        </p>
+    <div className="pg reviews-page">
+      <section className="reviews-hero">
+        <div className="reviews-hero-inner">
+          <div className="reviews-kicker">Parents & Students</div>
+          <h1 className="reviews-title">What Families Say About Us</h1>
+          <p className="reviews-sub">
+            Feedback from students and families who have experienced My Chess
+            Family through lessons, camps, tournaments, and long-term coaching.
+          </p>
 
-        <div style={{ marginTop: "1.2rem" }}>
-          <button className="btn btn-g" onClick={openModal}>
-            ✍️ Write a Review
-          </button>
-          <button
-            className="btn btn-g"
-            style={{
-              marginLeft: ".6rem",
-              background: "rgba(74,171,232,.18)",
-              color: "#EEF5FF",
-            }}
-            onClick={onContact}
-          >
-            ✉️ Contact
-          </button>
+          <div className="reviews-rating-big">
+            <div className="reviews-rating-score">{avg.toFixed(1)}/5</div>
+            <div className="reviews-rating-stars">
+              <Stars rating={Math.round(avg)} />
+            </div>
+            <div className="reviews-rating-meta">
+              Based on {count} review{count !== 1 ? "s" : ""}
+            </div>
+          </div>
+
+          <div className="reviews-hero-actions">
+            <button className="btn btn-g" onClick={openModal}>
+              ✍️ Write a Review
+            </button>
+            <button
+              className="btn btn-g"
+              style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+              onClick={onContact}
+            >
+              ✉️ Contact
+            </button>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div className="wrap" style={{ paddingTop: "2.2rem" }}>
+      <div className="reviews-content">
+        <div className="reviews-stats">
+          <div className="reviews-stat">
+            <div className="reviews-stat-number">{avg.toFixed(1)}</div>
+            <div className="reviews-stat-label">Average Rating</div>
+          </div>
+
+          <div className="reviews-stat">
+            <div className="reviews-stat-number">{count}</div>
+            <div className="reviews-stat-label">Published Reviews</div>
+          </div>
+
+          <div className="reviews-stat">
+            <div className="reviews-stat-number">100%</div>
+            <div className="reviews-stat-label">Focused On Student Growth</div>
+          </div>
+        </div>
+
         {!count ? (
-          <div className="empty">
-            <div className="empty-i">📝</div>
-            <p>No approved reviews yet. Be the first!</p>
+          <div className="reviews-empty-modern">
+            <div className="icon">📝</div>
+            <h3 style={{ color: "#1F2B3A", marginBottom: ".45rem" }}>
+              No approved reviews yet
+            </h3>
+            <p>Be the first family to share your experience.</p>
           </div>
         ) : (
-          <div className="g3">
+          <div className="reviews-grid-modern">
             {approved
               .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
               .map((r) => (
-                <div className="prog" key={r.id} style={{ padding: "1.4rem" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      gap: "1rem",
-                    }}
-                  >
-                    <div style={{ fontWeight: 800, color: "#EEF5FF" }}>
+                <div className="review-card-modern" key={r.id}>
+                  <div className="review-card-head">
+                    <div className="review-card-name">
                       {r.childName ? r.childName : "Anonymous"}
                     </div>
-                    <div style={{ color: "var(--green2)", fontWeight: 800 }}>
-                      <Stars rating={r.rating} />{" "}
-                      <span style={{ marginLeft: 6 }}>{r.rating}/5</span>
-                    </div>
+
+                    <div className="review-card-date">{r.date || ""}</div>
                   </div>
-                  <p
-                    style={{
-                      marginTop: ".75rem",
-                      color: "var(--muted)",
-                      lineHeight: 1.7,
-                    }}
-                  >
-                    {r.text}
-                  </p>
-                  <div
-                    style={{
-                      marginTop: ".8rem",
-                      fontSize: ".78rem",
-                      color: "var(--muted)",
-                    }}
-                  >
-                    {r.date || ""}
+
+                  <div className="review-card-stars">
+                    <Stars rating={r.rating} />
                   </div>
+
+                  <div className="review-card-text">{r.text}</div>
                 </div>
               ))}
           </div>
         )}
+
+        <div className="reviews-cta">
+          <h3>Share your experience with My Chess Family</h3>
+          <p>
+            Your review helps other families understand what it feels like to
+            learn, grow, and compete as part of our chess community.
+          </p>
+
+          <div className="reviews-cta-actions">
+            <button className="btn btn-g" onClick={openModal}>
+              ✍️ Leave a Review
+            </button>
+            <button
+              className="btn btn-g"
+              style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+              onClick={() => onNav("programs")}
+            >
+              ♟ View Programs
+            </button>
+          </div>
+        </div>
       </div>
 
       <Footer onNav={onNav} onContact={onContact} />
