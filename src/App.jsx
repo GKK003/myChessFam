@@ -511,7 +511,7 @@ tr:hover td{background:rgba(26,94,168,.07);}
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:1.5rem;
   padding:2rem 2.5rem 4rem;
-  max-width:1200px;
+
   margin:0 auto;
 }
 
