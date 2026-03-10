@@ -507,7 +507,7 @@ tr:hover td{background:rgba(26,94,168,.07);}
   bottom:-1px;
   left:0;
   width:100%;
-  height:120px;
+  height:35px;
   background:linear-gradient(
     to bottom,
     rgba(9,19,30,0) 0%,
