@@ -4,22 +4,18 @@ import cors from "cors";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import fs from "node:fs";
-import fsp from "node:fs/promises";
 import path from "node:path";
 import multer from "multer";
 import { MongoClient } from "mongodb";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 /* =========================
    PATHS
 ========================= */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const uploadsDir = path.join(__dirname, "uploads");
 const distDir = path.join(process.cwd(), "dist");
-
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
 
 /* =========================
    ENV
@@ -30,10 +26,62 @@ const DB_NAME = process.env.MONGODB_DB || "mychessfamily";
 const TOKEN_SECRET = process.env.TOKEN_SECRET || "change-this-in-render";
 const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
 
+const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY;
+const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET;
+
 if (!MONGODB_URL) {
   console.error("❌ Missing MONGODB_URL / MONGODB_URI env var");
   process.exit(1);
 }
+
+if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
+  console.error("❌ Missing Cloudinary environment variables");
+  process.exit(1);
+}
+
+/* =========================
+   CLOUDINARY
+========================= */
+cloudinary.config({
+  cloud_name: CLOUDINARY_CLOUD_NAME,
+  api_key: CLOUDINARY_API_KEY,
+  api_secret: CLOUDINARY_API_SECRET,
+});
+
+const cloudinaryStorage = new CloudinaryStorage({
+  cloudinary,
+  params: async (_req, file) => {
+    const original = file.originalname || "camp-image";
+    const baseName = original.replace(/\.[^/.]+$/, "");
+    const safeName = baseName
+      .toLowerCase()
+      .replace(/[^a-z0-9-_]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 50);
+
+    return {
+      folder: "mychessfamily/camps",
+      resource_type: "image",
+      allowed_formats: ["jpg", "jpeg", "png", "webp", "gif"],
+      public_id: `${Date.now()}-${safeName || "camp"}`,
+    };
+  },
+});
+
+const upload = multer({
+  storage: cloudinaryStorage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    const ok = /^image\/(jpeg|jpg|png|webp|gif|svg\+xml)$/.test(
+      file.mimetype || "",
+    );
+    if (!ok) {
+      return cb(new Error("Only image files are allowed"));
+    }
+    cb(null, true);
+  },
+});
 
 /* =========================
    APP
@@ -46,12 +94,8 @@ app.use(
     credentials: false,
   }),
 );
-app.use(express.json({ limit: "2mb" }));
 
-/* =========================
-   STATIC FILES
-========================= */
-app.use("/uploads", express.static(uploadsDir));
+app.use(express.json({ limit: "2mb" }));
 app.use(express.static(distDir));
 
 /* =========================
@@ -66,6 +110,35 @@ const nowStamp = () => {
       minute: "2-digit",
     }),
   };
+};
+
+const toNumberId = (value) => Number(value);
+
+const getCloudinaryPublicIdFromUrl = (url) => {
+  try {
+    if (!url || typeof url !== "string") return null;
+    if (!url.includes("res.cloudinary.com")) return null;
+
+    const parts = url.split("/");
+    const uploadIndex = parts.findIndex((p) => p === "upload");
+    if (uploadIndex === -1) return null;
+
+    // after /upload/ may come version like v123456
+    const afterUpload = parts.slice(uploadIndex + 1);
+
+    const first = afterUpload[0] || "";
+    const withoutVersion = /^v\d+$/.test(first)
+      ? afterUpload.slice(1)
+      : afterUpload;
+
+    if (!withoutVersion.length) return null;
+
+    const joined = withoutVersion.join("/");
+    const lastDot = joined.lastIndexOf(".");
+    return lastDot === -1 ? joined : joined.slice(0, lastDot);
+  } catch {
+    return null;
+  }
 };
 
 /* =========================
@@ -89,6 +162,7 @@ const createToken = (username) => {
 
 const verifyToken = (token) => {
   if (!token) return null;
+
   const [p, sig] = token.split(".");
   if (!p || !sig) return null;
   if (sign(p) !== sig) return null;
@@ -113,34 +187,6 @@ const requireAuth = (req, res, next) => {
   }
   next();
 };
-
-/* =========================
-   MULTER UPLOAD
-========================= */
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname || "").toLowerCase();
-    const safeExt = ext || ".jpg";
-    cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${safeExt}`);
-  },
-});
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter: (_req, file, cb) => {
-    const ok = /^image\/(jpeg|jpg|png|webp|gif|svg\+xml)$/.test(
-      file.mimetype || "",
-    );
-    if (!ok) {
-      return cb(new Error("Only image files are allowed"));
-    }
-    cb(null, true);
-  },
-});
 
 /* =========================
    DEFAULT DATA
@@ -191,6 +237,7 @@ const DEFAULT_DB = {
    MONGO
 ========================= */
 const client = new MongoClient(MONGODB_URL);
+
 let db;
 let colCamps;
 let colCampRegs;
@@ -198,8 +245,8 @@ let colReviews;
 
 async function initMongo() {
   await client.connect();
-  db = client.db(DB_NAME);
 
+  db = client.db(DB_NAME);
   colCamps = db.collection("camps");
   colCampRegs = db.collection("campRegs");
   colReviews = db.collection("reviews");
@@ -223,10 +270,10 @@ await initMongo();
 app.get("/api/bootstrap", async (_req, res) => {
   try {
     const camps = await colCamps.find().sort({ id: -1 }).toArray();
-    res.json({ camps });
+    return res.json({ camps });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -237,10 +284,10 @@ app.get("/api/reviews", async (_req, res) => {
       .sort({ createdAt: -1 })
       .toArray();
 
-    res.json({ reviews });
+    return res.json({ reviews });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -266,10 +313,10 @@ app.post("/api/reviews", async (req, res) => {
     };
 
     await colReviews.insertOne(review);
-    res.status(201).json({ ok: true });
+    return res.status(201).json({ ok: true });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -289,9 +336,9 @@ app.post("/api/registrations/camp", async (req, res) => {
       "phone",
     ];
 
-    for (const k of required) {
-      if (!body[k]) {
-        return res.status(400).json({ error: `Missing ${k}` });
+    for (const key of required) {
+      if (!body[key]) {
+        return res.status(400).json({ error: `Missing ${key}` });
       }
     }
 
@@ -314,10 +361,10 @@ app.post("/api/registrations/camp", async (req, res) => {
     };
 
     await colCampRegs.insertOne(reg);
-    res.status(201).json({ ok: true });
+    return res.status(201).json({ ok: true });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -332,11 +379,11 @@ app.post("/api/admin/login", (req, res) => {
   }
 
   const token = createToken("admin");
-  res.json({ token });
+  return res.json({ token });
 });
 
 app.post("/api/admin/logout", (_req, res) => {
-  res.json({ ok: true });
+  return res.json({ ok: true });
 });
 
 /* =========================
@@ -359,7 +406,7 @@ app.post(
     }
 
     return res.json({
-      image: `/uploads/${req.file.filename}`,
+      image: req.file.path, // Cloudinary URL
     });
   },
 );
@@ -370,10 +417,10 @@ app.post(
 app.get("/api/admin/registrations", requireAuth, async (_req, res) => {
   try {
     const campRegs = await colCampRegs.find().sort({ createdAt: -1 }).toArray();
-    res.json({ campRegs });
+    return res.json({ campRegs });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -382,12 +429,12 @@ app.delete(
   requireAuth,
   async (req, res) => {
     try {
-      const id = Number(req.params.id);
+      const id = toNumberId(req.params.id);
       await colCampRegs.deleteOne({ id });
-      res.json({ ok: true });
+      return res.json({ ok: true });
     } catch (err) {
       console.error(err);
-      res.status(500).json({ error: "Server error" });
+      return res.status(500).json({ error: "Server error" });
     }
   },
 );
@@ -424,22 +471,47 @@ app.post("/api/admin/camps", requireAuth, async (req, res) => {
     await colCamps.insertOne(camp);
 
     const camps = await colCamps.find().sort({ id: -1 }).toArray();
-    res.json({ camps });
+    return res.json({ camps });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
 app.patch("/api/admin/camps/:id", requireAuth, async (req, res) => {
   try {
-    const id = Number(req.params.id);
+    const id = toNumberId(req.params.id);
     const body = req.body || {};
 
     if (!body.name || !body.dateStart || !body.dateEnd || !body.location) {
       return res.status(400).json({
         error: "Missing name/dateStart/dateEnd/location",
       });
+    }
+
+    const existingCamp = await colCamps.findOne({ id });
+    if (!existingCamp) {
+      return res.status(404).json({ error: "Camp not found" });
+    }
+
+    const nextImage = String(body.image || "/images/camp-default.jpg");
+
+    if (
+      existingCamp.image &&
+      typeof existingCamp.image === "string" &&
+      existingCamp.image !== nextImage &&
+      existingCamp.image.includes("res.cloudinary.com")
+    ) {
+      const oldPublicId = getCloudinaryPublicIdFromUrl(existingCamp.image);
+      if (oldPublicId) {
+        try {
+          await cloudinary.uploader.destroy(oldPublicId, {
+            resource_type: "image",
+          });
+        } catch (e) {
+          console.error("Cloudinary delete failed:", e);
+        }
+      }
     }
 
     await colCamps.updateOne(
@@ -456,47 +528,71 @@ app.patch("/api/admin/camps/:id", requireAuth, async (req, res) => {
           spots: Number(body.spots) || 20,
           desc: String(body.desc || ""),
           status: String(body.status || "open"),
-          image: String(body.image || "/images/camp-default.jpg"),
+          image: nextImage,
         },
       },
     );
 
     const camps = await colCamps.find().sort({ id: -1 }).toArray();
-    res.json({ camps });
+    return res.json({ camps });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.patch("/api/admin/camps/:id/status", requireAuth, async (req, res) => {
+  try {
+    const id = toNumberId(req.params.id);
+    const status = String(req.body?.status || "");
+
+    if (!["open", "upcoming", "full"].includes(status)) {
+      return res.status(400).json({ error: "Invalid status" });
+    }
+
+    await colCamps.updateOne({ id }, { $set: { status } });
+
+    const camps = await colCamps.find().sort({ id: -1 }).toArray();
+    return res.json({ camps });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
 app.delete("/api/admin/camps/:id", requireAuth, async (req, res) => {
   try {
-    const id = Number(req.params.id);
-
+    const id = toNumberId(req.params.id);
     const camp = await colCamps.findOne({ id });
 
-    if (
-      camp?.image &&
-      typeof camp.image === "string" &&
-      camp.image.startsWith("/uploads/")
-    ) {
-      const filename = camp.image.replace("/uploads/", "");
-      const filePath = path.join(uploadsDir, filename);
+    if (!camp) {
+      return res.status(404).json({ error: "Camp not found" });
+    }
 
-      try {
-        await fsp.unlink(filePath);
-      } catch {
-        // ignore missing file
+    if (
+      camp.image &&
+      typeof camp.image === "string" &&
+      camp.image.includes("res.cloudinary.com")
+    ) {
+      const publicId = getCloudinaryPublicIdFromUrl(camp.image);
+      if (publicId) {
+        try {
+          await cloudinary.uploader.destroy(publicId, {
+            resource_type: "image",
+          });
+        } catch (e) {
+          console.error("Cloudinary delete failed:", e);
+        }
       }
     }
 
     await colCamps.deleteOne({ id });
 
     const camps = await colCamps.find().sort({ id: -1 }).toArray();
-    res.json({ camps });
+    return res.json({ camps });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -506,32 +602,32 @@ app.delete("/api/admin/camps/:id", requireAuth, async (req, res) => {
 app.get("/api/admin/reviews", requireAuth, async (_req, res) => {
   try {
     const reviews = await colReviews.find().sort({ createdAt: -1 }).toArray();
-    res.json({ reviews });
+    return res.json({ reviews });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
 app.patch("/api/admin/reviews/:id/approve", requireAuth, async (req, res) => {
   try {
-    const id = Number(req.params.id);
+    const id = toNumberId(req.params.id);
     await colReviews.updateOne({ id }, { $set: { approved: true } });
-    res.json({ ok: true });
+    return res.json({ ok: true });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
 app.delete("/api/admin/reviews/:id", requireAuth, async (req, res) => {
   try {
-    const id = Number(req.params.id);
+    const id = toNumberId(req.params.id);
     await colReviews.deleteOne({ id });
-    res.json({ ok: true });
+    return res.json({ ok: true });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 });
 
@@ -554,7 +650,7 @@ app.get(/^(?!\/api).*/, async (req, res) => {
     return res.sendFile(indexPath);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server error");
+    return res.status(500).send("Server error");
   }
 });
 
