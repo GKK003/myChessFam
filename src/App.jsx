@@ -497,6 +497,7 @@ tr:hover td{background:rgba(26,94,168,.07);}
   text-align:center;
   color:#1F2B3A;
   padding:4rem 2rem 2rem 2rem;
+  padding-top:3rem;
   margin:0;
 }
 
