@@ -526,6 +526,8 @@ tr:hover td{background:rgba(26,94,168,.07);}
   cursor:pointer;
   display:flex;
   flex-direction:column;
+  justify-content: center;
+  align-items: center;
   height:100%;
 }
 
