@@ -490,13 +490,20 @@ tr:hover td{background:rgba(26,94,168,.07);}
 }
 
 .home-main-title{
-  background:#F5F6F8;
+  background:linear-gradient(
+    to bottom,
+    #09131E 0%,
+    #0F1E2E 20%,
+    #E9EDF2 80%,
+    #F5F6F8 100%
+  );
+
   font-family:'Playfair Display',serif;
   font-size:clamp(2.6rem,4vw,3.6rem);
   font-weight:900;
   text-align:center;
   color:#1F2B3A;
-  padding:4rem 2rem 2rem 2rem;
+  padding:5rem 2rem 3rem 2rem;
   margin:0;
 }
 
