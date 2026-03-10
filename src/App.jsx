@@ -525,6 +525,10 @@ tr:hover td{background:rgba(26,94,168,.07);}
   color: #1F2B3A;
 }
 
+.offer-card p {
+margin-top:10px;
+}
+
 .offer-card:hover{
   transform:translateY(-4px);
   box-shadow:0 14px 30px rgba(0,0,0,0.12);
