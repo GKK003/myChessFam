@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { FaInstagram, FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 
 /* ══════════════════════════════════════════
       API
@@ -27,11 +28,6 @@ const api = async (path, options = {}) => {
 /* ══════════════════════════════════════════
    CONTENT / SETTINGS
 ══════════════════════════════════════════ */
-const SOCIALS = {
-  instagram: "https://www.instagram.com/mychessfamily/",
-  facebook: "https://www.facebook.com/Mychessfamily",
-  linkedin: "https://www.linkedin.com/in/dmitri-shevelev-145ba7/",
-};
 
 const CONTACT = {
   city: "New York City",
@@ -575,49 +571,51 @@ box-shadow:0 8px 26px rgba(21,122,69,.45);
 .social-row{
   display:flex;
   justify-content:center;
+  gap:14px;
+  margin-top:1rem;
+}
+
+.social-icon{
+  width:42px;
+  height:42px;
+  display:flex;
   align-items:center;
-  gap:.9rem;
-  flex-wrap:wrap;
-  margin:1.2rem 0 0.6rem;
+  justify-content:center;
+  border-radius:10px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+  color:#DCE9F5;
+  font-size:18px;
+  transition:0.25s;
 }
 
-.social-link{
-  text-decoration:none;
-  color:rgba(220,233,245,.82);
-  border:1px solid rgba(255,255,255,.08);
-  background:rgba(255,255,255,.03);
-  padding:.62rem 1rem;
-  border-radius:999px;
-  font-size:.88rem;
-  font-weight:700;
-  transition:.22s ease;
-  box-shadow:0 6px 18px rgba(0,0,0,.14);
-}
 
-.social-link:hover{
-  transform:translateY(-2px);
+.social-icon:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 25px rgba(0,0,0,0.4);
 }
-
-.social-link.ig:hover{
-  color:#fff;
-  border-color:#E1306C;
+  
+/* Instagram */
+.social-icon.ig:hover{
   background:#E1306C;
-  box-shadow:0 10px 24px rgba(225,48,108,.32);
+  border-color:#E1306C;
+  color:white;
 }
 
-.social-link.fb:hover{
-  color:#fff;
-  border-color:#1877F2;
+/* Facebook */
+.social-icon.fb:hover{
   background:#1877F2;
-  box-shadow:0 10px 24px rgba(24,119,242,.32);
+  border-color:#1877F2;
+  color:white;
 }
 
-.social-link.li:hover{
-  color:#fff;
-  border-color:#0A66C2;
+/* LinkedIn */
+.social-icon.li:hover{
   background:#0A66C2;
-  box-shadow:0 10px 24px rgba(10,102,194,.32);
+  border-color:#0A66C2;
+  color:white;
 }
+
 
 @media(max-width:950px){
   .home-split-wrap,
@@ -756,27 +754,27 @@ function Footer({ onNav, onContact }) {
           href={SOCIALS.instagram}
           target="_blank"
           rel="noreferrer"
-          className="social-link ig"
+          className="social-icon ig"
         >
-          Instagram
+          <FaInstagram />
         </a>
 
         <a
           href={SOCIALS.facebook}
           target="_blank"
           rel="noreferrer"
-          className="social-link fb"
+          className="social-icon fb"
         >
-          Facebook
+          <FaFacebookF />
         </a>
 
         <a
           href={SOCIALS.linkedin}
           target="_blank"
           rel="noreferrer"
-          className="social-link li"
+          className="social-icon li"
         >
-          LinkedIn
+          <FaLinkedinIn />
         </a>
       </div>
     </footer>
