@@ -559,6 +559,7 @@ margin-bottom: 10px;
   border-radius:10px;
   font-size:16px;
   display:inline-block;
+  width: 90%;
 }
 
 .offer-card span:hover {
