@@ -132,6 +132,13 @@ const fmtDShort = (d) =>
     year: "numeric",
   });
 
+const getImageSrc = (image, base) => {
+  if (!image) return "/images/camp-default.jpg";
+  if (image.startsWith("http")) return image;
+  if (image.startsWith("/images/")) return image;
+  if (image.startsWith("images/")) return `/${image}`;
+  return `${base}${image.startsWith("/") ? image : `/${image}`}`;
+};
 /* ══════════════════════════════════════════
    STYLES
 ══════════════════════════════════════════ */
@@ -2652,18 +2659,7 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
             {camps.map((c) => (
               <div className="camp-row-card" key={c.id}>
                 <div className="camp-row-media">
-                  <img
-                    src={
-                      c.image
-                        ? c.image.startsWith("http")
-                          ? c.image
-                          : c.image.startsWith("/uploads/")
-                            ? `${BASE}${c.image}`
-                            : c.image
-                        : "/images/camp-default.jpg"
-                    }
-                    alt={c.name}
-                  />{" "}
+                  <img src={getImageSrc(c.image, BASE)} alt={c.name} />{" "}
                 </div>
 
                 <div className="camp-row-main">
@@ -3817,15 +3813,10 @@ function AdminPage({
                       }}
                     >
                       <img
-                        src={
-                          c.image
-                            ? c.image.startsWith("http")
-                              ? c.image
-                              : c.image.startsWith("/uploads/")
-                                ? `${import.meta.env.VITE_API_URL || ""}${c.image}`
-                                : c.image
-                            : "/images/camp-default.jpg"
-                        }
+                        src={getImageSrc(
+                          c.image,
+                          import.meta.env.VITE_API_URL || "",
+                        )}
                         alt={c.name}
                         style={{
                           width: "90px",
