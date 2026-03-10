@@ -533,7 +533,7 @@ margin-top:10px;
 .offer-card span {
 color:white;
 margin-top: 15px
-background-color: var(--green);
+background: var(--green);
 }
 
 .offer-card span:hover {
