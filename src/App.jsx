@@ -1068,7 +1068,7 @@ function HomePage({ onNav, onContact }) {
       <h1 className="home-main-title">What We Offer</h1>
 
       <div className="offer-grid">
-        <div className="offer-card">
+        <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/schoolprogramsicon.png"
             alt="School Chess Programs"
@@ -1081,7 +1081,7 @@ function HomePage({ onNav, onContact }) {
           </p>
         </div>
 
-        <div className="offer-card">
+        <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/privateicon.png"
             alt="Private Lessons"
@@ -1094,7 +1094,7 @@ function HomePage({ onNav, onContact }) {
           </p>
         </div>
 
-        <div className="offer-card">
+        <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/tournamentpreparation.png"
             alt="Tournament Preparation"
@@ -1107,7 +1107,7 @@ function HomePage({ onNav, onContact }) {
           </p>
         </div>
 
-        <div className="offer-card">
+        <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/teamtrain.png"
             alt="Team Training"
@@ -1120,7 +1120,7 @@ function HomePage({ onNav, onContact }) {
           </p>
         </div>
 
-        <div className="offer-card">
+        <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/chesscamps.png"
             alt="Chess Camps"
