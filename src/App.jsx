@@ -1125,13 +1125,21 @@ function HomePage({ onNav, onContact }) {
                   width: "90%",
                   height: "1px",
                   margin: "0 auto 3rem auto",
-                  background: "var(--border)",
+                  background: "rgba(0,0,0,.08)",
                 }}
               />
             </div>
           )}
         </div>
       ))}
+      <div
+        style={{
+          width: "90%",
+          height: "1px",
+          background: "rgba(0,0,0,.08)",
+          margin: "0 auto 3rem auto",
+        }}
+      />
 
       <section className="home-split-sec">
         <div className="home-split-wrap">
