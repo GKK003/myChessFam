@@ -1125,7 +1125,7 @@ function HomePage({ onNav, onContact }) {
                   width: "90%",
                   height: "2px",
                   margin: "0 auto 3rem auto",
-                  background: "rgba(0,0,0,.08)",
+                  background: "#F5F6F8",
                 }}
               />
             </div>
@@ -1136,8 +1136,7 @@ function HomePage({ onNav, onContact }) {
         style={{
           width: "90%",
           height: "2px",
-          background: "rgba(0,0,0,.08)",
-          margin: "0 auto 3rem auto",
+          background: "#F5F6F8",
         }}
       />
 
