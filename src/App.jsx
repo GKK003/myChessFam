@@ -901,21 +901,21 @@ function HomePage({ onNav, onContact }) {
     {
       title: "Private Lessons",
       text1:
-        "One-on-one coaching built around each child’s level, pace, and goals. Students receive focused instruction, tactical practice, and game review that helps them improve faster.",
+        "My Chess Family offers structured chess training for students of all levels through school programs, private lessons, camps, team training, and tournament preparation.",
       text2:
-        "Private lessons are ideal for beginners who need a strong foundation and for tournament players who want more personalized preparation and steady long-term progress.",
+        "Students grow not only as chess players, but also as individuals in a supportive community built around learning, discipline, and confidence.",
       image: "/images/info.png",
-      button: "Learn More",
+      button: "Explore Programs",
       onClick: () => onNav("programs"),
     },
     {
-      title: "Group Classes",
+      title: "Personalized Coaching",
       text1:
-        "Our group classes combine structured lessons with shared learning, practical games, and guided exercises in a supportive environment.",
+        "Every student learns differently. Our coaches build personal connections with students to understand their thinking style, motivation, and learning pace.",
       text2:
-        "Students build confidence, strengthen fundamentals, and enjoy learning with others at a similar level while staying motivated week after week.",
+        "Through individual lessons and targeted guidance, students receive training that matches their level and helps them progress with confidence.",
       image: "/images/info.png",
-      button: "Explore programs",
+      button: "View Programs",
       onClick: () => onNav("programs"),
     },
     {
@@ -929,21 +929,21 @@ function HomePage({ onNav, onContact }) {
       onClick: () => onNav("reviews"),
     },
     {
-      title: "Summer Camp",
+      title: "Chess Camps",
       text1:
-        "Our summer camp blends chess training with fun challenges, team activities, and a welcoming community atmosphere for young players.",
+        "Our chess camps combine structured training, tournaments, and fun activities in a dynamic learning environment.",
       text2:
-        "Each session is designed to help students learn, compete, make friends, and enjoy a memorable chess experience during school break.",
+        "Students strengthen their chess skills, build friendships, and enjoy a memorable experience that keeps them engaged and motivated.",
       image: "/images/info.png",
       button: "Join Camp",
       onClick: () => onNav("camp"),
     },
     {
-      title: "School Programs",
+      title: "School Chess Programs",
       text1:
-        "We bring chess directly into schools through structured programs that support focus, patience, problem-solving, and confidence.",
+        "My Chess Family partners with schools to bring high-quality chess education directly into the classroom through after-school programs.",
       text2:
-        "School partnerships make high-quality chess education more accessible and help students benefit from the game in an academic setting.",
+        "These programs help students develop focus, patience, and problem-solving skills while introducing them to the strategic world of chess.",
       image: "/images/info.png",
       button: "Contact Us",
       onClick: onContact,
