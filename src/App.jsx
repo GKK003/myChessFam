@@ -844,8 +844,7 @@ function ContactModal({ onClose, showToast }) {
               lineHeight: 1.6,
             }}
           >
-            For fastest response, email us. If you call and we miss it, we'll
-            call you back.
+            For fastest response, email us.
           </div>
         </div>
       </div>
