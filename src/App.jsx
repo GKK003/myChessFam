@@ -175,8 +175,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .adm-dot{font-size:.78rem;color:var(--green2);font-weight:600;}
 
 /* ── PAGE BASE ── */
-.pg{width:100%;min-height:100vh;padding-top:66px;}
-
+.pg{width:100%;min-height:100vh;padding-top:100px;}
 /* ── HERO ── */
 .hero{width:100%;min-height:calc(100vh - 66px);display:flex;align-items:center;background:linear-gradient(135deg,#09131E 0%,#0D1E2C 55%,#091A10 100%);position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 68% 50%,rgba(21,122,69,.1) 0%,transparent 55%),radial-gradient(ellipse at 20% 75%,rgba(26,94,168,.12) 0%,transparent 50%);}
@@ -2331,6 +2330,7 @@ export default function App() {
   const [reviewOpen, setReviewOpen] = useState(false);
 
   const [isAdmin, setIsAdmin] = useState(false);
+  const [hideHeader, setHideHeader] = useState(false);
 
   const [toasts, setToasts] = useState([]);
 
@@ -2357,6 +2357,26 @@ export default function App() {
 
   useEffect(() => {
     injectStyles();
+  }, []);
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY && currentScrollY > 120) {
+        setHideHeader(true);
+      } else {
+        setHideHeader(false);
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const showToast = useCallback((msg, type = "i") => {
@@ -2486,7 +2506,7 @@ export default function App() {
 
   return (
     <div style={{ width: "100%", minHeight: "100vh", background: "#09131E" }}>
-      <nav className="nav">
+      <nav className={`nav ${hideHeader ? "nav-hide" : ""}`}>
         <div className="nav-logo" onClick={() => go("home")}>
           <img
             src="/pieces/logo.png"
