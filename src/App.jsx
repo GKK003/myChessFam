@@ -1525,6 +1525,309 @@ box-shadow:0 8px 26px rgba(21,122,69,.45);
   .adm-wrap{padding:1.5rem 1.2rem 3rem;}
   .nav-logo{font-size:1.2rem}
 }
+
+
+.about-hero{
+  background:linear-gradient(135deg,#0B1624 0%, #102033 55%, #0E1D17 100%);
+  padding:5rem 0 4rem;
+  position:relative;
+  overflow:hidden;
+}
+
+.about-hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(74,171,232,.16), transparent 32%),
+    radial-gradient(circle at 80% 20%, rgba(31,168,94,.14), transparent 28%);
+  pointer-events:none;
+}
+
+.about-hero-inner{
+  width:100%;
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 2.5rem;
+  position:relative;
+  z-index:1;
+  text-align:center;
+}
+
+.about-kicker{
+  display:inline-block;
+  font-size:.75rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--green2);
+  font-weight:700;
+  margin-bottom:1rem;
+}
+
+.about-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.4rem,4.5vw,4rem);
+  line-height:1.08;
+  color:#F4F8FC;
+  margin-bottom:1rem;
+}
+
+.about-sub{
+  max-width:760px;
+  margin:0 auto;
+  color:rgba(220,233,245,.78);
+  line-height:1.8;
+  font-size:1rem;
+}
+
+.about-hero-actions{
+  margin-top:1.8rem;
+  display:flex;
+  justify-content:center;
+  gap:.8rem;
+  flex-wrap:wrap;
+}
+
+.about-light{
+  background:#F5F6F8;
+  padding:4rem 0;
+}
+
+.about-inner-light{
+  width:100%;
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 2.5rem;
+}
+
+.about-story{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:2rem;
+  align-items:stretch;
+}
+
+.about-story-card{
+  background:#fff;
+  border:1px solid #E2E8F0;
+  border-radius:24px;
+  padding:1.7rem;
+  box-shadow:0 12px 30px rgba(15,23,42,.05);
+}
+
+.about-story-card h2{
+  font-family:'Playfair Display',serif;
+  font-size:2rem;
+  color:#1F2B3A;
+  margin-bottom:1rem;
+}
+
+.about-story-card p{
+  color:#5C6B7C;
+  line-height:1.85;
+  margin-bottom:1rem;
+}
+
+.about-visual-card{
+  background:linear-gradient(135deg,#13263B,#0F3A28);
+  border-radius:24px;
+  padding:2rem;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:100%;
+  box-shadow:0 12px 30px rgba(15,23,42,.05);
+}
+
+.about-visual-card img{
+  width:100%;
+  max-width:260px;
+  object-fit:contain;
+}
+
+.about-section-head{
+  text-align:center;
+  margin:3rem 0 2rem;
+}
+
+.about-section-head h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,3vw,2.8rem);
+  color:#1F2B3A;
+  margin-bottom:.7rem;
+}
+
+.about-section-head p{
+  max-width:720px;
+  margin:0 auto;
+  color:#5C6B7C;
+  line-height:1.8;
+}
+
+.about-founder{
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:2rem;
+  background:#fff;
+  border:1px solid #E2E8F0;
+  border-radius:24px;
+  padding:1.5rem;
+  box-shadow:0 12px 30px rgba(15,23,42,.05);
+  align-items:center;
+}
+
+.about-founder-side{
+  background:#F8FAFC;
+  border:1px solid #E2E8F0;
+  border-radius:20px;
+  min-height:280px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:1.5rem;
+  text-align:center;
+}
+
+.about-founder-mark{
+  width:84px;
+  height:84px;
+  border-radius:22px;
+  background:linear-gradient(135deg,#16314D,#215E46);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:2rem;
+  margin-bottom:1rem;
+}
+
+.about-founder-name{
+  font-weight:800;
+  color:#1F2B3A;
+  font-size:1.1rem;
+}
+
+.about-founder-role{
+  margin-top:.35rem;
+  display:inline-block;
+  font-size:.78rem;
+  font-weight:700;
+  color:#2E7D5B;
+  background:#ECFDF3;
+  border:1px solid #D1F2DF;
+  padding:.25rem .6rem;
+  border-radius:999px;
+}
+
+.about-founder-copy h3{
+  font-family:'Playfair Display',serif;
+  font-size:1.9rem;
+  color:#1F2B3A;
+  margin-bottom:.8rem;
+}
+
+.about-founder-copy p{
+  color:#5C6B7C;
+  line-height:1.85;
+  margin-bottom:1rem;
+}
+
+.about-values{
+  margin-top:2rem;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1rem;
+}
+
+.about-value{
+  background:#fff;
+  border:1px solid #E2E8F0;
+  border-radius:22px;
+  padding:1.4rem;
+  box-shadow:0 10px 24px rgba(15,23,42,.04);
+}
+
+.about-value-icon{
+  width:54px;
+  height:54px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#16314D,#215E46);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.35rem;
+  margin-bottom:1rem;
+}
+
+.about-value h4{
+  color:#1F2B3A;
+  font-size:1.05rem;
+  margin-bottom:.55rem;
+}
+
+.about-value p{
+  color:#5C6B7C;
+  line-height:1.75;
+  font-size:.92rem;
+}
+
+.about-cta{
+  margin-top:3rem;
+  background:linear-gradient(135deg,#12253B,#143524);
+  border-radius:26px;
+  padding:2rem;
+  text-align:center;
+  color:#EEF5FF;
+}
+
+.about-cta h3{
+  font-family:'Playfair Display',serif;
+  font-size:2rem;
+  margin-bottom:.65rem;
+}
+
+.about-cta p{
+  color:rgba(220,233,245,.78);
+  line-height:1.8;
+  max-width:700px;
+  margin:0 auto;
+}
+
+.about-cta-actions{
+  margin-top:1.3rem;
+  display:flex;
+  justify-content:center;
+  gap:.8rem;
+  flex-wrap:wrap;
+}
+
+@media(max-width:950px){
+  .about-story,
+  .about-founder{
+    grid-template-columns:1fr;
+  }
+
+  .about-values{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(max-width:850px){
+  .about-hero-inner,
+  .about-inner-light{
+    padding-left:1.2rem;
+    padding-right:1.2rem;
+  }
+
+  .about-values{
+    grid-template-columns:1fr;
+  }
+}
+
+
+
 `;
 
 const injectStyles = () => {
@@ -2436,120 +2739,173 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
 
 function AboutPage({ onNav, onContact }) {
   return (
-    <div className="pg">
-      <div className="ph">
-        <div className="slbl">Our Story</div>
-        <h1 className="stit">About MyChessFamily</h1>
-        <p className="ph-sub">
-          A youth chess community built on learning, confidence, and real
-          friendships.
-        </p>
-      </div>
+    <div className="pg" style={{ background: "#09131E" }}>
+      <section className="about-hero">
+        <div className="about-hero-inner">
+          <div className="about-kicker">About My Chess Family</div>
+          <h1 className="about-title">
+            More Than a Chess School — A Community for Growth
+          </h1>
+          <p className="about-sub">
+            My Chess Family helps children develop strategic thinking,
+            confidence, resilience, and character through high-quality chess
+            education in a supportive and inspiring environment.
+          </p>
 
-      <div className="wrap">
-        <div className="about-g">
-          <div className="about-vis">
-            <div className="apc">
-              ♔ ♕ ♖<br />♗ ♘ ♙<br />♛ ♚ ♜
+          <div className="about-hero-actions">
+            <button className="btn btn-g" onClick={() => onNav("programs")}>
+              ♟ View Programs
+            </button>
+            <button
+              className="btn btn-g"
+              style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+              onClick={onContact}
+            >
+              ✉️ Contact
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section className="about-light">
+        <div className="about-inner-light">
+          <div className="about-story">
+            <div className="about-story-card">
+              <h2>Our Story</h2>
+              <p>
+                My Chess Family is a chess education program dedicated to
+                helping children grow not only as players, but also as people.
+                Through structured training, tournament experience, and
+                supportive mentorship, students build skills that go far beyond
+                the chessboard.
+              </p>
+              <p>
+                The program brings together experienced coaches, master-level
+                players, and grandmasters to create a strong learning
+                environment for students of all levels — from complete beginners
+                to serious tournament competitors.
+              </p>
+              <p>
+                What makes My Chess Family special is the sense of connection.
+                Students, coaches, and families become part of a real community
+                built on encouragement, discipline, and long-term growth.
+              </p>
             </div>
-            <p
-              style={{
-                marginTop: "1.4rem",
-                color: "var(--muted)",
-                fontSize: ".88rem",
-                fontStyle: "italic",
-              }}
-            >
-              "Chess is the gymnasium of the mind."
-            </p>
-            <p
-              style={{
-                color: "var(--green2)",
-                fontSize: ".78rem",
-                marginTop: ".38rem",
-              }}
-            >
-              — Blaise Pascal
+
+            <div className="about-visual-card">
+              <img src="/pieces/logo.png" alt="My Chess Family" />
+            </div>
+          </div>
+
+          <div className="about-section-head">
+            <h2>Founded With Purpose</h2>
+            <p>
+              The vision behind My Chess Family is rooted in strong teaching,
+              empathy, and the belief that every child can grow through the game
+              of chess.
             </p>
           </div>
 
-          <div>
-            <h2
-              style={{
-                fontFamily: "'Playfair Display',serif",
-                fontSize: "2rem",
-                marginBottom: "1.3rem",
-              }}
-            >
-              Founded With a Purpose
-            </h2>
-            <p
-              style={{
-                color: "var(--muted)",
-                lineHeight: 1.8,
-                marginBottom: "1rem",
-              }}
-            >
-              MyChessFamily was founded in 2016 in New York City with a simple
-              but powerful mission: to give every child, regardless of
-              background, access to the transformative game of chess.
-            </p>
-            <p
-              style={{
-                color: "var(--muted)",
-                lineHeight: 1.8,
-                marginBottom: "1rem",
-              }}
-            >
-              Over the years, we&apos;ve grown from a small after-school program
-              into one of New York&apos;s most beloved youth chess
-              organizations—teaching hundreds of kids each year to think
-              strategically, compete gracefully, and grow into confident young
-              adults.
-            </p>
-            <p style={{ color: "var(--muted)", lineHeight: 1.8 }}>
-              Our coaches are passionate about youth development. Chess is for
-              every child — from first-timers to future grandmasters.
-            </p>
-
-            <div style={{ marginTop: "1.3rem" }}>
-              {["📍 New York City", "🎓 Certified Coaches", "👶 Ages 6–16"].map(
-                (c) => (
-                  <span className="chip" key={c}>
-                    {c}
-                  </span>
-                ),
-              )}
+          <div className="about-founder">
+            <div className="about-founder-side">
+              <div className="about-founder-mark">♔</div>
+              <div className="about-founder-name">Dmitri Shevelev</div>
+              <div className="about-founder-role">Founder & Head Coach</div>
             </div>
 
-            <div
-              style={{
-                marginTop: "1.6rem",
-                display: "flex",
-                gap: ".8rem",
-                flexWrap: "wrap",
-              }}
-            >
-              <button
-                className="btn btn-g"
-                style={{
-                  background: "var(--navy3)",
-                }}
-                onClick={() => onNav("team")}
-              >
-                ♟ Meet Our Team
+            <div className="about-founder-copy">
+              <h3>Dmitri Shevelev</h3>
+              <p>
+                My Chess Family was founded by FIDE Master Dmitri Shevelev, an
+                experienced chess educator with more than two decades of
+                teaching experience. He began playing chess at age six and
+                teaching at eighteen, later continuing his work in the United
+                States.
+              </p>
+              <p>
+                Over the years, Dmitri has taught thousands of students through
+                school programs, private lessons, camps, and tournament
+                preparation. His work has included beginners learning the game
+                for the first time as well as advanced players preparing for
+                serious competition.
+              </p>
+              <p>
+                His philosophy is simple: every child is unique, and the best
+                teaching happens when coaches understand how a student thinks,
+                learns, and grows with confidence.
+              </p>
+            </div>
+          </div>
+
+          <div className="about-section-head">
+            <h2>What We Help Students Build</h2>
+            <p>
+              Chess is used as an educational tool to develop practical skills,
+              emotional strength, and long-term confidence.
+            </p>
+          </div>
+
+          <div className="about-values">
+            <div className="about-value">
+              <div className="about-value-icon">♟</div>
+              <h4>Strategic Thinking</h4>
+              <p>
+                Students learn how to think ahead, evaluate options, and make
+                thoughtful decisions with greater clarity.
+              </p>
+            </div>
+
+            <div className="about-value">
+              <div className="about-value-icon">🧠</div>
+              <h4>Focus & Discipline</h4>
+              <p>
+                Chess helps students improve concentration, patience, and the
+                ability to stay engaged with challenging problems.
+              </p>
+            </div>
+
+            <div className="about-value">
+              <div className="about-value-icon">⭐</div>
+              <h4>Confidence & Resilience</h4>
+              <p>
+                Students learn how to handle mistakes, recover from losses, and
+                continue improving with maturity and self-belief.
+              </p>
+            </div>
+
+            <div className="about-value">
+              <div className="about-value-icon">🤝</div>
+              <h4>Community & Character</h4>
+              <p>
+                Families become part of a supportive environment where students
+                encourage one another and grow through shared experience.
+              </p>
+            </div>
+          </div>
+
+          <div className="about-cta">
+            <h3>Discover the right path for your child</h3>
+            <p>
+              Whether your child is just starting or already competing, My Chess
+              Family offers a supportive environment to learn, improve, and grow
+              with confidence.
+            </p>
+
+            <div className="about-cta-actions">
+              <button className="btn btn-g" onClick={() => onNav("programs")}>
+                ♟ Explore Programs
               </button>
               <button
                 className="btn btn-g"
                 style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
-                onClick={onContact}
+                onClick={() => onNav("team")}
               >
-                ✉️ Contact
+                👥 Meet Our Team
               </button>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <Footer onNav={onNav} onContact={onContact} />
     </div>
