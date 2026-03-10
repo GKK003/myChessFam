@@ -522,20 +522,26 @@ tr:hover td{background:rgba(26,94,168,.07);}
   text-align:center;
   box-shadow:0 6px 18px rgba(0,0,0,0.08);
   transition:0.25s;
-  color: #1F2B3A;
+  color:#1F2B3A;
   cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  height:100%;
 }
 
 .offer-card p {
 margin-top:10px;
 }
 
-.offer-card span {
-color:white;
-margin-top: 15px;
-background: var(--green);
-padding:5px;
-border-radius: 10px;
+.offer-card span{
+  color:white;
+  margin-top:auto;
+  margin-top:20px;
+  background:var(--green);
+  padding:9px;
+  border-radius:10px;
+  font-size:16px;
+  display:inline-block;
 }
 
 .offer-card span:hover {
