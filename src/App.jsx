@@ -531,12 +531,12 @@ tr:hover td{background:rgba(26,94,168,.07);}
 
 .offer-card p {
 margin-top:10px;
+margin-bottom: 10px;
 }
 
 .offer-card span{
   color:white;
   margin-top:auto;
-  margin-top:20px;
   background:var(--green);
   padding:9px;
   border-radius:10px;
