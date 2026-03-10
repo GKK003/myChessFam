@@ -3100,7 +3100,7 @@ function ReviewsPage({ reviews, openModal, onNav, onContact }) {
           </p>
 
           <div className="reviews-rating-big">
-            <div className="reviews-rating-score">{avg.toFixed(1)}/5</div>
+            <div className="reviews-rating-score">{avg.toFixed(1)}/5.0</div>{" "}
             <div className="reviews-rating-stars">
               <Stars rating={Math.round(avg)} />
             </div>
