@@ -519,7 +519,7 @@ app.delete("/api/admin/reviews/:id", requireAuth, async (req, res) => {
 /* =========================
    SPA FALLBACK
 ========================= */
-app.get("*", async (req, res) => {
+app.get(/^(?!\/api).*/, async (req, res) => {
   try {
     const requestedPath = path.join(distDir, req.path);
 
