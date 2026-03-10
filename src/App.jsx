@@ -141,7 +141,11 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   --r:13px;
 }
 
+
+
 /* ── NAV ── */
+
+
 .nav{
   position:fixed;
   top:0;
@@ -481,7 +485,21 @@ tr:hover td{background:rgba(26,94,168,.07);}
   cursor:pointer;
   transition:.2s;
   box-shadow:0 10px 24px rgba(46,125,91,.18);
+
+
 }
+
+.home-main-title{
+  background:#F5F6F8;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.6rem,4vw,3.6rem);
+  font-weight:900;
+  text-align:center;
+  color:#1F2B3A;
+  padding:4rem 2rem 2rem 2rem;
+  margin:0;
+}
+
 .home-split-btn:hover{transform:translateY(-2px);background:#276B4D;}
 .home-split-media{display:flex;justify-content:center;align-items:center;}
 .home-split-media img{width:100%;max-width:430px;border-radius:18px;display:block;object-fit:cover;}
