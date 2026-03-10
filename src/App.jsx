@@ -142,7 +142,27 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 }
 
 /* ── NAV ── */
-.nav{position:fixed;top:0;left:0;width:100%;z-index:999;height:100px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(9,19,30,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);}
+.nav{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:999;
+  height:100px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 2.5rem;
+  background:rgba(9,19,30,0.97);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(18px);
+  transform:translateY(0);
+  transition:transform .35s ease;
+}
+
+.nav-hide{
+  transform:translateY(-100%);
+}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--green2);cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;}
 .nav-links{display:flex;gap:2px;flex-wrap:wrap;}
 .nav-right{display:flex;align-items:center;gap:5px;}
@@ -1103,7 +1123,7 @@ function HomePage({ onNav, onContact }) {
             >
               <div
                 style={{
-                  width: "80%",
+                  width: "90%",
                   height: "2px",
                   background: "rgba(34,114,204,0.35)",
                   margin: "0 0 3rem 0",
