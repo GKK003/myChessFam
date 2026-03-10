@@ -622,6 +622,328 @@ box-shadow:0 8px 26px rgba(21,122,69,.45);
 }
 
 
+.camp-page-top{
+  background:linear-gradient(180deg,#F5F6F8 0%, #EEF2F6 100%);
+  padding:4.5rem 0 2.5rem;
+  border-bottom:1px solid #E2E8F0;
+}
+
+.camp-page-top-inner{
+  width:100%;
+  max-width:1100px;
+  margin:0 auto;
+  padding:0 2.5rem;
+}
+
+.camp-page-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.4rem,4vw,3.6rem);
+  color:#1F2B3A;
+  line-height:1.08;
+  margin-bottom:1rem;
+}
+
+.camp-page-sub{
+  max-width:760px;
+  color:#5C6B7C;
+  line-height:1.85;
+  font-size:1rem;
+}
+
+.camp-list-wrap{
+  width:100%;
+  max-width:1100px;
+  margin:0 auto;
+  padding:2.5rem 2.5rem 4.5rem;
+}
+
+.camp-list{
+  display:flex;
+  flex-direction:column;
+  gap:1.4rem;
+}
+
+.camp-row-card{
+  display:grid;
+  grid-template-columns:340px 1fr;
+  gap:1.4rem;
+  background:#fff;
+  border:1px solid #E2E8F0;
+  border-radius:20px;
+  padding:1.2rem;
+  box-shadow:0 8px 24px rgba(15,23,42,.05);
+  transition:.22s;
+}
+
+.camp-row-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 16px 40px rgba(15,23,42,.08);
+}
+
+.camp-row-media{
+  background:#F8FAFC;
+  border:1px solid #E2E8F0;
+  border-radius:16px;
+  min-height:210px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:1rem;
+}
+
+.camp-row-media img{
+  width:112%;
+  height:111%;
+  object-fit:cover;
+  border-radius:12px;
+}
+
+.camp-row-main{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-width:0;
+}
+
+.camp-row-head{
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  align-items:flex-start;
+}
+
+.camp-row-head h3{
+  font-family:'Playfair Display',serif;
+  font-size:1.45rem;
+  color:#1F2B3A;
+  margin-bottom:.55rem;
+}
+
+.camp-row-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:.6rem;
+}
+
+.camp-row-meta span{
+  font-size:.84rem;
+  color:#5C6B7C;
+  background:#F8FAFC;
+  border:1px solid #E2E8F0;
+  padding:.38rem .65rem;
+  border-radius:999px;
+}
+
+.camp-row-badge .bdg{
+  position:static;
+}
+
+.camp-row-desc{
+  margin:1rem 0 1.2rem;
+  color:#5C6B7C;
+  line-height:1.8;
+  font-size:.95rem;
+}
+
+.camp-row-bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:1rem;
+  flex-wrap:wrap;
+  padding-top:1rem;
+  border-top:1px solid #EDF2F7;
+}
+
+.camp-row-price{
+  font-family:'Playfair Display',serif;
+  font-size:2rem;
+  color:#2E7D5B;
+  font-weight:900;
+}
+
+.camp-row-price span{
+  font-family:'DM Sans',sans-serif;
+  font-size:.9rem;
+  color:#5C6B7C;
+  font-weight:500;
+}
+
+.camp-row-actions{
+  display:flex;
+  gap:.7rem;
+  flex-wrap:wrap;
+}
+
+.camp-row-btn{
+  border:none;
+  border-radius:10px;
+  padding:.9rem 1.2rem;
+  font-family:'DM Sans',sans-serif;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.camp-row-btn.primary{
+  background:#2E7D5B;
+  color:#fff;
+}
+
+.camp-row-btn.primary:hover{
+  background:#276B4D;
+  transform:translateY(-1px);
+}
+
+.camp-row-btn.primary:disabled{
+  background:#CBD5E1;
+  color:#64748B;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.camp-row-btn.ghost{
+  background:#EEF2F6;
+  color:#1F2B3A;
+}
+
+.camp-row-btn.ghost:hover{
+  background:#E2E8F0;
+}
+
+@media(max-width:850px){
+  .camp-page-top-inner,
+  .camp-list-wrap{
+    padding-left:1.2rem;
+    padding-right:1.2rem;
+  }
+
+  .camp-row-card{
+    grid-template-columns:1fr;
+  }
+
+  .camp-row-media{
+    min-height:170px;
+  }
+
+  .camp-row-head{
+    flex-direction:column;
+  }
+
+  .camp-row-bottom{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+
+  .camp-row-actions{
+    width:100%;
+  }
+
+  .camp-row-btn{
+    flex:1;
+  }
+}
+
+
+.bdg-open{
+  background:#DCFCE7;
+  color:#166534;
+}
+
+.bdg-up{
+  background:#DBEAFE;
+  color:#1D4ED8;
+  border:1px solid #BFDBFE;
+}
+
+.bdg-full{
+  background:#FEE2E2;
+  color:#B91C1C;
+  border:1px solid #FECACA;
+}
+
+
+.camp-hero{
+  text-align:center;
+  padding:4rem 2rem 2rem 2rem;
+}
+
+.camp-hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:3rem;
+  color:#1F2B3A;
+}
+
+.camp-hero p{
+  max-width:600px;
+  margin:1rem auto 0 auto;
+  color:#5C6B7C;
+  line-height:1.7;
+}
+
+.camp-grid{
+  max-width:1200px;
+  margin:2rem auto 4rem auto;
+  padding:0 2rem;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:2rem;
+}
+
+.camp-card{
+  background:white;
+  border-radius:14px;
+  padding:2rem;
+  text-align:center;
+  box-shadow:0 8px 24px rgba(0,0,0,0.08);
+  transition:.25s;
+}
+
+.camp-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 18px 40px rgba(0,0,0,0.12);
+}
+
+.camp-icon{
+  width:90px;
+  margin-bottom:1rem;
+}
+
+.camp-meta{
+  color:#5C6B7C;
+  font-size:.9rem;
+  margin:4px 0;
+}
+
+.camp-price{
+  font-size:1.8rem;
+  color:#2E7D5B;
+  font-weight:800;
+  margin:1rem 0;
+}
+
+.camp-desc{
+  color:#5C6B7C;
+  font-size:.9rem;
+  margin-bottom:1.2rem;
+}
+
+.camp-btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#2E7D5B;
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.camp-btn:hover{
+  background:#276B4D;
+}
+
+
 @media(max-width:950px){
   .home-split-wrap,
   .home-split-wrap.rev{
@@ -1452,70 +1774,89 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
   const [modal, setModal] = useState(null);
 
   return (
-    <div className="pg">
-      <div
-        className="ph"
-        style={{
-          background:
-            "linear-gradient(180deg,rgba(21,122,69,.1) 0%,transparent 100%)",
-        }}
-      >
-        <div className="slbl" style={{ color: "var(--green2)" }}>
-          Summer Programs
+    <div className="pg" style={{ background: "#F5F6F8" }}>
+      <section className="camp-page-top">
+        <div className="camp-page-top-inner">
+          <div className="slbl">Summer Program</div>
+          <h1 className="camp-page-title">Summer Chess Camp</h1>
+          <p className="camp-page-sub">
+            Intensive chess training, practical tournament experience, and a fun
+            learning environment where students build skill, confidence, and
+            friendships.
+          </p>
         </div>
-        <h1 className="stit">Summer Chess Camps</h1>
-        <p className="ph-sub">
-          An unforgettable week of chess mastery, fun challenges, and new
-          friendships in the heart of New York City!
-        </p>
-      </div>
+      </section>
 
-      <div className="wrap" style={{ paddingTop: "3rem" }}>
+      <section className="camp-list-wrap">
         {!camps.length ? (
           <div className="empty">
             <div className="empty-i">☀️</div>
-            <p>No camp sessions scheduled yet. Check back soon!</p>
+            <p>No camp sessions scheduled yet.</p>
           </div>
         ) : (
-          <div className="g3">
+          <div className="camp-list">
             {camps.map((c) => (
-              <div className="cc" key={c.id}>
-                <div className="cc-top">
-                  <span style={{ fontSize: "3.5rem" }}>☀️</span>
-                  <span className="cc-tbdg">{c.type}</span>
+              <div className="camp-row-card" key={c.id}>
+                <div className="camp-row-media">
+                  <img src="/images/info.png" alt={c.name} />
                 </div>
 
-                <div className="cc-body" style={{ position: "relative" }}>
-                  <Badge status={c.status} />
-                  <h3 style={{ marginTop: ".5rem" }}>{c.name}</h3>
-                  <div className="cc-sub">
-                    📅 {fmtDShort(c.dateStart)} – {fmtDShort(c.dateEnd)}
-                  </div>
-                  <div className="cc-sub">
-                    📍 {c.location} · 👦 {c.age}
-                  </div>
-                  <div className="cc-price">
-                    ${c.price} <span>/ child</span>
-                  </div>
-                  <p className="cc-desc">{c.desc}</p>
+                <div className="camp-row-main">
+                  <div className="camp-row-head">
+                    <div>
+                      <h3>{c.name}</h3>
+                      <div className="camp-row-meta">
+                        <span>
+                          📅 {fmtDShort(c.dateStart)} – {fmtDShort(c.dateEnd)}
+                        </span>
+                        <span>📍 {c.location}</span>
+                        <span>👦 {c.age}</span>
+                        <span>⏰ {c.type}</span>
+                      </div>
+                    </div>
 
-                  <button
-                    className="abtn"
-                    disabled={c.status === "full"}
-                    onClick={() => setModal(c)}
-                  >
-                    {c.status === "full"
-                      ? "Registration Closed"
-                      : c.status === "upcoming"
-                        ? "Pre-Register"
-                        : "Sign Up Now"}
-                  </button>
+                    <div className="camp-row-badge">
+                      <Badge status={c.status} />
+                    </div>
+                  </div>
+
+                  <p className="camp-row-desc">{c.desc}</p>
+
+                  <div className="camp-row-bottom">
+                    <div className="camp-row-price">
+                      ${c.price}
+                      <span> / child</span>
+                    </div>
+
+                    <div className="camp-row-actions">
+                      <button
+                        className="camp-row-btn ghost"
+                        onClick={onContact}
+                        type="button"
+                      >
+                        Contact
+                      </button>
+
+                      <button
+                        className="camp-row-btn primary"
+                        disabled={c.status === "full"}
+                        onClick={() => setModal(c)}
+                        type="button"
+                      >
+                        {c.status === "full"
+                          ? "Registration Closed"
+                          : c.status === "upcoming"
+                            ? "Pre-Register"
+                            : "Sign Up Now"}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
-      </div>
+      </section>
 
       {modal && (
         <CampRegModal
