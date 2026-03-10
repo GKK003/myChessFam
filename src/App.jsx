@@ -911,8 +911,6 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
   );
 }
 
-<h1 className="home-main-title">What We Offer</h1>;
-
 /* ══════════════════════════════════════════
    PAGES
 ══════════════════════════════════════════ */
@@ -1030,7 +1028,7 @@ function HomePage({ onNav, onContact }) {
           <ChessBoard />
         </div>
       </div>
-
+      <h1 className="home-main-title">What We Offer</h1>;
       {homeSections.map((section, i) => (
         <div key={section.title}>
           <section className="home-split-sec">
@@ -1074,7 +1072,6 @@ function HomePage({ onNav, onContact }) {
           )}
         </div>
       ))}
-
       <div
         style={{
           width: "100%",
@@ -1092,7 +1089,6 @@ function HomePage({ onNav, onContact }) {
           }}
         />
       </div>
-
       <section className="home-split-sec">
         <div className="home-split-wrap">
           <div className="home-split-copy">
@@ -1126,7 +1122,6 @@ function HomePage({ onNav, onContact }) {
           </div>
         </div>
       </section>
-
       <Footer onNav={onNav} onContact={onContact} />
     </div>
   );
