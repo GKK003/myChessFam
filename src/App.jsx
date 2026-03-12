@@ -149,8 +149,8 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .adm-dot{font-size:.78rem;color:var(--green2);font-weight:600;}
 
 /* ── PAGE BASE ── */
-.pg{width:100%;min-height:100vh;padding-top:100px;}
-.pg-center{width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 1rem 2rem;}
+.pg{width:100vw;min-height:100vh;padding-top:100px;}
+.pg-center{width:100vw;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 1rem 2rem;}
 
 /* ── HERO ── */
 .hero{width:100%;min-height:calc(100vh - 66px);display:flex;align-items:center;background:linear-gradient(135deg,#09131E 0%,#0D1E2C 55%,#091A10 100%);position:relative;overflow:hidden;}
