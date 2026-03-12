@@ -9,6 +9,7 @@ import multer from "multer";
 import { MongoClient } from "mongodb";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
+import nodemailer from "nodemailer";
 
 /* =========================
    PATHS
@@ -30,6 +31,11 @@ const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY;
 const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
+// Gmail credentials for contact form emails
+const GMAIL_USER = process.env.GMAIL_USER; // e.g. mychessfamily@gmail.com
+const GMAIL_PASS = process.env.GMAIL_PASS; // Gmail App Password (16 chars)
+const CONTACT_TO = process.env.CONTACT_TO || GMAIL_USER; // where to receive emails
+
 if (!MONGODB_URL) {
   console.error("❌ Missing MONGODB_URL / MONGODB_URI env var");
   process.exit(1);
@@ -38,6 +44,23 @@ if (!MONGODB_URL) {
 if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_API_KEY || !CLOUDINARY_API_SECRET) {
   console.error("❌ Missing Cloudinary environment variables");
   process.exit(1);
+}
+
+/* =========================
+   NODEMAILER TRANSPORTER
+========================= */
+let transporter = null;
+if (GMAIL_USER && GMAIL_PASS) {
+  transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: GMAIL_USER, pass: GMAIL_PASS },
+  });
+  transporter.verify((err) => {
+    if (err) console.error("❌ Gmail transporter error:", err.message);
+    else console.log("✅ Gmail transporter ready");
+  });
+} else {
+  console.warn("⚠️  GMAIL_USER / GMAIL_PASS not set — contact emails disabled");
 }
 
 /* =========================
@@ -194,7 +217,6 @@ const authed = (req) => {
   const token = (req.headers.authorization || "").replace("Bearer ", "");
   return !!verifyToken(token);
 };
-
 const requireAuth = (req, res, next) => {
   if (!authed(req)) return res.status(401).json({ error: "Unauthorized" });
   next();
@@ -254,7 +276,7 @@ let db;
 let colCamps;
 let colCampRegs;
 let colReviews;
-let colGallery; // ← NEW
+let colGallery;
 
 async function initMongo() {
   await client.connect();
@@ -262,14 +284,12 @@ async function initMongo() {
   colCamps = db.collection("camps");
   colCampRegs = db.collection("campRegs");
   colReviews = db.collection("reviews");
-  colGallery = db.collection("gallery"); // ← NEW
+  colGallery = db.collection("gallery");
 
-  if ((await colCamps.countDocuments()) === 0) {
+  if ((await colCamps.countDocuments()) === 0)
     await colCamps.insertMany(DEFAULT_DB.camps);
-  }
-  if ((await colReviews.countDocuments()) === 0) {
+  if ((await colReviews.countDocuments()) === 0)
     await colReviews.insertMany(DEFAULT_DB.reviews);
-  }
 
   console.log("✅ MongoDB connected:", DB_NAME);
 }
@@ -370,6 +390,172 @@ app.post("/api/registrations/camp", async (req, res) => {
 });
 
 /* =========================
+   CONTACT FORM — sends HTML email
+========================= */
+app.post("/api/contact", async (req, res) => {
+  try {
+    const body = req.body || {};
+    const name = String(body.name || "").trim();
+    const email = String(body.email || "").trim();
+    const phone = String(body.phone || "").trim();
+    const subject = String(body.subject || "").trim();
+    const program = String(body.program || "").trim();
+    const message = String(body.message || "").trim();
+
+    if (!name || !email || !message) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    if (transporter && CONTACT_TO) {
+      const stamp = nowStamp();
+
+      const htmlBody = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>New Contact Form Submission</title>
+</head>
+<body style="margin:0;padding:0;background:#f0f4f8;font-family:'Segoe UI',Arial,sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f4f8;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+          <!-- HEADER -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#09131E 0%,#143524 100%);border-radius:16px 16px 0 0;padding:36px 40px;text-align:center;">
+              <div style="font-size:2.4rem;margin-bottom:8px;">♟</div>
+              <h1 style="margin:0;font-size:1.5rem;color:#ffffff;font-weight:800;letter-spacing:-0.5px;">
+                MyChessFamily
+              </h1>
+              <p style="margin:6px 0 0;font-size:0.85rem;color:rgba(255,255,255,0.6);letter-spacing:2px;text-transform:uppercase;">
+                New Contact Form Message
+              </p>
+            </td>
+          </tr>
+
+          <!-- ALERT BANNER -->
+          <tr>
+            <td style="background:#1FA85E;padding:14px 40px;text-align:center;">
+              <p style="margin:0;color:#fff;font-size:0.9rem;font-weight:700;">
+                📬 You have a new message from your website
+              </p>
+            </td>
+          </tr>
+
+          <!-- BODY -->
+          <tr>
+            <td style="background:#ffffff;padding:36px 40px;">
+
+              <!-- Sender info -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                <tr>
+                  <td style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px 24px;">
+                    <p style="margin:0 0 4px;font-size:0.72rem;font-weight:700;color:#5C6B7C;letter-spacing:1.5px;text-transform:uppercase;">From</p>
+                    <p style="margin:0;font-size:1.2rem;font-weight:800;color:#1F2B3A;">${name}</p>
+                    <p style="margin:4px 0 0;">
+                      <a href="mailto:${email}" style="color:#1FA85E;font-weight:600;text-decoration:none;font-size:0.95rem;">${email}</a>
+                      ${phone ? `<span style="color:#94a3b8;margin:0 8px;">·</span><span style="color:#5C6B7C;font-size:0.9rem;">📞 ${phone}</span>` : ""}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Meta chips -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:28px;">
+                <tr>
+                  ${
+                    program
+                      ? `
+                  <td style="padding-right:8px;">
+                    <div style="background:#ecfdf5;border:1px solid #d1f2df;border-radius:999px;padding:6px 14px;display:inline-block;font-size:0.8rem;font-weight:700;color:#1F7A53;white-space:nowrap;">
+                      ♟ ${program}
+                    </div>
+                  </td>`
+                      : ""
+                  }
+                  <td>
+                    <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:999px;padding:6px 14px;display:inline-block;font-size:0.8rem;font-weight:700;color:#0369a1;white-space:nowrap;">
+                      📅 ${stamp.date} at ${stamp.time}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Subject -->
+              ${
+                subject
+                  ? `
+              <p style="margin:0 0 6px;font-size:0.72rem;font-weight:700;color:#5C6B7C;letter-spacing:1.5px;text-transform:uppercase;">Subject</p>
+              <p style="margin:0 0 24px;font-size:1rem;font-weight:700;color:#1F2B3A;">${subject}</p>
+              `
+                  : ""
+              }
+
+              <!-- Message -->
+              <p style="margin:0 0 10px;font-size:0.72rem;font-weight:700;color:#5C6B7C;letter-spacing:1.5px;text-transform:uppercase;">Message</p>
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #1FA85E;border-radius:0 12px 12px 0;padding:20px 24px;margin-bottom:32px;">
+                <p style="margin:0;font-size:0.97rem;color:#374151;line-height:1.8;white-space:pre-wrap;">${message}</p>
+              </div>
+
+              <!-- Reply CTA -->
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <a href="mailto:${email}?subject=Re: ${encodeURIComponent(subject || "Your message to MyChessFamily")}"
+                       style="display:inline-block;background:#1FA85E;color:#ffffff;font-weight:800;font-size:0.95rem;
+                              padding:14px 36px;border-radius:10px;text-decoration:none;letter-spacing:0.3px;">
+                      ✉️ Reply to ${name.split(" ")[0]}
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td style="background:#f8fafc;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 16px 16px;padding:20px 40px;text-align:center;">
+              <p style="margin:0;font-size:0.78rem;color:#94a3b8;line-height:1.6;">
+                This message was submitted via the contact form on <strong>mychessfamily.com</strong><br/>
+                📍 New York City &nbsp;·&nbsp; ✉ mychessfamily@gmail.com
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>`;
+
+      await transporter.sendMail({
+        from: `"MyChessFamily Website" <${GMAIL_USER}>`,
+        to: CONTACT_TO,
+        replyTo: email,
+        subject: subject
+          ? `[Contact] ${subject}`
+          : `[Contact] New message from ${name}`,
+        html: htmlBody,
+        text: `New contact form message\n\nFrom: ${name} <${email}>${phone ? `\nPhone: ${phone}` : ""}${program ? `\nInterested in: ${program}` : ""}${subject ? `\nSubject: ${subject}` : ""}\n\nMessage:\n${message}\n\n---\nSent: ${stamp.date} at ${stamp.time}`,
+      });
+    }
+
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error("Contact email error:", err);
+    // Still return 200 so the user sees success
+    return res.json({ ok: true });
+  }
+});
+
+/* =========================
    PUBLIC GALLERY ROUTE
 ========================= */
 app.get("/api/gallery", async (_req, res) => {
@@ -394,9 +580,7 @@ app.post("/api/admin/login", (req, res) => {
   return res.json({ token });
 });
 
-app.post("/api/admin/logout", (_req, res) => {
-  return res.json({ ok: true });
-});
+app.post("/api/admin/logout", (_req, res) => res.json({ ok: true }));
 
 /* =========================
    ADMIN UPLOAD — CAMP IMAGE
@@ -419,9 +603,6 @@ app.post(
 
 /* =========================
    ADMIN UPLOAD — GALLERY IMAGE
-   POST /api/admin/upload-gallery
-   Accepts: multipart/form-data { image: File }
-   Returns: { image: "https://res.cloudinary.com/..." }
 ========================= */
 app.post(
   "/api/admin/upload-gallery",
@@ -435,15 +616,13 @@ app.post(
   },
   (req, res) => {
     if (!req.file) return res.status(400).json({ error: "No image uploaded" });
-    return res.json({ image: req.file.path }); // Cloudinary URL
+    return res.json({ image: req.file.path });
   },
 );
 
 /* =========================
    ADMIN GALLERY CRUD
 ========================= */
-
-/* Save gallery photo metadata after upload */
 app.post("/api/admin/gallery", requireAuth, async (req, res) => {
   try {
     const body = req.body || {};
@@ -451,7 +630,6 @@ app.post("/api/admin/gallery", requireAuth, async (req, res) => {
       return res.status(400).json({ error: "Missing imageUrl" });
     if (!body.caption)
       return res.status(400).json({ error: "Missing caption" });
-
     const photo = {
       id: Date.now(),
       imageUrl: String(body.imageUrl),
@@ -460,7 +638,6 @@ app.post("/api/admin/gallery", requireAuth, async (req, res) => {
       tag: String(body.tag || body.category || "community"),
       createdAt: Date.now(),
     };
-
     await colGallery.insertOne(photo);
     const photos = await colGallery.find().sort({ createdAt: -1 }).toArray();
     return res.status(201).json({ photos });
@@ -470,15 +647,11 @@ app.post("/api/admin/gallery", requireAuth, async (req, res) => {
   }
 });
 
-/* Delete gallery photo — also removes from Cloudinary */
 app.delete("/api/admin/gallery/:id", requireAuth, async (req, res) => {
   try {
     const id = toNumberId(req.params.id);
     const photo = await colGallery.findOne({ id });
-
     if (!photo) return res.status(404).json({ error: "Photo not found" });
-
-    // Delete from Cloudinary
     if (photo.imageUrl && photo.imageUrl.includes("res.cloudinary.com")) {
       const publicId = getCloudinaryPublicIdFromUrl(photo.imageUrl);
       if (publicId) {
@@ -491,7 +664,6 @@ app.delete("/api/admin/gallery/:id", requireAuth, async (req, res) => {
         }
       }
     }
-
     await colGallery.deleteOne({ id });
     const photos = await colGallery.find().sort({ createdAt: -1 }).toArray();
     return res.json({ photos });
@@ -643,7 +815,6 @@ app.delete("/api/admin/camps/:id", requireAuth, async (req, res) => {
     const id = toNumberId(req.params.id);
     const camp = await colCamps.findOne({ id });
     if (!camp) return res.status(404).json({ error: "Camp not found" });
-
     if (
       camp.image &&
       typeof camp.image === "string" &&
@@ -660,7 +831,6 @@ app.delete("/api/admin/camps/:id", requireAuth, async (req, res) => {
         }
       }
     }
-
     await colCamps.deleteOne({ id });
     const camps = await colCamps.find().sort({ id: -1 }).toArray();
     return res.json({ camps });
@@ -718,8 +888,7 @@ app.get(/^(?!\/api).*/, async (req, res) => {
     ) {
       return res.sendFile(requestedPath);
     }
-    const indexPath = path.join(distDir, "index.html");
-    return res.sendFile(indexPath);
+    return res.sendFile(path.join(distDir, "index.html"));
   } catch (err) {
     console.error(err);
     return res.status(500).send("Server error");
