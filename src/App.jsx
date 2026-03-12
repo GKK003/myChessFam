@@ -764,6 +764,7 @@ function Footer({ onNav, onContact }) {
           ["programs", "Programs"],
           ["camp", "Summer Camp"],
           ["team", "Our Team"],
+          ["gallery", "Gallery"],
           ["reviews", "Reviews"],
           ["about", "About"],
         ].map(([p, l]) => (
@@ -2177,6 +2178,8 @@ function AdminPage({
   campRegs,
   reloadRegs,
   adminReviews,
+  galleryPhotos,
+  reloadGallery,
   onLogout,
   showToast,
 }) {
@@ -2384,6 +2387,7 @@ function AdminPage({
             ["camps", "☀️ Manage Camps"],
             ["campregs", "🏕 Camp Sign-Ups"],
             ["reviews", "⭐ Reviews"],
+            ["gallery", "📸 Gallery"],
           ].map(([id, lbl]) => (
             <button
               key={id}
@@ -2895,6 +2899,826 @@ function AdminPage({
             )}
           </>
         )}
+
+        {/* ══ TAB: GALLERY ══ */}
+        {tab === "gallery" && (
+          <GalleryAdminTab
+            photos={galleryPhotos}
+            reload={reloadGallery}
+            showToast={showToast}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════ GALLERY ADMIN TAB ══════════════════════════════════════════ */
+function GalleryAdminTab({ photos, reload, showToast }) {
+  const [caption, setCaption] = useState("");
+  const [category, setCategory] = useState("camps");
+  const [tag, setTag] = useState("");
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
+  const onFileChange = (e) => {
+    const f = e.target.files?.[0] || null;
+    setFile(f);
+    if (f) {
+      const reader = new FileReader();
+      reader.onload = (ev) => setPreview(ev.target.result);
+      reader.readAsDataURL(f);
+    } else {
+      setPreview(null);
+    }
+  };
+
+  const submit = async () => {
+    if (!file) {
+      showToast("Please select an image.", "e");
+      return;
+    }
+    if (!caption.trim()) {
+      showToast("Please add a caption.", "e");
+      return;
+    }
+    setUploading(true);
+    try {
+      // 1. Upload image to Cloudinary via server
+      const fd = new FormData();
+      fd.append("image", file);
+      const BASE = import.meta.env.VITE_API_URL || "";
+      const token = localStorage.getItem("mcf_admin_token");
+      const uploadRes = await fetch(`${BASE}/api/admin/upload-gallery`, {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: fd,
+      });
+      const uploadData = await uploadRes.json().catch(() => ({}));
+      if (!uploadRes.ok) throw new Error(uploadData.error || "Upload failed");
+
+      // 2. Save metadata to DB
+      await api("/admin/gallery", {
+        method: "POST",
+        body: JSON.stringify({
+          imageUrl: uploadData.image,
+          caption: caption.trim(),
+          category,
+          tag: tag.trim() || category,
+        }),
+      });
+
+      showToast("📸 Photo uploaded!", "s");
+      setCaption("");
+      setCategory("camps");
+      setTag("");
+      setFile(null);
+      setPreview(null);
+      await reload?.();
+    } catch (err) {
+      showToast(err.message || "Upload failed.", "e");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const deletePhoto = async (id) => {
+    if (!confirm("Delete this photo?")) return;
+    try {
+      await api(`/admin/gallery/${id}`, { method: "DELETE" });
+      showToast("Deleted.", "i");
+      await reload?.();
+    } catch (err) {
+      showToast(err.message || "Could not delete.", "e");
+    }
+  };
+
+  return (
+    <>
+      {/* Upload Form */}
+      <div className="add-form">
+        <h3
+          style={{
+            fontFamily: "'Playfair Display',serif",
+            fontSize: "1.25rem",
+            marginBottom: "1.3rem",
+          }}
+        >
+          📸 Upload New Photo
+        </h3>
+        <div className="fgrid">
+          <div className="fg full">
+            <label className="lbl">Photo *</label>
+            <input
+              className="inp"
+              type="file"
+              accept="image/*"
+              onChange={onFileChange}
+            />
+            {preview && (
+              <div style={{ marginTop: ".8rem" }}>
+                <img
+                  src={preview}
+                  alt="preview"
+                  style={{
+                    width: "100%",
+                    maxWidth: 300,
+                    borderRadius: 10,
+                    objectFit: "cover",
+                    border: "1px solid rgba(74,171,232,.18)",
+                  }}
+                />
+              </div>
+            )}
+          </div>
+          <div className="fg full">
+            <label className="lbl">Caption *</label>
+            <input
+              className="inp"
+              placeholder="e.g. Students at summer camp 2024"
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+            />
+          </div>
+          <div className="fg">
+            <label className="lbl">Category</label>
+            <select
+              className="inp"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option value="camps">Summer Camps</option>
+              <option value="tournaments">Tournaments</option>
+              <option value="lessons">Lessons</option>
+              <option value="community">Community</option>
+            </select>
+          </div>
+          <div className="fg">
+            <label className="lbl">Tag (optional)</label>
+            <input
+              className="inp"
+              placeholder="e.g. Summer Camp 2024"
+              value={tag}
+              onChange={(e) => setTag(e.target.value)}
+            />
+          </div>
+        </div>
+        <button
+          className="sbtn"
+          onClick={submit}
+          disabled={uploading}
+          style={{ opacity: uploading ? 0.6 : 1 }}
+        >
+          {uploading ? "⏳ Uploading..." : "Upload Photo →"}
+        </button>
+      </div>
+
+      {/* Photo List */}
+      <h3 className="adm-section-title">Gallery Photos ({photos.length})</h3>
+      {!photos.length ? (
+        <div className="empty">
+          <div className="empty-i">📸</div>
+          <p>No photos uploaded yet.</p>
+        </div>
+      ) : (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill,minmax(200px,1fr))",
+            gap: "1rem",
+          }}
+        >
+          {photos.map((p) => (
+            <div
+              key={p.id}
+              style={{
+                background: "rgba(26,94,168,.07)",
+                border: "1px solid var(--border)",
+                borderRadius: 14,
+                overflow: "hidden",
+              }}
+            >
+              <img
+                src={p.imageUrl}
+                alt={p.caption}
+                style={{
+                  width: "100%",
+                  height: 150,
+                  objectFit: "cover",
+                  display: "block",
+                }}
+              />
+              <div style={{ padding: ".8rem" }}>
+                <div
+                  style={{
+                    fontSize: ".82rem",
+                    fontWeight: 700,
+                    color: "#EEF5FF",
+                    marginBottom: ".25rem",
+                    wordBreak: "break-word",
+                  }}
+                >
+                  {p.caption}
+                </div>
+                <div
+                  style={{
+                    fontSize: ".72rem",
+                    color: "var(--green2)",
+                    marginBottom: ".6rem",
+                    textTransform: "uppercase",
+                    letterSpacing: "1px",
+                  }}
+                >
+                  {p.tag || p.category}
+                </div>
+                <button
+                  className="delbtn"
+                  style={{ width: "100%", textAlign: "center" }}
+                  onClick={() => deletePhoto(p.id)}
+                >
+                  🗑 Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
+/* ══════════════════════════════════════════ GALLERY & 404 CSS ══════════════════════════════════════════ */
+const GALLERY_CSS = `
+/* ── GALLERY PAGE ── */
+.gallery-hero{
+  background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);
+  padding:5rem 0 4rem;position:relative;overflow:hidden;
+}
+.gallery-hero::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 20% 30%,rgba(74,171,232,.16),transparent 32%),
+             radial-gradient(circle at 80% 20%,rgba(31,168,94,.14),transparent 28%);
+  pointer-events:none;
+}
+.gallery-hero-inner{
+  width:100%;max-width:1200px;margin:0 auto;
+  padding:0 2.5rem;position:relative;z-index:1;text-align:center;
+}
+.gallery-kicker{
+  display:inline-block;font-size:.75rem;letter-spacing:2px;
+  text-transform:uppercase;color:var(--green2);font-weight:700;margin-bottom:1rem;
+}
+.gallery-title{
+  font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4.5vw,4rem);
+  line-height:1.08;color:#F4F8FC;margin-bottom:1rem;
+}
+.gallery-sub{
+  max-width:700px;margin:0 auto;color:rgba(220,233,245,.78);line-height:1.8;font-size:1rem;
+}
+.gallery-hero-actions{margin-top:1.8rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
+
+/* Filter tabs */
+.gallery-wrap{background:#F5F6F8;padding:3rem 0 4rem;}
+.gallery-inner{width:100%;max-width:1200px;margin:0 auto;padding:0 2.5rem;}
+.gallery-filters{
+  display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin-bottom:2.5rem;
+}
+.gf-btn{
+  background:#fff;border:1.5px solid #E2E8F0;border-radius:999px;
+  padding:.5rem 1.2rem;font-family:'DM Sans',sans-serif;font-size:.85rem;
+  font-weight:700;color:#3A4A5B;cursor:pointer;transition:.2s;
+}
+.gf-btn:hover{border-color:#2E7D5B;color:#2E7D5B;}
+.gf-btn.on{background:#2E7D5B;border-color:#2E7D5B;color:#fff;}
+
+/* Masonry-style grid */
+.gallery-grid{
+  columns:3;column-gap:1.1rem;
+}
+@media(max-width:900px){.gallery-grid{columns:2;}}
+@media(max-width:550px){.gallery-grid{columns:1;}}
+
+.gallery-item{
+  break-inside:avoid;margin-bottom:1.1rem;
+  border-radius:18px;overflow:hidden;
+  position:relative;cursor:pointer;
+  background:linear-gradient(135deg,#13263B,#0F3A28);
+  border:1px solid #E2E8F0;
+  box-shadow:0 8px 24px rgba(15,23,42,.07);
+  transition:.28s;
+}
+.gallery-item:hover{transform:translateY(-5px);box-shadow:0 20px 44px rgba(15,23,42,.14);}
+.gallery-item:hover .gallery-overlay{opacity:1;}
+.gallery-item:hover .gallery-img{transform:scale(1.04);}
+
+.gallery-img-wrap{overflow:hidden;width:100%;}
+.gallery-img{
+  width:100%;display:block;object-fit:cover;
+  transition:transform .45s ease;
+}
+
+/* Emoji placeholder tiles (when no real image) */
+.gallery-placeholder{
+  width:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:2.5rem 1rem;text-align:center;
+  min-height:180px;
+  background:linear-gradient(135deg,#13263B,#0F3A28);
+}
+.gallery-placeholder-icon{font-size:3rem;margin-bottom:.6rem;}
+.gallery-placeholder-label{
+  font-size:.8rem;font-weight:700;color:rgba(220,233,245,.5);
+  letter-spacing:1px;text-transform:uppercase;
+}
+
+.gallery-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(9,19,30,.88) 100%);
+  opacity:0;transition:.3s;
+  display:flex;flex-direction:column;justify-content:flex-end;padding:1.2rem;
+}
+.gallery-overlay-tag{
+  font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:var(--green2);margin-bottom:.3rem;
+}
+.gallery-overlay-caption{
+  font-size:.92rem;font-weight:700;color:#EEF5FF;line-height:1.4;
+}
+
+/* Lightbox */
+.lightbox-ovl{
+  position:fixed;inset:0;z-index:2000;
+  background:rgba(0,0,0,.95);backdrop-filter:blur(18px);
+  display:flex;align-items:center;justify-content:center;
+  padding:1.5rem;animation:fu .2s ease;
+}
+.lightbox-inner{
+  position:relative;max-width:900px;width:100%;
+  display:flex;flex-direction:column;align-items:center;
+}
+.lightbox-img{
+  width:100%;max-height:75vh;object-fit:contain;
+  border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.8);
+}
+.lightbox-placeholder{
+  width:100%;min-height:300px;border-radius:14px;
+  background:linear-gradient(135deg,#13263B,#0F3A28);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:5rem;
+}
+.lightbox-caption{
+  margin-top:1.1rem;text-align:center;color:rgba(220,233,245,.85);font-size:.95rem;line-height:1.6;
+}
+.lightbox-tag{
+  display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;color:var(--green2);
+  background:rgba(31,168,94,.12);border:1px solid rgba(45,204,116,.25);
+  padding:.25rem .7rem;border-radius:999px;margin-bottom:.5rem;
+}
+.lightbox-close{
+  position:absolute;top:-2.2rem;right:0;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  color:#EEF5FF;font-size:1.4rem;width:40px;height:40px;border-radius:50%;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s;
+}
+.lightbox-close:hover{background:rgba(255,255,255,.18);}
+.lightbox-nav{
+  display:flex;gap:1rem;margin-top:1.2rem;
+}
+.lightbox-nav-btn{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  color:#EEF5FF;font-size:1.2rem;width:48px;height:48px;border-radius:50%;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s;
+}
+.lightbox-nav-btn:hover{background:rgba(255,255,255,.18);}
+.lightbox-counter{
+  color:rgba(220,233,245,.5);font-size:.85rem;
+  display:flex;align-items:center;padding:0 .5rem;
+}
+
+/* Gallery CTA */
+.gallery-cta{
+  margin-top:3rem;background:linear-gradient(135deg,#12253B,#143524);
+  border-radius:26px;padding:2rem;text-align:center;color:#EEF5FF;
+}
+.gallery-cta h3{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:.65rem;}
+.gallery-cta p{color:rgba(220,233,245,.78);line-height:1.8;max-width:700px;margin:0 auto;}
+.gallery-cta-actions{margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
+
+@media(max-width:850px){
+  .gallery-hero-inner,.gallery-inner{padding-left:1.2rem;padding-right:1.2rem;}
+}
+
+/* ── 404 PAGE ── */
+.notfound-pg{
+  width:100%;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#09131E 0%,#0D1E2C 55%,#091A10 100%);
+  position:relative;overflow:hidden;padding:8rem 2rem 4rem;
+}
+.notfound-pg::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 68% 50%,rgba(21,122,69,.08) 0%,transparent 55%),
+             radial-gradient(ellipse at 20% 75%,rgba(26,94,168,.1) 0%,transparent 50%);
+}
+.notfound-inner{
+  position:relative;z-index:2;text-align:center;max-width:640px;margin:0 auto;
+}
+.notfound-board{
+  display:grid;grid-template-columns:repeat(8,1fr);
+  width:min(300px,75vw);margin:0 auto 2.5rem;
+  border-radius:12px;overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  opacity:.55;
+}
+.notfound-sq{aspect-ratio:1;}
+.notfound-sq-l{background:#C8E6C0;}
+.notfound-sq-d{background:#2D6A4F;}
+.notfound-code{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(5rem,18vw,9rem);
+  font-weight:900;
+  line-height:1;
+  color:transparent;
+  background:linear-gradient(135deg,var(--green2),var(--blue3));
+  -webkit-background-clip:text;
+  background-clip:text;
+  margin-bottom:.5rem;
+  animation:fu .6s ease both;
+}
+.notfound-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.5rem,4vw,2.2rem);
+  color:#EEF5FF;margin-bottom:1rem;
+  animation:fu .6s ease .1s both;
+}
+.notfound-sub{
+  color:rgba(180,210,240,.65);line-height:1.8;font-size:.97rem;
+  margin-bottom:2rem;animation:fu .6s ease .2s both;
+}
+.notfound-piece{
+  font-size:3.5rem;margin-bottom:1rem;
+  display:block;animation:float 3s ease-in-out infinite;
+}
+.notfound-actions{
+  display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;
+  animation:fu .6s ease .3s both;
+}
+.notfound-links{
+  margin-top:2.5rem;display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;
+  animation:fu .6s ease .4s both;
+}
+.notfound-link{
+  background:rgba(26,94,168,.09);border:1px solid var(--border);
+  color:rgba(220,233,245,.7);font-family:'DM Sans',sans-serif;
+  font-size:.82rem;font-weight:600;padding:.45rem 1rem;border-radius:999px;
+  cursor:pointer;transition:.18s;
+}
+.notfound-link:hover{color:var(--green2);border-color:rgba(45,204,116,.3);background:rgba(21,122,69,.1);}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+`;
+
+const injectGalleryStyles = () => {
+  if (document.getElementById("mcf-gallery-css")) return;
+  const el = document.createElement("style");
+  el.id = "mcf-gallery-css";
+  el.textContent = GALLERY_CSS;
+  document.head.appendChild(el);
+};
+
+/* ══════════════════════════════════════════ GALLERY DATA ══════════════════════════════════════════ */
+const GALLERY_CATS = [
+  { id: "all", label: "All Photos" },
+  { id: "camps", label: "Summer Camps" },
+  { id: "tournaments", label: "Tournaments" },
+  { id: "lessons", label: "Lessons" },
+  { id: "community", label: "Community" },
+];
+
+/* ══════════════════════════════════════════ GALLERY PAGE ══════════════════════════════════════════ */
+function GalleryPage({ onNav, onContact }) {
+  const [filter, setFilter] = useState("all");
+  const [lightbox, setLightbox] = useState(null);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    injectGalleryStyles();
+  }, []);
+
+  const loadGallery = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await api("/gallery");
+      setItems(data.photos || []);
+    } catch {
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadGallery();
+  }, [loadGallery]);
+
+  const filtered =
+    filter === "all" ? items : items.filter((i) => i.category === filter);
+
+  const closeLightbox = () => setLightbox(null);
+  const prevItem = () =>
+    setLightbox((i) => (i - 1 + filtered.length) % filtered.length);
+  const nextItem = () => setLightbox((i) => (i + 1) % filtered.length);
+
+  useEffect(() => {
+    if (lightbox === null) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowLeft") prevItem();
+      if (e.key === "ArrowRight") nextItem();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox, filtered.length]);
+
+  const current = lightbox !== null ? filtered[lightbox] : null;
+
+  return (
+    <div className="pg" style={{ background: "#09131E" }}>
+      <section className="gallery-hero">
+        <div className="gallery-hero-inner">
+          <div className="gallery-kicker">Photo Gallery</div>
+          <h1 className="gallery-title">Life at MyChessFamily</h1>
+          <p className="gallery-sub">
+            A look inside our lessons, tournaments, summer camps, and the
+            moments that make our chess community special. Real students. Real
+            growth. Real memories.
+          </p>
+          <div className="gallery-hero-actions">
+            <button className="btn btn-g" onClick={() => onNav("camp")}>
+              ☀️ Join Summer Camp
+            </button>
+            <button
+              className="btn btn-g"
+              style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+              onClick={onContact}
+            >
+              ✉️ Contact Us
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section className="gallery-wrap">
+        <div className="gallery-inner">
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))",
+              gap: "1rem",
+              marginBottom: "2.5rem",
+            }}
+          >
+            {[
+              ["500+", "Students Taught"],
+              ["8+", "Years of Memories"],
+              ["3", "Camps Per Year"],
+              ["50+", "Tournaments"],
+            ].map(([n, l]) => (
+              <div
+                key={l}
+                style={{
+                  background: "#fff",
+                  border: "1px solid #E2E8F0",
+                  borderRadius: 16,
+                  padding: "1.1rem",
+                  textAlign: "center",
+                  boxShadow: "0 8px 20px rgba(15,23,42,.05)",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "'Playfair Display',serif",
+                    fontSize: "1.8rem",
+                    color: "#2E7D5B",
+                    fontWeight: 900,
+                  }}
+                >
+                  {n}
+                </div>
+                <div
+                  style={{
+                    fontSize: ".8rem",
+                    color: "#5C6B7C",
+                    marginTop: ".2rem",
+                  }}
+                >
+                  {l}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="gallery-filters">
+            {GALLERY_CATS.map((c) => (
+              <button
+                key={c.id}
+                className={`gf-btn${filter === c.id ? " on" : ""}`}
+                onClick={() => {
+                  setFilter(c.id);
+                  setLightbox(null);
+                }}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+
+          {loading ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "4rem",
+                color: "var(--muted)",
+              }}
+            >
+              <div style={{ fontSize: "2rem", marginBottom: ".8rem" }}>⏳</div>
+              <p>Loading gallery...</p>
+            </div>
+          ) : !filtered.length ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "4rem 2rem",
+                background: "#fff",
+                borderRadius: 22,
+                border: "1px solid #E2E8F0",
+              }}
+            >
+              <div style={{ fontSize: "3rem", marginBottom: ".8rem" }}>📸</div>
+              <h3 style={{ color: "#1F2B3A", marginBottom: ".5rem" }}>
+                No photos yet
+              </h3>
+              <p style={{ color: "#5C6B7C" }}>
+                Photos will appear here once the admin uploads them.
+              </p>
+            </div>
+          ) : (
+            <div className="gallery-grid">
+              {filtered.map((item, idx) => (
+                <div
+                  key={item.id}
+                  className="gallery-item"
+                  onClick={() => setLightbox(idx)}
+                >
+                  <div className="gallery-img-wrap">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.caption}
+                      className="gallery-img"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="gallery-overlay">
+                    <div className="gallery-overlay-tag">
+                      {item.tag || item.category}
+                    </div>
+                    <div className="gallery-overlay-caption">
+                      {item.caption}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="gallery-cta">
+            <h3>Be part of the MyChessFamily story</h3>
+            <p>
+              Every photo here represents a student who chose to learn, compete,
+              and grow. Join us and create your own memories on the board.
+            </p>
+            <div className="gallery-cta-actions">
+              <button className="btn btn-g" onClick={() => onNav("programs")}>
+                ♟ View Programs
+              </button>
+              <button
+                className="btn btn-g"
+                style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+                onClick={() => onNav("camp")}
+              >
+                ☀️ Summer Camp
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {lightbox !== null && current && (
+        <div
+          className="lightbox-ovl"
+          onClick={(e) => e.target === e.currentTarget && closeLightbox()}
+        >
+          <div className="lightbox-inner">
+            <button className="lightbox-close" onClick={closeLightbox}>
+              ×
+            </button>
+            <img
+              src={current.imageUrl}
+              alt={current.caption}
+              className="lightbox-img"
+            />
+            <div className="lightbox-caption">
+              <div className="lightbox-tag">
+                {current.tag || current.category}
+              </div>
+              <div>{current.caption}</div>
+            </div>
+            <div className="lightbox-nav">
+              <button className="lightbox-nav-btn" onClick={prevItem}>
+                ‹
+              </button>
+              <span className="lightbox-counter">
+                {lightbox + 1} / {filtered.length}
+              </span>
+              <button className="lightbox-nav-btn" onClick={nextItem}>
+                ›
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Footer onNav={onNav} onContact={onContact} />
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════ 404 PAGE ══════════════════════════════════════════ */
+function NotFoundPage({ onNav }) {
+  useEffect(() => {
+    injectGalleryStyles();
+  }, []);
+
+  const quickLinks = [
+    ["home", "🏠 Home"],
+    ["programs", "♟ Programs"],
+    ["camp", "☀️ Summer Camp"],
+    ["team", "👥 Our Team"],
+    ["gallery", "📸 Gallery"],
+    ["reviews", "⭐ Reviews"],
+    ["about", "ℹ️ About"],
+  ];
+
+  return (
+    <div className="notfound-pg">
+      <div className="notfound-inner">
+        {/* Mini decorative board */}
+        <div className="notfound-board">
+          {Array.from({ length: 64 }, (_, i) => {
+            const r = Math.floor(i / 8),
+              c = i % 8;
+            return (
+              <div
+                key={i}
+                className={`notfound-sq ${(r + c) % 2 === 0 ? "notfound-sq-l" : "notfound-sq-d"}`}
+              />
+            );
+          })}
+        </div>
+
+        <span className="notfound-piece">♟</span>
+        <div className="notfound-code">404</div>
+        <h1 className="notfound-title">
+          Looks like this page made an illegal move
+        </h1>
+        <p className="notfound-sub">
+          The page you're looking for doesn't exist or has been moved. Don't
+          worry — even grandmasters blunder sometimes. Let's get you back on the
+          board.
+        </p>
+
+        <div className="notfound-actions">
+          <button className="btn btn-g" onClick={() => onNav("home")}>
+            ♔ Back to Home
+          </button>
+          <button
+            className="btn btn-g"
+            style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+            onClick={() => onNav("programs")}
+          >
+            ♟ View Programs
+          </button>
+        </div>
+
+        <div className="notfound-links">
+          {quickLinks.map(([p, l]) => (
+            <button key={p} className="notfound-link" onClick={() => onNav(p)}>
+              {l}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -2911,6 +3735,7 @@ export default function App() {
     "/team": "team",
     "/reviews": "reviews",
     "/about": "about",
+    "/gallery": "gallery",
     "/login": "login",
     "/admin": "admin",
   };
@@ -2918,6 +3743,7 @@ export default function App() {
 
   const [reviews, setReviews] = useState([]);
   const [adminReviews, setAdminReviews] = useState([]);
+  const [galleryPhotos, setGalleryPhotos] = useState([]);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [hideHeader, setHideHeader] = useState(false);
@@ -2984,6 +3810,8 @@ export default function App() {
       setCampRegs(data.campRegs || []);
       const rev = await api("/admin/reviews");
       setAdminReviews(rev.reviews || []);
+      const gal = await api("/gallery");
+      setGalleryPhotos(gal.photos || []);
     } catch {
       localStorage.removeItem(AUTH_KEY);
       setIsAdmin(false);
@@ -3041,6 +3869,19 @@ export default function App() {
     [isAdmin, navigate],
   );
 
+  const loadGallery = useCallback(async () => {
+    try {
+      const data = await api("/gallery");
+      setGalleryPhotos(data.photos || []);
+    } catch {
+      console.error("Could not load gallery");
+    }
+  }, []);
+
+  useEffect(() => {
+    loadGallery();
+  }, [loadGallery]);
+
   const loadReviews = useCallback(async () => {
     try {
       const data = await api("/reviews");
@@ -3088,6 +3929,7 @@ export default function App() {
             ["programs", "Programs"],
             ["camp", "Summer Camp"],
             ["team", "Our Team"],
+            ["gallery", "Gallery"],
             ["reviews", "Reviews"],
             ["about", "About"],
           ].map(([p, l]) => (
@@ -3156,6 +3998,7 @@ export default function App() {
             ["programs", "Programs"],
             ["camp", "Summer Camp"],
             ["team", "Our Team"],
+            ["gallery", "Gallery"],
             ["reviews", "Reviews"],
             ["about", "About"],
           ].map(([p, l]) => (
@@ -3239,6 +4082,10 @@ export default function App() {
           element={<AboutPage onNav={go} onContact={openContact} />}
         />
         <Route
+          path="/gallery"
+          element={<GalleryPage onNav={go} onContact={openContact} />}
+        />
+        <Route
           path="/login"
           element={<LoginPage onLogin={handleLogin} showToast={showToast} />}
         />
@@ -3252,6 +4099,8 @@ export default function App() {
                 campRegs={campRegs}
                 reloadRegs={loadAdminData}
                 adminReviews={adminReviews}
+                galleryPhotos={galleryPhotos}
+                reloadGallery={loadGallery}
                 onLogout={handleLogout}
                 showToast={showToast}
               />
@@ -3260,6 +4109,7 @@ export default function App() {
             )
           }
         />
+        <Route path="*" element={<NotFoundPage onNav={go} />} />
       </Routes>
 
       {contactOpen && (

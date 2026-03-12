@@ -49,7 +49,8 @@ cloudinary.config({
   api_secret: CLOUDINARY_API_SECRET,
 });
 
-const cloudinaryStorage = new CloudinaryStorage({
+/* --- Camp image storage --- */
+const campStorage = new CloudinaryStorage({
   cloudinary,
   params: async (_req, file) => {
     const original = file.originalname || "camp-image";
@@ -59,7 +60,6 @@ const cloudinaryStorage = new CloudinaryStorage({
       .replace(/[^a-z0-9-_]+/g, "-")
       .replace(/^-+|-+$/g, "")
       .slice(0, 50);
-
     return {
       folder: "mychessfamily/camps",
       resource_type: "image",
@@ -69,18 +69,44 @@ const cloudinaryStorage = new CloudinaryStorage({
   },
 });
 
-const upload = multer({
-  storage: cloudinaryStorage,
-  limits: { fileSize: 5 * 1024 * 1024 },
-  fileFilter: (_req, file, cb) => {
-    const ok = /^image\/(jpeg|jpg|png|webp|gif|svg\+xml)$/.test(
-      file.mimetype || "",
-    );
-    if (!ok) {
-      return cb(new Error("Only image files are allowed"));
-    }
-    cb(null, true);
+/* --- Gallery image storage --- */
+const galleryStorage = new CloudinaryStorage({
+  cloudinary,
+  params: async (_req, file) => {
+    const original = file.originalname || "gallery-image";
+    const baseName = original.replace(/\.[^/.]+$/, "");
+    const safeName = baseName
+      .toLowerCase()
+      .replace(/[^a-z0-9-_]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 50);
+    return {
+      folder: "mychessfamily/gallery",
+      resource_type: "image",
+      allowed_formats: ["jpg", "jpeg", "png", "webp", "gif"],
+      public_id: `${Date.now()}-${safeName || "gallery"}`,
+    };
   },
+});
+
+const imageFilter = (_req, file, cb) => {
+  const ok = /^image\/(jpeg|jpg|png|webp|gif|svg\+xml)$/.test(
+    file.mimetype || "",
+  );
+  if (!ok) return cb(new Error("Only image files are allowed"));
+  cb(null, true);
+};
+
+const uploadCamp = multer({
+  storage: campStorage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: imageFilter,
+});
+
+const uploadGallery = multer({
+  storage: galleryStorage,
+  limits: { fileSize: 8 * 1024 * 1024 },
+  fileFilter: imageFilter,
 });
 
 /* =========================
@@ -105,10 +131,7 @@ const nowStamp = () => {
   const d = new Date();
   return {
     date: d.toLocaleDateString("en-US"),
-    time: d.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
+    time: d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
   };
 };
 
@@ -118,21 +141,15 @@ const getCloudinaryPublicIdFromUrl = (url) => {
   try {
     if (!url || typeof url !== "string") return null;
     if (!url.includes("res.cloudinary.com")) return null;
-
     const parts = url.split("/");
     const uploadIndex = parts.findIndex((p) => p === "upload");
     if (uploadIndex === -1) return null;
-
-    // after /upload/ may come version like v123456
     const afterUpload = parts.slice(uploadIndex + 1);
-
     const first = afterUpload[0] || "";
     const withoutVersion = /^v\d+$/.test(first)
       ? afterUpload.slice(1)
       : afterUpload;
-
     if (!withoutVersion.length) return null;
-
     const joined = withoutVersion.join("/");
     const lastDot = joined.lastIndexOf(".");
     return lastDot === -1 ? joined : joined.slice(0, lastDot);
@@ -146,7 +163,6 @@ const getCloudinaryPublicIdFromUrl = (url) => {
 ========================= */
 const b64 = (s) => Buffer.from(s, "utf8").toString("base64url");
 const unb64 = (s) => Buffer.from(s, "base64url").toString("utf8");
-
 const sign = (data) =>
   crypto.createHmac("sha256", TOKEN_SECRET).update(data).digest("hex");
 
@@ -162,11 +178,9 @@ const createToken = (username) => {
 
 const verifyToken = (token) => {
   if (!token) return null;
-
   const [p, sig] = token.split(".");
   if (!p || !sig) return null;
   if (sign(p) !== sig) return null;
-
   try {
     const obj = JSON.parse(unb64(p));
     if (!obj.exp || Date.now() > obj.exp) return null;
@@ -182,9 +196,7 @@ const authed = (req) => {
 };
 
 const requireAuth = (req, res, next) => {
-  if (!authed(req)) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+  if (!authed(req)) return res.status(401).json({ error: "Unauthorized" });
   next();
 };
 
@@ -242,19 +254,19 @@ let db;
 let colCamps;
 let colCampRegs;
 let colReviews;
+let colGallery; // ← NEW
 
 async function initMongo() {
   await client.connect();
-
   db = client.db(DB_NAME);
   colCamps = db.collection("camps");
   colCampRegs = db.collection("campRegs");
   colReviews = db.collection("reviews");
+  colGallery = db.collection("gallery"); // ← NEW
 
   if ((await colCamps.countDocuments()) === 0) {
     await colCamps.insertMany(DEFAULT_DB.camps);
   }
-
   if ((await colReviews.countDocuments()) === 0) {
     await colReviews.insertMany(DEFAULT_DB.reviews);
   }
@@ -283,7 +295,6 @@ app.get("/api/reviews", async (_req, res) => {
       .find({ approved: true })
       .sort({ createdAt: -1 })
       .toArray();
-
     return res.json({ reviews });
   } catch (err) {
     console.error(err);
@@ -295,12 +306,9 @@ app.post("/api/reviews", async (req, res) => {
   try {
     const body = req.body || {};
     const stamp = nowStamp();
-
     const text = String(body.text || "").trim();
-    if (text.length < 10) {
+    if (text.length < 10)
       return res.status(400).json({ error: "Review too short" });
-    }
-
     const review = {
       id: Date.now(),
       childName: String(body.childName || "").trim(),
@@ -311,7 +319,6 @@ app.post("/api/reviews", async (req, res) => {
       approved: false,
       createdAt: Date.now(),
     };
-
     await colReviews.insertOne(review);
     return res.status(201).json({ ok: true });
   } catch (err) {
@@ -324,7 +331,6 @@ app.post("/api/registrations/camp", async (req, res) => {
   try {
     const body = req.body || {};
     const stamp = nowStamp();
-
     const required = [
       "campId",
       "campName",
@@ -335,13 +341,9 @@ app.post("/api/registrations/camp", async (req, res) => {
       "email",
       "phone",
     ];
-
     for (const key of required) {
-      if (!body[key]) {
-        return res.status(400).json({ error: `Missing ${key}` });
-      }
+      if (!body[key]) return res.status(400).json({ error: `Missing ${key}` });
     }
-
     const reg = {
       id: Date.now(),
       campId: Number(body.campId),
@@ -359,9 +361,21 @@ app.post("/api/registrations/camp", async (req, res) => {
       time: stamp.time,
       createdAt: Date.now(),
     };
-
     await colCampRegs.insertOne(reg);
     return res.status(201).json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+/* =========================
+   PUBLIC GALLERY ROUTE
+========================= */
+app.get("/api/gallery", async (_req, res) => {
+  try {
+    const photos = await colGallery.find().sort({ createdAt: -1 }).toArray();
+    return res.json({ photos });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "Server error" });
@@ -373,11 +387,9 @@ app.post("/api/registrations/camp", async (req, res) => {
 ========================= */
 app.post("/api/admin/login", (req, res) => {
   const body = req.body || {};
-
   if (body.username !== "admin" || body.password !== "chess123") {
     return res.status(401).json({ error: "Invalid credentials" });
   }
-
   const token = createToken("admin");
   return res.json({ token });
 });
@@ -387,29 +399,107 @@ app.post("/api/admin/logout", (_req, res) => {
 });
 
 /* =========================
-   ADMIN UPLOAD
+   ADMIN UPLOAD — CAMP IMAGE
 ========================= */
 app.post(
   "/api/admin/upload",
   requireAuth,
   (req, res, next) => {
-    upload.single("image")(req, res, (err) => {
-      if (err) {
+    uploadCamp.single("image")(req, res, (err) => {
+      if (err)
         return res.status(400).json({ error: err.message || "Upload failed" });
-      }
       next();
     });
   },
   (req, res) => {
-    if (!req.file) {
-      return res.status(400).json({ error: "No image uploaded" });
-    }
-
-    return res.json({
-      image: req.file.path, // Cloudinary URL
-    });
+    if (!req.file) return res.status(400).json({ error: "No image uploaded" });
+    return res.json({ image: req.file.path });
   },
 );
+
+/* =========================
+   ADMIN UPLOAD — GALLERY IMAGE
+   POST /api/admin/upload-gallery
+   Accepts: multipart/form-data { image: File }
+   Returns: { image: "https://res.cloudinary.com/..." }
+========================= */
+app.post(
+  "/api/admin/upload-gallery",
+  requireAuth,
+  (req, res, next) => {
+    uploadGallery.single("image")(req, res, (err) => {
+      if (err)
+        return res.status(400).json({ error: err.message || "Upload failed" });
+      next();
+    });
+  },
+  (req, res) => {
+    if (!req.file) return res.status(400).json({ error: "No image uploaded" });
+    return res.json({ image: req.file.path }); // Cloudinary URL
+  },
+);
+
+/* =========================
+   ADMIN GALLERY CRUD
+========================= */
+
+/* Save gallery photo metadata after upload */
+app.post("/api/admin/gallery", requireAuth, async (req, res) => {
+  try {
+    const body = req.body || {};
+    if (!body.imageUrl)
+      return res.status(400).json({ error: "Missing imageUrl" });
+    if (!body.caption)
+      return res.status(400).json({ error: "Missing caption" });
+
+    const photo = {
+      id: Date.now(),
+      imageUrl: String(body.imageUrl),
+      caption: String(body.caption).trim(),
+      category: String(body.category || "community"),
+      tag: String(body.tag || body.category || "community"),
+      createdAt: Date.now(),
+    };
+
+    await colGallery.insertOne(photo);
+    const photos = await colGallery.find().sort({ createdAt: -1 }).toArray();
+    return res.status(201).json({ photos });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+/* Delete gallery photo — also removes from Cloudinary */
+app.delete("/api/admin/gallery/:id", requireAuth, async (req, res) => {
+  try {
+    const id = toNumberId(req.params.id);
+    const photo = await colGallery.findOne({ id });
+
+    if (!photo) return res.status(404).json({ error: "Photo not found" });
+
+    // Delete from Cloudinary
+    if (photo.imageUrl && photo.imageUrl.includes("res.cloudinary.com")) {
+      const publicId = getCloudinaryPublicIdFromUrl(photo.imageUrl);
+      if (publicId) {
+        try {
+          await cloudinary.uploader.destroy(publicId, {
+            resource_type: "image",
+          });
+        } catch (e) {
+          console.error("Cloudinary delete failed:", e);
+        }
+      }
+    }
+
+    await colGallery.deleteOne({ id });
+    const photos = await colGallery.find().sort({ createdAt: -1 }).toArray();
+    return res.json({ photos });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
 
 /* =========================
    ADMIN REGISTRATIONS
@@ -445,13 +535,11 @@ app.delete(
 app.post("/api/admin/camps", requireAuth, async (req, res) => {
   try {
     const body = req.body || {};
-
     if (!body.name || !body.dateStart || !body.dateEnd || !body.location) {
-      return res.status(400).json({
-        error: "Missing name/dateStart/dateEnd/location",
-      });
+      return res
+        .status(400)
+        .json({ error: "Missing name/dateStart/dateEnd/location" });
     }
-
     const camp = {
       id: Date.now(),
       name: String(body.name),
@@ -467,9 +555,7 @@ app.post("/api/admin/camps", requireAuth, async (req, res) => {
       image: String(body.image || "/images/camp-default.jpg"),
       createdAt: Date.now(),
     };
-
     await colCamps.insertOne(camp);
-
     const camps = await colCamps.find().sort({ id: -1 }).toArray();
     return res.json({ camps });
   } catch (err) {
@@ -482,20 +568,15 @@ app.patch("/api/admin/camps/:id", requireAuth, async (req, res) => {
   try {
     const id = toNumberId(req.params.id);
     const body = req.body || {};
-
     if (!body.name || !body.dateStart || !body.dateEnd || !body.location) {
-      return res.status(400).json({
-        error: "Missing name/dateStart/dateEnd/location",
-      });
+      return res
+        .status(400)
+        .json({ error: "Missing name/dateStart/dateEnd/location" });
     }
-
     const existingCamp = await colCamps.findOne({ id });
-    if (!existingCamp) {
-      return res.status(404).json({ error: "Camp not found" });
-    }
+    if (!existingCamp) return res.status(404).json({ error: "Camp not found" });
 
     const nextImage = String(body.image || "/images/camp-default.jpg");
-
     if (
       existingCamp.image &&
       typeof existingCamp.image === "string" &&
@@ -545,13 +626,10 @@ app.patch("/api/admin/camps/:id/status", requireAuth, async (req, res) => {
   try {
     const id = toNumberId(req.params.id);
     const status = String(req.body?.status || "");
-
     if (!["open", "upcoming", "full"].includes(status)) {
       return res.status(400).json({ error: "Invalid status" });
     }
-
     await colCamps.updateOne({ id }, { $set: { status } });
-
     const camps = await colCamps.find().sort({ id: -1 }).toArray();
     return res.json({ camps });
   } catch (err) {
@@ -564,10 +642,7 @@ app.delete("/api/admin/camps/:id", requireAuth, async (req, res) => {
   try {
     const id = toNumberId(req.params.id);
     const camp = await colCamps.findOne({ id });
-
-    if (!camp) {
-      return res.status(404).json({ error: "Camp not found" });
-    }
+    if (!camp) return res.status(404).json({ error: "Camp not found" });
 
     if (
       camp.image &&
@@ -587,7 +662,6 @@ app.delete("/api/admin/camps/:id", requireAuth, async (req, res) => {
     }
 
     await colCamps.deleteOne({ id });
-
     const camps = await colCamps.find().sort({ id: -1 }).toArray();
     return res.json({ camps });
   } catch (err) {
@@ -637,7 +711,6 @@ app.delete("/api/admin/reviews/:id", requireAuth, async (req, res) => {
 app.get(/^(?!\/api).*/, async (req, res) => {
   try {
     const requestedPath = path.join(distDir, req.path);
-
     if (
       req.path !== "/" &&
       fs.existsSync(requestedPath) &&
@@ -645,7 +718,6 @@ app.get(/^(?!\/api).*/, async (req, res) => {
     ) {
       return res.sendFile(requestedPath);
     }
-
     const indexPath = path.join(distDir, "index.html");
     return res.sendFile(indexPath);
   } catch (err) {
