@@ -149,7 +149,8 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .adm-dot{font-size:.78rem;color:var(--green2);font-weight:600;}
 
 /* ── PAGE BASE ── */
-.pg{width:100vw;min-height:100vh;padding-top:100px;}
+.pg{width:100%;min-height:100vh;padding-top:100px;}
+.pg-center{width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 1rem 2rem;}
 
 /* ── HERO ── */
 .hero{width:100%;min-height:calc(100vh - 66px);display:flex;align-items:center;background:linear-gradient(135deg,#09131E 0%,#0D1E2C 55%,#091A10 100%);position:relative;overflow:hidden;}
@@ -265,8 +266,8 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .mnav-cta{margin-top:auto;padding:1rem 1.2rem 1.2rem;border-top:1px solid rgba(74,171,232,.12);}
 .mnav-cta .btn{width:100%;justify-content:center;}
 
-@media (min-width: 851px){.burger{display:none !important;}.mnav,.mnav-ovl{display:none !important;}}
-@media(max-width:1050px){.nav-links{display:none !important;}.burger{display:flex !important;}}
+@media (min-width: 1091px){.burger{display:none !important;}.mnav,.mnav-ovl{display:none !important;}}
+@media(max-width:1090px){.nav-links{display:none !important;}.burger{display:flex !important;}}
 
 /* ── STATUS BADGE ── */
 .bdg{position:absolute;top:.9rem;right:.9rem;padding:.22rem .7rem;border-radius:100px;font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
@@ -2422,19 +2423,7 @@ function LoginPage({ onLogin, showToast }) {
     }
   };
   return (
-    <div
-      className="pg"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "100vh",
-        paddingTop: "100px",
-        paddingBottom: "2rem",
-        paddingLeft: "1rem",
-        paddingRight: "1rem",
-      }}
-    >
+    <div className="pg-center">
       <div className="login-box">
         <div style={{ fontSize: "3rem", marginBottom: ".85rem" }}>🔐</div>
         <h2
