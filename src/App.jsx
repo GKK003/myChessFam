@@ -2,44 +2,29 @@ import { useState, useEffect, useCallback } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { FaInstagram, FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 
-/* ══════════════════════════════════════════
-      API
-══════════════════════════════════════════ */
+/* ══════════════════════════════════════════ API ══════════════════════════════════════════ */
 const AUTH_KEY = "mcf_admin_token";
-
 const api = async (path, options = {}) => {
   const token = localStorage.getItem(AUTH_KEY);
-
   const headers = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
   };
-
   if (token) headers.Authorization = `Bearer ${token}`;
-
   const BASE = import.meta.env.VITE_API_URL || "";
   const res = await fetch(`${BASE}/api${path}`, { ...options, headers });
   const data = await res.json().catch(() => ({}));
-
   if (!res.ok) throw new Error(data.error || "Request failed");
   return data;
 };
 
-/* ══════════════════════════════════════════
-   CONTENT / SETTINGS
-══════════════════════════════════════════ */
-
+/* ══════════════════════════════════════════ CONTENT / SETTINGS ══════════════════════════════════════════ */
 const SOCIALS = {
   instagram: "https://www.instagram.com/mychessfamily/",
   facebook: "https://www.facebook.com/Mychessfamily",
   linkedin: "https://www.linkedin.com/in/dmitri-shevelev-145ba7/",
 };
-
-const CONTACT = {
-  city: "New York City",
-  email: "mychessfamily@gmail.com",
-};
-
+const CONTACT = { city: "New York City", email: "mychessfamily@gmail.com" };
 const TEAM = [
   {
     av: "♔",
@@ -70,7 +55,6 @@ const TEAM = [
     tags: ["Strategy", "Middlegames", "Time Mgmt"],
   },
 ];
-
 const DEF_CAMPS = [
   {
     id: 1,
@@ -101,14 +85,12 @@ const DEF_CAMPS = [
     image: "/images/camp-default.jpg",
   },
 ];
-
 const PIECES = {
   0: ["♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
   1: ["♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
   6: ["♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
   7: ["♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
 };
-
 const PIECE_SVGS = {
   "♔": "/pieces/wK.svg",
   "♕": "/pieces/wQ.svg",
@@ -116,7 +98,6 @@ const PIECE_SVGS = {
   "♗": "/pieces/wB.svg",
   "♘": "/pieces/wN.svg",
   "♙": "/pieces/wP.svg",
-
   "♚": "/pieces/bK.svg",
   "♛": "/pieces/bQ.svg",
   "♜": "/pieces/bR.svg",
@@ -124,14 +105,12 @@ const PIECE_SVGS = {
   "♞": "/pieces/bN.svg",
   "♟": "/pieces/bP.svg",
 };
-
 const fmtDShort = (d) =>
   new Date(d + "T12:00:00").toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
-
 const getImageSrc = (image, base) => {
   if (!image) return "/images/camp-default.jpg";
   if (image.startsWith("http")) return image;
@@ -139,9 +118,8 @@ const getImageSrc = (image, base) => {
   if (image.startsWith("images/")) return `/${image}`;
   return `${base}${image.startsWith("/") ? image : `/${image}`}`;
 };
-/* ══════════════════════════════════════════
-   STYLES
-══════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════ STYLES ══════════════════════════════════════════ */
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -156,28 +134,8 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   --r:13px;
 }
 
-
-
 /* ── NAV ── */
-
-
-.nav{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  z-index:999;
-  height:100px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 2.5rem;
-  background:rgba(9,19,30,0.97);
-  border-bottom:1px solid var(--border);
-  backdrop-filter:blur(18px);
-  transform:translateY(0);
-  transition:transform .35s ease;
-}
+.nav{position:fixed;top:0;left:0;width:100%;z-index:999;height:100px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(9,19,30,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);transform:translateY(0);transition:transform .35s ease;}
 .nav-hide{transform:translateY(-100%);}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--green2);cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;}
 .nav-links{display:flex;gap:2px;flex-wrap:wrap;}
@@ -218,63 +176,13 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .sq-l{background:#C8E6C0;}.sq-d{background:#2D6A4F;}
 
 /* ── BTN ── */
-.btn{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  font-family:'DM Sans',sans-serif;
-  font-size:.93rem;
-  font-weight:700;
-  padding:.82rem 1.75rem;
-  border-radius:9px;
-  border:none;
-  cursor:pointer;
-  position:relative;
-  overflow:hidden;
-  transition:
-    transform .22s ease,
-    box-shadow .28s ease,
-    background .22s ease;
-}
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:.93rem;font-weight:700;padding:.82rem 1.75rem;border-radius:9px;border:none;cursor:pointer;position:relative;overflow:hidden;transition:transform .22s ease,box-shadow .28s ease,background .22s ease;}
+.btn::after{content:"";position:absolute;top:0;left:-130%;width:120%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.22),transparent);transition:left .65s ease;}
+.btn:hover::after{left:130%;}
+.btn-g{background:var(--green2);color:#fff;}
+.btn-g:hover{background:var(--green2);transform:translateY(-3px);box-shadow:0 12px 30px rgba(21,122,69,.38),0 0 14px rgba(31,168,94,.28);}
+.btn-soft:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(74,171,232,.22),0 0 14px rgba(74,171,232,.18);}
 
-.btn::after{
-  content:"";
-  position:absolute;
-  top:0;
-  left:-130%;
-  width:120%;
-  height:100%;
-  background:linear-gradient(
-    120deg,
-    transparent,
-    rgba(255,255,255,.22),
-    transparent
-  );
-  transition:left .65s ease;
-}
-
-.btn:hover::after{
-  left:130%;
-}
-
-.btn-g{
-  background:var(--green2);
-  color:#fff;
-}
-
-.btn-g:hover{
-  background:var(--green2);
-  transform:translateY(-3px);
-  box-shadow:
-    0 12px 30px rgba(21,122,69,.38),
-    0 0 14px rgba(31,168,94,.28);
-}
-    .btn-soft:hover{
-  transform:translateY(-3px);
-  box-shadow:
-    0 12px 30px rgba(74,171,232,.22),
-    0 0 14px rgba(74,171,232,.18);
-}
 /* ── SECTIONS ── */
 .wrap{width:100%;max-width:1320px;margin:0 auto;padding:4.5rem 2.5rem;}
 .slbl{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--green2);font-weight:700;margin-bottom:.55rem;}
@@ -325,27 +233,13 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .cc-price{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--green2);font-weight:900;margin:.5rem 0;}
 .cc-price span{font-size:.85rem;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400;}
 .cc-desc{color:var(--muted);font-size:.85rem;line-height:1.6;margin-bottom:1.1rem;}
-
 .piece{width:75%;height:75%;object-fit:contain;pointer-events:none;}
 
-.burger{
-  display:none;
-  width:42px;height:42px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background:rgba(26,94,168,.09);
-  color:var(--cream);
-  cursor:pointer;
-  align-items:center;
-  justify-content:center;
-  transition:.18s;
-}
+/* ── BURGER ── */
+.burger{display:none;width:42px;height:42px;border-radius:10px;border:1px solid var(--border);background:rgba(26,94,168,.09);color:var(--cream);cursor:pointer;align-items:center;justify-content:center;transition:.18s;}
 .burger:hover{background:rgba(26,94,168,.14);}
 .burger-lines{width:18px;height:14px;position:relative;padding-right:14px;}
-.burger-lines span{
-  position:absolute;left:0;right:0;height:2px;border-radius:2px;
-  background:rgba(220,233,245,.9);transition:.18s;display:block;
-}
+.burger-lines span{position:absolute;left:0;right:0;height:2px;border-radius:2px;background:rgba(220,233,245,.9);transition:.18s;display:block;}
 .burger-lines span:nth-child(1){top:0;}
 .burger-lines span:nth-child(2){top:6px;opacity:.9;}
 .burger-lines span:nth-child(3){top:12px;}
@@ -354,73 +248,25 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .burger.on .burger-lines span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
 
 /* Overlay */
-.mnav-ovl{
-  position:fixed;inset:0;z-index:1200;
-  background:rgba(0,0,0,.6);
-  backdrop-filter:blur(8px);
-  opacity:0;pointer-events:none;
-  transition:.2s;
-}
+.mnav-ovl{position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:.2s;}
 .mnav-ovl.on{opacity:1;pointer-events:auto;}
 
 /* Drawer */
-.mnav{
-  position:fixed;top:0;right:0;height:100vh;z-index:1250;
-  width:min(86vw,360px);
-  background:#0C1C2E;
-  border-left:1px solid var(--border);
-  transform:translateX(105%);
-  transition:transform .25s cubic-bezier(.2,.9,.2,1);
-  display:flex;flex-direction:column;
-}
+.mnav{position:fixed;top:0;right:0;height:100vh;z-index:1250;width:min(86vw,360px);background:#0C1C2E;border-left:1px solid var(--border);transform:translateX(105%);transition:transform .25s cubic-bezier(.2,.9,.2,1);display:flex;flex-direction:column;}
 .mnav.on{transform:translateX(0);}
-.mnav-h{
-  padding:1.2rem 1.2rem .9rem;
-  display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid rgba(74,171,232,.12);
-}
-.mnav-logo{
-  font-family:'Playfair Display',serif;
-  font-size:1.25rem;font-weight:900;color:var(--green2);
-  display:flex;align-items:center;gap:8px;
-}
-.mnav-close{
-  width:40px;height:40px;border-radius:10px;
-  border:1px solid var(--border);
-  background:rgba(26,94,168,.09);
-  color:var(--cream);cursor:pointer;padding:0;
-}
+.mnav-h{padding:1.2rem 1.2rem .9rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(74,171,232,.12);}
+.mnav-logo{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:900;color:var(--green2);display:flex;align-items:center;gap:8px;}
+.mnav-close{width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:rgba(26,94,168,.09);color:var(--cream);cursor:pointer;padding:0;}
 .mnav-close:hover{background:rgba(26,94,168,.14);}
 .mnav-links{padding:1rem 1.2rem;display:flex;flex-direction:column;gap:.55rem;}
-.mnav-btn{
-  width:100%;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:.85rem 1rem;
-  border-radius:12px;
-  border:1px solid rgba(74,171,232,.14);
-  background:rgba(26,94,168,.07);
-  color:rgba(220,233,245,.92);
-  font-weight:700;
-  cursor:pointer;
-  transition:.18s;
-}
+.mnav-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;border-radius:12px;border:1px solid rgba(74,171,232,.14);background:rgba(26,94,168,.07);color:rgba(220,233,245,.92);font-weight:700;cursor:pointer;transition:.18s;}
 .mnav-btn:hover{background:rgba(26,94,168,.12);border-color:rgba(74,171,232,.28);}
 .mnav-btn.on{border-color:rgba(45,204,116,.35);background:rgba(21,122,69,.12);color:#EEF5FF;}
-.mnav-cta{
-  margin-top:auto;
-  padding:1rem 1.2rem 1.2rem;
-  border-top:1px solid rgba(74,171,232,.12);
-}
+.mnav-cta{margin-top:auto;padding:1rem 1.2rem 1.2rem;border-top:1px solid rgba(74,171,232,.12);}
 .mnav-cta .btn{width:100%;justify-content:center;}
 
-@media (min-width: 851px){
-  .burger{display:none !important;}
-  .mnav,.mnav-ovl{display:none !important;}
-}
-@media(max-width:850px){
-  .nav-links{display:none !important;}
-  .burger{display:flex !important;}
-}
+@media (min-width: 851px){.burger{display:none !important;}.mnav,.mnav-ovl{display:none !important;}}
+@media(max-width:850px){.nav-links{display:none !important;}.burger{display:flex !important;}}
 
 /* ── STATUS BADGE ── */
 .bdg{position:absolute;top:.9rem;right:.9rem;padding:.22rem .7rem;border-radius:100px;font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
@@ -455,29 +301,119 @@ textarea.inp{min-height:85px;resize:vertical;}
 .mcls{float:right;background:none;border:none;color:var(--muted);font-size:1.55rem;cursor:pointer;line-height:1;margin:-3px 0 0;}
 .mcls:hover{color:var(--cream);}
 
-/* ── ADMIN ── */
+/* ══════════════════════════════════════════
+   ADMIN — FULLY RESPONSIVE FIXES
+══════════════════════════════════════════ */
 .login-box{max-width:430px;margin:4rem auto;background:rgba(13,30,48,.85);border:1px solid var(--border);border-radius:18px;padding:2.3rem;text-align:center;margin-left:2%;margin-right:2%;}
-.adm-wrap{width:100%;max-width:1200px;margin:0 auto;padding:2rem 2.5rem 4rem;}
-.adm-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;margin-bottom:2rem;}
-.atabs{display:flex;gap:6px;margin-bottom:1.8rem;border-bottom:1px solid rgba(74,171,232,.12);padding-bottom:.85rem;flex-wrap:wrap;}
-.atab{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:600;padding:.42rem .95rem;cursor:pointer;border-radius:7px;transition:.18s;}
+
+/* Admin wrapper — safe padding on all screen sizes */
+.adm-wrap{width:100%;max-width:1200px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+@media(max-width:600px){.adm-wrap{padding:1.2rem .85rem 3rem;}}
+
+/* Stats row — shrink min size on mobile */
+.adm-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem;margin-bottom:2rem;}
+@media(max-width:480px){.adm-stats{grid-template-columns:1fr 1fr;}}
+
+/* Tabs — scrollable on mobile so they don't wrap ugly */
+.atabs{
+  display:flex;
+  gap:6px;
+  margin-bottom:1.8rem;
+  border-bottom:1px solid rgba(74,171,232,.12);
+  padding-bottom:.85rem;
+  flex-wrap:wrap;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.atab{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:600;padding:.42rem .95rem;cursor:pointer;border-radius:7px;transition:.18s;white-space:nowrap;}
 .atab.on{background:rgba(21,122,69,.14);color:var(--green2);}
+
+/* Add/Edit camp form */
 .add-form{background:rgba(13,30,48,.8);border:1px solid var(--border);border-radius:14px;padding:1.8rem;margin-bottom:1.8rem;}
-.ei{background:rgba(26,94,168,.07);border:1px solid var(--border);border-radius:10px;padding:.95rem 1.3rem;margin-bottom:.7rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
-.ei-name{font-weight:600;margin-bottom:.22rem;color:#EEF5FF;}
-.ei-meta{font-size:.8rem;color:var(--muted);}
+@media(max-width:600px){.add-form{padding:1.2rem .95rem;}}
+
+/* Force fgrid to single column on small screens */
+@media(max-width:600px){
+  .fgrid{grid-template-columns:1fr !important;}
+  .fg.full{grid-column:1 !important;}
+}
+
+/* ── Camp list item (ei) — FIXED RESPONSIVE ── */
+.ei{
+  background:rgba(26,94,168,.07);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:.95rem 1.1rem;
+  margin-bottom:.7rem;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:1rem;
+  flex-wrap:wrap;   /* KEY FIX: allow wrapping on small screens */
+}
+.ei-inner{
+  flex:1;
+  display:flex;
+  gap:1rem;
+  align-items:flex-start;
+  min-width:0;       /* KEY FIX: allow inner content to shrink */
+}
+.ei-img{
+  width:90px;
+  height:70px;
+  object-fit:cover;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.08);
+  flex-shrink:0;
+}
+@media(max-width:520px){
+  .ei-img{width:64px;height:52px;}
+}
+.ei-text{min-width:0;}
+.ei-name{font-weight:600;margin-bottom:.22rem;color:#EEF5FF;word-break:break-word;}
+.ei-meta{font-size:.8rem;color:var(--muted);word-break:break-word;}
+
+/* Action buttons inside camp list item */
+.ei-actions{
+  display:flex;
+  gap:.5rem;
+  flex-shrink:0;
+  align-items:center;
+  flex-wrap:wrap;
+}
+@media(max-width:640px){
+  /* On mobile, actions go full-width below content */
+  .ei{flex-direction:column;}
+  .ei-inner{width:100%;}
+  .ei-actions{width:100%;justify-content:flex-start;}
+}
+
 .delbtn{background:rgba(220,53,69,.14);border:1px solid rgba(220,53,69,.28);color:#fc8181;border-radius:7px;padding:.38rem .75rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.8rem;transition:.18s;flex-shrink:0;}
 .delbtn:hover{background:rgba(220,53,69,.26);}
 .ssel{padding:.33rem .58rem;font-size:.76rem;border-radius:6px;background:rgba(26,94,168,.14);border:1px solid var(--border);color:var(--cream);cursor:pointer;font-family:'DM Sans',sans-serif;}
 
-/* ── TABLE ── */
-.twrap{overflow-x:auto;margin-top:.9rem;}
-table{width:100%;border-collapse:collapse;font-size:.85rem;}
+/* Admin section title */
+.adm-section-title{font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:.9rem;}
+
+/* ── TABLE — responsive cards on mobile ── */
+.twrap{overflow-x:auto;margin-top:.9rem;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:.85rem;min-width:900px;}/* min-width forces scroll rather than squish */
 th{background:rgba(26,94,168,.14);color:var(--blue3);text-align:left;padding:.65rem .95rem;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
 td{padding:.72rem .95rem;border-bottom:1px solid rgba(74,171,232,.07);color:rgba(180,210,240,.85);vertical-align:middle;}
 tr:hover td{background:rgba(26,94,168,.07);}
 .empty{text-align:center;padding:2.5rem;color:var(--muted);}
 .empty-i{font-size:2.3rem;margin-bottom:.6rem;}
+
+/* Mobile camp-reg cards — shown instead of table on small screens */
+.reg-cards{display:none;flex-direction:column;gap:1rem;margin-top:.9rem;}
+.reg-card{background:rgba(26,94,168,.07);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;}
+.reg-card-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.4rem;}
+.reg-card-label{font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--blue3);font-weight:700;}
+.reg-card-value{font-size:.88rem;color:rgba(220,233,245,.9);}
+@media(max-width:700px){
+  .twrap{display:none;}
+  .reg-cards{display:flex;}
+}
 
 /* ── ABOUT ── */
 .about-g{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:center;}
@@ -509,1507 +445,216 @@ tr:hover td{background:rgba(26,94,168,.07);}
 .toast-s{border:1px solid var(--green2);color:var(--green2);}
 .toast-e{border:1px solid #fc8181;color:#fc8181;}
 .toast-i{border:1px solid var(--border);color:var(--cream);}
-
 @keyframes fu{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 @keyframes toastIn{from{opacity:0;transform:translateY(100%);}to{opacity:1;transform:translateY(0);}}
 
 /* ── HOME SPLIT SECTIONS ── */
 .home-split-sec{width:100%;background:#F5F6F8;padding:5rem 0;}
-.home-split-wrap{
-  width:100%;
-  max-width:1320px;
-  margin:0 auto;
-  padding:0 2.5rem;
-  display:grid;
-  grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);
-  gap:3.5rem;
-  align-items:center;
-}
+.home-split-wrap{width:100%;max-width:1320px;margin:0 auto;padding:0 2.5rem;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);gap:3.5rem;align-items:center;}
 .home-split-wrap.rev{grid-template-columns:minmax(320px,.85fr) minmax(0,1.15fr);}
 .home-split-wrap.rev .home-split-copy{order:2;}
 .home-split-wrap.rev .home-split-media{order:1;}
 .home-split-copy{text-align:left;max-width:620px;}
-.home-split-title{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2rem,3.4vw,3rem);
-  line-height:1.08;
-  font-weight:900;
-  color:#1F2B3A;
-  margin-bottom:1rem;
-}
+.home-split-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.4vw,3rem);line-height:1.08;font-weight:900;color:#1F2B3A;margin-bottom:1rem;}
 .home-split-p{color:#586273;line-height:1.85;font-size:.98rem;margin-bottom:1rem;}
-.home-split-btn{
-  margin-top:.6rem;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  border:none;
-  background:#2E7D5B;
-  color:#fff;
-  font-weight:700;
-  border-radius:10px;
-  padding:.9rem 1.35rem;
-  cursor:pointer;
-  transition:.2s;
-  box-shadow:0 10px 24px rgba(46,125,91,.18);
-
-
-}
-
-.home-main-title{
-  background:#F5F6F8;
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2.6rem,4vw,3.6rem);
-  font-weight:900;
-  text-align:center;
-  color:#1F2B3A;
-  padding:4rem 2rem 2rem 2rem;
-  margin:0;
-}
-
-
-
+.home-split-btn{margin-top:.6rem;display:inline-flex;align-items:center;justify-content:center;border:none;background:#2E7D5B;color:#fff;font-weight:700;border-radius:10px;padding:.9rem 1.35rem;cursor:pointer;transition:.2s;box-shadow:0 10px 24px rgba(46,125,91,.18);}
+.home-main-title{background:#F5F6F8;font-family:'Playfair Display',serif;font-size:clamp(2.6rem,4vw,3.6rem);font-weight:900;text-align:center;color:#1F2B3A;padding:4rem 2rem 2rem 2rem;margin:0;}
 .home-split-btn:hover{transform:translateY(-2px);background:#276B4D;}
 .home-split-media{display:flex;justify-content:center;align-items:center;}
 .home-split-media img{width:100%;max-width:430px;border-radius:18px;display:block;object-fit:cover;}
+.offer-grid{background:#F5F6F8;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;padding:2rem 2.5rem 4rem;margin:0 auto;}
+.offer-card{background:white;padding:1.8rem 1.5rem;border-radius:12px;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,0.08);transition:0.25s;color:#1F2B3A;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100%;}
+.offer-card p{margin-top:10px;margin-bottom:10px;}
+.offer-card span{color:white;margin-top:auto;background:var(--green);padding:9px;border-radius:10px;font-size:16px;display:inline-block;width:90%;}
+.offer-card span:hover{background:var(--green2);transform:translateY(-2px);box-shadow:0 8px 26px rgba(21,122,69,.45);}
+.offer-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,0.12);}
+.offer-img{width:120px;height:120px;object-fit:contain;margin-bottom:0.6rem;}
+.social-row{display:flex;justify-content:center;gap:14px;margin-top:1rem;}
+.social-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#DCE9F5;font-size:18px;transition:0.25s;}
+.social-icon:hover{transform:translateY(-3px);box-shadow:0 10px 25px rgba(0,0,0,0.4);}
+.social-icon.ig:hover{background:#E1306C;border-color:#E1306C;color:white;}
+.social-icon.fb:hover{background:#1877F2;border-color:#1877F2;color:white;}
+.social-icon.li:hover{background:#0A66C2;border-color:#0A66C2;color:white;}
 
-
-.offer-grid{
-  background:#F5F6F8;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:1.5rem;
-  padding:2rem 2.5rem 4rem;
-
-  margin:0 auto;
-}
-
-.offer-card{
-  background:white;
-  padding:1.8rem 1.5rem;
-  border-radius:12px;
-  text-align:center;
-  box-shadow:0 6px 18px rgba(0,0,0,0.08);
-  transition:0.25s;
-  color:#1F2B3A;
-  cursor:pointer;
-  display:flex;
-  flex-direction:column;
-  justify-content: center;
-  align-items: center;
-  height:100%;
-}
-
-.offer-card p {
-margin-top:10px;
-margin-bottom: 10px;
-}
-
-.offer-card span{
-  color:white;
-  margin-top:auto;
-  background:var(--green);
-  padding:9px;
-  border-radius:10px;
-  font-size:16px;
-  display:inline-block;
-  width: 90%;
-}
-
-.offer-card span:hover {
-background:var(--green2);
-transform:translateY(-2px);
-box-shadow:0 8px 26px rgba(21,122,69,.45);
-}
-
-.offer-card:hover{
-  transform:translateY(-4px);
-  box-shadow:0 14px 30px rgba(0,0,0,0.12);
-}
-
-.offer-img{
-  width:120px;
-  height:120px;
-  object-fit:contain;
-  margin-bottom:0.6rem;
-}
-
-
-.social-row{
-  display:flex;
-  justify-content:center;
-  gap:14px;
-  margin-top:1rem;
-}
-
-.social-icon{
-  width:42px;
-  height:42px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:10px;
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.08);
-  color:#DCE9F5;
-  font-size:18px;
-  transition:0.25s;
-}
-
-
-.social-icon:hover{
-  transform:translateY(-3px);
-  box-shadow:0 10px 25px rgba(0,0,0,0.4);
-}
-/* Instagram */
-.social-icon.ig:hover{
-  background:#E1306C;
-  border-color:#E1306C;
-  color:white;
-}
-
-/* Facebook */
-.social-icon.fb:hover{
-  background:#1877F2;
-  border-color:#1877F2;
-  color:white;
-}
-
-/* LinkedIn */
-.social-icon.li:hover{
-  background:#0A66C2;
-  border-color:#0A66C2;
-  color:white;
-}
-
-
-.camp-page-top{
-  background:linear-gradient(180deg,#F5F6F8 0%, #EEF2F6 100%);
-  padding:4.5rem 0 2.5rem;
-  border-bottom:1px solid #E2E8F0;
-}
-
-.camp-page-top-inner{
-  width:100%;
-  max-width:1100px;
-  margin:0 auto;
-  padding:0 2.5rem;
-}
-
-.camp-page-title{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2.4rem,4vw,3.6rem);
-  color:#1F2B3A;
-  line-height:1.08;
-  margin-bottom:1rem;
-}
-
-.camp-page-sub{
-  max-width:760px;
-  color:#5C6B7C;
-  line-height:1.85;
-  font-size:1rem;
-}
-
-.camp-list-wrap{
-  width:100%;
-  max-width:1100px;
-  margin:0 auto;
-  padding:2.5rem 2.5rem 4.5rem;
-}
-
-.camp-list{
-  display:flex;
-  flex-direction:column;
-  gap:1.4rem;
-}
-
-.camp-row-card{
-  display:grid;
-  grid-template-columns:340px 1fr;
-  gap:1.4rem;
-  background:#fff;
-  border:1px solid #E2E8F0;
-  border-radius:20px;
-  padding:1.2rem;
-  box-shadow:0 8px 24px rgba(15,23,42,.05);
-  transition:.22s;
-}
-
-.camp-row-card:hover{
-  transform:translateY(-3px);
-  box-shadow:0 16px 40px rgba(15,23,42,.08);
-}
-
-.camp-row-media{
-  border-radius:16px;
-  min-height:210px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:1rem;
-}
-
-.camp-row-media img{
-  width:112%;
-  height:111%;
-  object-fit:cover;
-  border-radius:12px;
-}
-
-.camp-row-main{
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  min-width:0;
-}
-
-.camp-row-head{
-  display:flex;
-  justify-content:space-between;
-  gap:1rem;
-  align-items:flex-start;
-}
-
-.camp-row-head h3{
-  font-family:'Playfair Display',serif;
-  font-size:1.45rem;
-  color:#1F2B3A;
-  margin-bottom:.55rem;
-}
-
-.camp-row-meta{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.6rem;
-}
-
-.camp-row-meta span{
-  font-size:.84rem;
-  color:#5C6B7C;
-  background:#F8FAFC;
-  border:1px solid #E2E8F0;
-  padding:.38rem .65rem;
-  border-radius:999px;
-}
-
-.camp-row-badge .bdg{
-  position:static;
-}
-
-.camp-row-desc{
-  margin:1rem 0 1.2rem;
-  color:#5C6B7C;
-  line-height:1.8;
-  font-size:.95rem;
-}
-
-.camp-row-bottom{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:1rem;
-  flex-wrap:wrap;
-  padding-top:1rem;
-  border-top:1px solid #EDF2F7;
-}
-
-.camp-row-price{
-  font-family:'Playfair Display',serif;
-  font-size:2rem;
-  color:#2E7D5B;
-  font-weight:900;
-}
-
-.camp-row-price span{
-  font-family:'DM Sans',sans-serif;
-  font-size:.9rem;
-  color:#5C6B7C;
-  font-weight:500;
-}
-
-.camp-row-actions{
-  display:flex;
-  gap:.7rem;
-  flex-wrap:wrap;
-}
-
-.camp-row-btn{
-  border:none;
-  border-radius:10px;
-  padding:.9rem 1.2rem;
-  font-family:'DM Sans',sans-serif;
-  font-weight:700;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.camp-row-btn.primary{
-  background:#2E7D5B;
-  color:#fff;
-}
-
-.camp-row-btn.primary:hover{
-  background:#276B4D;
-  transform:translateY(-1px);
-}
-
-.camp-row-btn.primary:disabled{
-  background:#CBD5E1;
-  color:#64748B;
-  cursor:not-allowed;
-  transform:none;
-}
-
-.camp-row-btn.ghost{
-  background:#EEF2F6;
-  color:#1F2B3A;
-}
-
-.camp-row-btn.ghost:hover{
-  background:#E2E8F0;
-}
-
+.camp-page-top{background:linear-gradient(180deg,#F5F6F8 0%,#EEF2F6 100%);padding:4.5rem 0 2.5rem;border-bottom:1px solid #E2E8F0;}
+.camp-page-top-inner{width:100%;max-width:1100px;margin:0 auto;padding:0 2.5rem;}
+.camp-page-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4vw,3.6rem);color:#1F2B3A;line-height:1.08;margin-bottom:1rem;}
+.camp-page-sub{max-width:760px;color:#5C6B7C;line-height:1.85;font-size:1rem;}
+.camp-list-wrap{width:100%;max-width:1100px;margin:0 auto;padding:2.5rem 2.5rem 4.5rem;}
+.camp-list{display:flex;flex-direction:column;gap:1.4rem;}
+.camp-row-card{display:grid;grid-template-columns:340px 1fr;gap:1.4rem;background:#fff;border:1px solid #E2E8F0;border-radius:20px;padding:1.2rem;box-shadow:0 8px 24px rgba(15,23,42,.05);transition:.22s;}
+.camp-row-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(15,23,42,.08);}
+.camp-row-media{border-radius:16px;min-height:210px;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.camp-row-media img{width:112%;height:111%;object-fit:cover;border-radius:12px;}
+.camp-row-main{display:flex;flex-direction:column;justify-content:space-between;min-width:0;}
+.camp-row-head{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;}
+.camp-row-head h3{font-family:'Playfair Display',serif;font-size:1.45rem;color:#1F2B3A;margin-bottom:.55rem;}
+.camp-row-meta{display:flex;flex-wrap:wrap;gap:.6rem;}
+.camp-row-meta span{font-size:.84rem;color:#5C6B7C;background:#F8FAFC;border:1px solid #E2E8F0;padding:.38rem .65rem;border-radius:999px;}
+.camp-row-badge .bdg{position:static;}
+.camp-row-desc{margin:1rem 0 1.2rem;color:#5C6B7C;line-height:1.8;font-size:.95rem;}
+.camp-row-bottom{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;padding-top:1rem;border-top:1px solid #EDF2F7;}
+.camp-row-price{font-family:'Playfair Display',serif;font-size:2rem;color:#2E7D5B;font-weight:900;}
+.camp-row-price span{font-family:'DM Sans',sans-serif;font-size:.9rem;color:#5C6B7C;font-weight:500;}
+.camp-row-actions{display:flex;gap:.7rem;flex-wrap:wrap;}
+.camp-row-btn{border:none;border-radius:10px;padding:.9rem 1.2rem;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer;transition:.2s;}
+.camp-row-btn.primary{background:#2E7D5B;color:#fff;}
+.camp-row-btn.primary:hover{background:#276B4D;transform:translateY(-1px);}
+.camp-row-btn.primary:disabled{background:#CBD5E1;color:#64748B;cursor:not-allowed;transform:none;}
+.camp-row-btn.ghost{background:#EEF2F6;color:#1F2B3A;}
+.camp-row-btn.ghost:hover{background:#E2E8F0;}
 @media(max-width:850px){
-  .camp-page-top-inner,
-  .camp-list-wrap{
-    padding-left:1.2rem;
-    padding-right:1.2rem;
-  }
-
-  .camp-row-card{
-    grid-template-columns:1fr;
-  }
-
-  .camp-row-media{
-    min-height:170px;
-  }
-
-  .camp-row-head{
-    flex-direction:column;
-  }
-
-  .camp-row-bottom{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-
-  .camp-row-actions{
-    width:100%;
-  }
-
-  .camp-row-btn{
-    flex:1;
-  }
-}
-
-
-.bdg-open{
-  background:#DCFCE7;
-  color:#166534;
-}
-
-.bdg-up{
-  background:#DBEAFE;
-  color:#1D4ED8;
-  border:1px solid #BFDBFE;
-}
-
-.bdg-full{
-  background:#FEE2E2;
-  color:#B91C1C;
-  border:1px solid #FECACA;
-}
-
-
-.camp-hero{
-  text-align:center;
-  padding:4rem 2rem 2rem 2rem;
-}
-
-.camp-hero h1{
-  font-family:'Playfair Display',serif;
-  font-size:3rem;
-  color:#1F2B3A;
-}
-
-.camp-hero p{
-  max-width:600px;
-  margin:1rem auto 0 auto;
-  color:#5C6B7C;
-  line-height:1.7;
-}
-
-.camp-grid{
-  max-width:1200px;
-  margin:2rem auto 4rem auto;
-  padding:0 2rem;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:2rem;
-}
-
-.camp-card{
-  background:white;
-  border-radius:14px;
-  padding:2rem;
-  text-align:center;
-  box-shadow:0 8px 24px rgba(0,0,0,0.08);
-  transition:.25s;
-}
-
-.camp-card:hover{
-  transform:translateY(-6px);
-  box-shadow:0 18px 40px rgba(0,0,0,0.12);
-}
-
-.camp-icon{
-  width:90px;
-  margin-bottom:1rem;
-}
-
-.camp-meta{
-  color:#5C6B7C;
-  font-size:.9rem;
-  margin:4px 0;
-}
-
-.camp-price{
-  font-size:1.8rem;
-  color:#2E7D5B;
-  font-weight:800;
-  margin:1rem 0;
-}
-
-.camp-desc{
-  color:#5C6B7C;
-  font-size:.9rem;
-  margin-bottom:1.2rem;
-}
-
-.camp-btn{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#2E7D5B;
-  color:white;
-  font-weight:700;
-  cursor:pointer;
-}
-
-.camp-btn:hover{
-  background:#276B4D;
-}
-
-
-
-.team-hero{
-  background:linear-gradient(135deg,#0B1624 0%, #102033 55%, #0E1D17 100%);
-  padding:5rem 0 4rem;
-  position:relative;
-  overflow:hidden;
-}
-
-.team-hero::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(74,171,232,.16), transparent 32%),
-    radial-gradient(circle at 80% 20%, rgba(31,168,94,.14), transparent 28%);
-  pointer-events:none;
-}
-
-.team-hero-inner{
-  width:100%;
-  max-width:1200px;
-  margin:0 auto;
-  padding:0 2.5rem;
-  position:relative;
-  z-index:1;
-  text-align:center;
-}
-
-.team-hero-kicker{
-  display:inline-block;
-  font-size:.75rem;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  color:var(--green2);
-  font-weight:700;
-  margin-bottom:1rem;
-}
-
-.team-hero-title{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2.4rem,4.5vw,4rem);
-  line-height:1.08;
-  color:#F4F8FC;
-  margin-bottom:1rem;
-}
-
-.team-hero-sub{
-  max-width:760px;
-  margin:0 auto;
-  color:rgba(220,233,245,.78);
-  line-height:1.8;
-  font-size:1rem;
-}
-
-.team-hero-actions{
-  margin-top:1.8rem;
-  display:flex;
-  justify-content:center;
-  gap:.8rem;
-  flex-wrap:wrap;
-}
-
-.team-wrap-light{
-  background:#F5F6F8;
-  padding:4rem 0;
-}
-
-.team-inner-light{
-  width:100%;
-  max-width:1200px;
-  margin:0 auto;
-  padding:0 2.5rem;
-}
-
-.founder-card{
-  display:grid;
-  grid-template-columns:300px 1fr;
-  gap:2rem;
-  background:#fff;
-  border:1px solid #E2E8F0;
-  border-radius:24px;
-  padding:1.5rem;
-  box-shadow:0 14px 40px rgba(15,23,42,.06);
-  align-items:center;
-}
-
-.founder-visual{
-  background:linear-gradient(135deg,#13263B,#0F3A28);
-  border-radius:20px;
-  min-height:320px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:1.5rem;
-  overflow:hidden;
-}
-
-.founder-visual img{
-  width:100%;
-  max-width:220px;
-  object-fit:contain;
-}
-
-.founder-copy h2{
-  font-family:'Playfair Display',serif;
-  font-size:2rem;
-  color:#1F2B3A;
-  margin-bottom:.6rem;
-}
-
-.founder-role{
-  display:inline-block;
-  background:#E8F7EF;
-  color:#1F7A53;
-  border:1px solid #CBEBD8;
-  padding:.35rem .7rem;
-  border-radius:999px;
-  font-size:.8rem;
-  font-weight:700;
-  margin-bottom:1rem;
-}
-
-.founder-copy p{
-  color:#5C6B7C;
-  line-height:1.82;
-  margin-bottom:.9rem;
-}
-
-.team-section-head{
-  text-align:center;
-  margin-bottom:2rem;
-}
-
-.team-section-head h2{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2rem,3vw,2.8rem);
-  color:#1F2B3A;
-  margin-bottom:.7rem;
-}
-
-.team-section-head p{
-  max-width:700px;
-  margin:0 auto;
-  color:#5C6B7C;
-  line-height:1.8;
-}
-
-.team-grid-modern{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:1.4rem;
-}
-
-.team-card-modern{
-  background:#fff;
-  border:1px solid #E2E8F0;
-  border-radius:22px;
-  padding:1.4rem;
-  box-shadow:0 12px 30px rgba(15,23,42,.05);
-  transition:.25s;
-  text-align:left;
-}
-
-.team-card-modern:hover{
-  transform:translateY(-6px);
-  box-shadow:0 22px 44px rgba(15,23,42,.10);
-}
-
-.team-card-top{
-  display:flex;
-  align-items:center;
-  gap:.9rem;
-  margin-bottom:1rem;
-}
-
-.team-avatar-modern{
-  width:62px;
-  height:62px;
-  border-radius:18px;
-  background:linear-gradient(135deg,#16314D,#215E46);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-size:1.6rem;
-  flex-shrink:0;
-}
-
-.team-name-modern{
-  font-weight:800;
-  color:#1F2B3A;
-  font-size:1.02rem;
-}
-
-.team-role-modern{
-  display:inline-block;
-  margin-top:.22rem;
-  font-size:.76rem;
-  font-weight:700;
-  color:#2E7D5B;
-  background:#ECFDF3;
-  border:1px solid #D1F2DF;
-  padding:.22rem .55rem;
-  border-radius:999px;
-}
-
-.team-bio-modern{
-  color:#5C6B7C;
-  line-height:1.72;
-  font-size:.92rem;
-  margin-bottom:1rem;
-}
-
-.team-tags-modern{
-  display:flex;
-  flex-wrap:wrap;
-  gap:.45rem;
-}
-
-.team-tags-modern span{
-  font-size:.72rem;
-  font-weight:700;
-  color:#3A4A5B;
-  background:#F8FAFC;
-  border:1px solid #E2E8F0;
-  padding:.3rem .55rem;
-  border-radius:999px;
-}
-
-.team-features{
-  margin-top:3.2rem;
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:1rem;
-}
-
-.team-feature{
-  background:#fff;
-  border:1px solid #E2E8F0;
-  border-radius:20px;
-  padding:1.4rem;
-  box-shadow:0 10px 24px rgba(15,23,42,.04);
-}
-
-.team-feature h3{
-  font-size:1.05rem;
-  color:#1F2B3A;
-  margin-bottom:.55rem;
-}
-
-.team-feature p{
-  color:#5C6B7C;
-  line-height:1.75;
-  font-size:.92rem;
-}
-
-.team-cta{
-  margin-top:3rem;
-  background:linear-gradient(135deg,#12253B,#143524);
-  border-radius:26px;
-  padding:2rem;
-  text-align:center;
-  color:#EEF5FF;
-}
-
-.team-cta h3{
-  font-family:'Playfair Display',serif;
-  font-size:2rem;
-  margin-bottom:.65rem;
-}
-
-.team-cta p{
-  color:rgba(220,233,245,.78);
-  line-height:1.8;
-  max-width:700px;
-  margin:0 auto;
-}
-
-.team-cta-actions{
-  margin-top:1.3rem;
-  display:flex;
-  justify-content:center;
-  gap:.8rem;
-  flex-wrap:wrap;
-}
-
-.reviews-page{
-  background:#F5F6F8;
-  min-height:100vh;
-}
-
-.reviews-hero{
-  background:linear-gradient(135deg,#0B1624 0%, #102033 55%, #0E1D17 100%);
-  padding:5rem 0 4rem;
-  position:relative;
-  overflow:hidden;
-}
-
-.reviews-hero::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(74,171,232,.16), transparent 32%),
-    radial-gradient(circle at 80% 20%, rgba(31,168,94,.14), transparent 28%);
-  pointer-events:none;
-}
-
-.reviews-hero-inner{
-  width:100%;
-  max-width:1200px;
-  margin:0 auto;
-  padding:0 2.5rem;
-  position:relative;
-  z-index:1;
-  text-align:center;
-}
-
-.reviews-kicker{
-  display:inline-block;
-  font-size:.75rem;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  color:var(--green2);
-  font-weight:700;
-  margin-bottom:1rem;
-}
-
-.reviews-title{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2.4rem,4.5vw,4rem);
-  line-height:1.08;
-  color:#F4F8FC;
-  margin-bottom:1rem;
-}
-
-.reviews-sub{
-  max-width:760px;
-  margin:0 auto;
-  color:rgba(220,233,245,.78);
-  line-height:1.8;
-  font-size:1rem;
-}
-
-.reviews-hero-actions{
-  margin-top:1.8rem;
-  display:flex;
-  justify-content:center;
-  gap:.8rem;
-  flex-wrap:wrap;
-}
-
-.reviews-rating-big{
-  margin-top:1.8rem;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:.9rem;
-  flex-wrap:wrap;
-}
-
-.reviews-rating-score{
-  font-family:'Playfair Display',serif;
-  font-size:2.4rem;
-  color:#fff;
-}
-
-.reviews-rating-stars{
-  color:#FACC15;
-  font-size:1.15rem;
-  letter-spacing:2px;
-}
-
-.reviews-rating-meta{
-  color:rgba(220,233,245,.75);
-  font-size:.95rem;
-}
-
-.reviews-content{
-  width:100%;
-  max-width:1200px;
-  margin:0 auto;
-  padding:3rem 2.5rem 4.5rem;
-}
-
-.reviews-stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:1rem;
-  margin-top:-2rem;
-  margin-bottom:2.2rem;
-  position:relative;
-  z-index:2;
-}
-
-.reviews-stat{
-  background:#fff;
-  border:1px solid #E2E8F0;
-  border-radius:20px;
-  padding:1.4rem;
-  text-align:center;
-  box-shadow:0 10px 24px rgba(15,23,42,.05);
-}
-
-.reviews-stat-number{
-  font-family:'Playfair Display',serif;
-  font-size:2rem;
-  color:#1F2B3A;
-  margin-bottom:.3rem;
-}
-
-.reviews-stat-label{
-  color:#5C6B7C;
-  font-size:.92rem;
-}
-
-.reviews-grid-modern{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:1.3rem;
-}
-
-.review-card-modern{
-  background:#fff;
-  border:1px solid #E2E8F0;
-  border-radius:22px;
-  padding:1.4rem;
-  box-shadow:0 10px 26px rgba(15,23,42,.05);
-  transition:.25s;
-}
-
-.review-card-modern:hover{
-  transform:translateY(-5px);
-  box-shadow:0 20px 40px rgba(15,23,42,.09);
-}
-
-.review-card-head{
-  display:flex;
-  justify-content:space-between;
-  gap:1rem;
-  align-items:flex-start;
-  margin-bottom:.8rem;
-}
-
-.review-card-name{
-  font-weight:800;
-  color:#1F2B3A;
-  font-size:1rem;
-}
-
-.review-card-date{
-  font-size:.75rem;
-  color:#64748B;
-  background:#F8FAFC;
-  border:1px solid #E2E8F0;
-  padding:.3rem .55rem;
-  border-radius:999px;
-  white-space:nowrap;
-}
-
-.review-card-stars{
-  color:#FACC15;
-  font-size:1rem;
-  letter-spacing:2px;
-  margin-bottom:.8rem;
-}
-
-.review-card-text{
-  color:#5C6B7C;
-  line-height:1.8;
-  font-size:.95rem;
-}
-
-.reviews-empty-modern{
-  background:#fff;
-  border:1px solid #E2E8F0;
-  border-radius:22px;
-  padding:3rem 1.5rem;
-  text-align:center;
-  color:#5C6B7C;
-  box-shadow:0 10px 26px rgba(15,23,42,.05);
-}
-
-.reviews-empty-modern .icon{
-  font-size:2.5rem;
-  margin-bottom:.7rem;
-}
-
-.reviews-cta{
-  margin-top:3rem;
-  background:linear-gradient(135deg,#12253B,#143524);
-  border-radius:26px;
-  padding:2rem;
-  text-align:center;
-  color:#EEF5FF;
-}
-
-.reviews-cta h3{
-  font-family:'Playfair Display',serif;
-  font-size:2rem;
-  margin-bottom:.65rem;
-}
-
-.reviews-cta p{
-  color:rgba(220,233,245,.78);
-  line-height:1.8;
-  max-width:700px;
-  margin:0 auto;
-}
-
-.reviews-cta-actions{
-  margin-top:1.3rem;
-  display:flex;
-  justify-content:center;
-  gap:.8rem;
-  flex-wrap:wrap;
-}
-
-@media(max-width:900px){
-  .reviews-stats{
-    grid-template-columns:1fr;
-    margin-top:2rem;
-  }
-}
-
-@media(max-width:850px){
-  .reviews-hero-inner,
-  .reviews-content{
-    padding-left:1.2rem;
-    padding-right:1.2rem;
-  }
-}
-
-@media(max-width:900px){
-  .founder-card{
-    grid-template-columns:1fr;
-  }
-
-  .team-features{
-    grid-template-columns:1fr;
-  }
-}
-
-@media(max-width:850px){
-  .team-hero-inner,
-  .team-inner-light{
-    padding:0 1.2rem;
-  }
-}
-
-
-@media(max-width:950px){
-  .home-split-wrap,
-  .home-split-wrap.rev{
-    grid-template-columns:1fr;
-    gap:2rem;
-    padding:0 1.2rem;
-  }
-
-  .home-split-wrap.rev .home-split-copy,
-  .home-split-wrap.rev .home-split-media{
-    order:initial;
-  }
-
-  .home-split-copy{max-width:100%;}
-  .home-split-media{justify-content:flex-start;}
-  .home-split-media img{max-width:100%;}
-}
-
-@media(max-width:850px){
-  .hero-inner{grid-template-columns:1fr;}
-  .board-wrap{display:none;}
-  .about-g{grid-template-columns:1fr;}
-  .fgrid{grid-template-columns:1fr;}
-  .fg.full{grid-column:1;}
-  .nav{padding:0 1rem;}
-  .nb{padding:.38rem .5rem;font-size:.8rem;}
-  .wrap{padding:3rem 1.2rem;}
-  .adm-wrap{padding:1.5rem 1.2rem 3rem;}
-  .nav-logo{font-size:1.2rem}
-}
-
-
-.about-hero{
-  background:linear-gradient(135deg,#0B1624 0%, #102033 55%, #0E1D17 100%);
-  padding:5rem 0 4rem;
-  position:relative;
-  overflow:hidden;
-}
-
-.about-hero::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(74,171,232,.16), transparent 32%),
-    radial-gradient(circle at 80% 20%, rgba(31,168,94,.14), transparent 28%);
-  pointer-events:none;
-}
-
-.about-hero-inner{
-  width:100%;
-  max-width:1200px;
-  margin:0 auto;
-  padding:0 2.5rem;
-  position:relative;
-  z-index:1;
-  text-align:center;
-}
-
-.about-kicker{
-  display:inline-block;
-  font-size:.75rem;
-  letter-spacing:2px;
-  text-transform:uppercase;
-  color:var(--green2);
-  font-weight:700;
-  margin-bottom:1rem;
-}
-
-.about-title{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2.4rem,4.5vw,4rem);
-  line-height:1.08;
-  color:#F4F8FC;
-  margin-bottom:1rem;
-}
-
-.about-sub{
-  max-width:760px;
-  margin:0 auto;
-  color:rgba(220,233,245,.78);
-  line-height:1.8;
-  font-size:1rem;
-}
-
-.about-hero-actions{
-  margin-top:1.8rem;
-  display:flex;
-  justify-content:center;
-  gap:.8rem;
-  flex-wrap:wrap;
-}
-
-.about-light{
-  background:#F5F6F8;
-  padding:4rem 0;
-}
-
-.about-inner-light{
-  width:100%;
-  max-width:1200px;
-  margin:0 auto;
-  padding:0 2.5rem;
-}
-
-.about-story{
-  display:grid;
-  grid-template-columns:1.05fr .95fr;
-  gap:2rem;
-  align-items:stretch;
-}
-
-.about-story-card{
-  background:#fff;
-  border:1px solid #E2E8F0;
-  border-radius:24px;
-  padding:1.7rem;
-  box-shadow:0 12px 30px rgba(15,23,42,.05);
-}
-
-.about-story-card h2{
-  font-family:'Playfair Display',serif;
-  font-size:2rem;
-  color:#1F2B3A;
-  margin-bottom:1rem;
-}
-
-.about-story-card p{
-  color:#5C6B7C;
-  line-height:1.85;
-  margin-bottom:1rem;
-}
-
-.about-visual-card{
-  background:linear-gradient(135deg,#13263B,#0F3A28);
-  border-radius:24px;
-  padding:2rem;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:100%;
-  box-shadow:0 12px 30px rgba(15,23,42,.05);
-}
-
-.about-visual-card img{
-  width:100%;
-  max-width:260px;
-  object-fit:contain;
-}
-
-.about-section-head{
-  text-align:center;
-  margin:3rem 0 2rem;
-}
-
-.about-section-head h2{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2rem,3vw,2.8rem);
-  color:#1F2B3A;
-  margin-bottom:.7rem;
-}
-
-.about-section-head p{
-  max-width:720px;
-  margin:0 auto;
-  color:#5C6B7C;
-  line-height:1.8;
-}
-
-.about-founder{
-  display:grid;
-  grid-template-columns:320px 1fr;
-  gap:2rem;
-  background:#fff;
-  border:1px solid #E2E8F0;
-  border-radius:24px;
-  padding:1.5rem;
-  box-shadow:0 12px 30px rgba(15,23,42,.05);
-  align-items:center;
-}
-
-.about-founder-side{
-  background:#F8FAFC;
-  border:1px solid #E2E8F0;
-  border-radius:20px;
-  min-height:280px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:1.5rem;
-  text-align:center;
-}
-
-.about-founder-mark{
-  width:84px;
-  height:84px;
-  border-radius:22px;
-  background:linear-gradient(135deg,#16314D,#215E46);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:2rem;
-  margin-bottom:1rem;
-}
-
-.about-founder-name{
-  font-weight:800;
-  color:#1F2B3A;
-  font-size:1.1rem;
-}
-
-.about-founder-role{
-  margin-top:.35rem;
-  display:inline-block;
-  font-size:.78rem;
-  font-weight:700;
-  color:#2E7D5B;
-  background:#ECFDF3;
-  border:1px solid #D1F2DF;
-  padding:.25rem .6rem;
-  border-radius:999px;
-}
-
-.about-founder-copy h3{
-  font-family:'Playfair Display',serif;
-  font-size:1.9rem;
-  color:#1F2B3A;
-  margin-bottom:.8rem;
-}
-
-.about-founder-copy p{
-  color:#5C6B7C;
-  line-height:1.85;
-  margin-bottom:1rem;
-}
-
-.about-values{
-  margin-top:2rem;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:1rem;
-}
-
-.about-value{
-  background:#fff;
-  border:1px solid #E2E8F0;
-  border-radius:22px;
-  padding:1.4rem;
-  box-shadow:0 10px 24px rgba(15,23,42,.04);
-}
-
-.about-value-icon{
-  width:54px;
-  height:54px;
-  border-radius:16px;
-  background:linear-gradient(135deg,#16314D,#215E46);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:1.35rem;
-  margin-bottom:1rem;
-}
-
-.about-value h4{
-  color:#1F2B3A;
-  font-size:1.05rem;
-  margin-bottom:.55rem;
-}
-
-.about-value p{
-  color:#5C6B7C;
-  line-height:1.75;
-  font-size:.92rem;
-}
-
-.about-cta{
-  margin-top:3rem;
-  background:linear-gradient(135deg,#12253B,#143524);
-  border-radius:26px;
-  padding:2rem;
-  text-align:center;
-  color:#EEF5FF;
-}
-
-.about-cta h3{
-  font-family:'Playfair Display',serif;
-  font-size:2rem;
-  margin-bottom:.65rem;
-}
-
-.about-cta p{
-  color:rgba(220,233,245,.78);
-  line-height:1.8;
-  max-width:700px;
-  margin:0 auto;
-}
-
-.about-cta-actions{
-  margin-top:1.3rem;
-  display:flex;
-  justify-content:center;
-  gap:.8rem;
-  flex-wrap:wrap;
-}
-
-@media(max-width:950px){
-  .about-story,
-  .about-founder{
-    grid-template-columns:1fr;
-  }
-
-  .about-values{
-    grid-template-columns:1fr 1fr;
-  }
-}
-
-@media(max-width:850px){
-  .about-hero-inner,
-  .about-inner-light{
-    padding-left:1.2rem;
-    padding-right:1.2rem;
-  }
-
-  .about-values{
-    grid-template-columns:1fr;
-  }
-}
-
-
-.nav-logo-img{
-  transition: transform .28s ease, filter .28s ease;
-  transform-origin: center;
-}
-
-.nav-logo:hover .nav-logo-img{
-  transform: scale(1.08);
-}
-
-
-
-.about-faq-section{
-  background:#F5F6F8;
-  padding:0 0 4rem 0;
-}
-
-.about-faq-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:1rem;
-}
-
-
-
-.about-faq-card:hover{
-  transform:translateY(-3px);
-  box-shadow:0 18px 38px rgba(15,23,42,.08);
-}
-
-.about-faq-card.open{
-  border-color:#CBEBD8;
-  box-shadow:0 18px 40px rgba(31,168,94,.10);
-}
-
-.about-faq-top{
-  width:100%;
-  border:none;
-  outline:none;
-  box-shadow:none;
-  appearance:none;
-  -webkit-appearance:none;
-  background:transparent;
-  padding:1.15rem 1.2rem;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:1rem;
-  cursor:pointer;
-  text-align:left;
-  font-family:'DM Sans',sans-serif;
-  font-size:1rem;
-  font-weight:800;
-  color:#1F2B3A;
-}
-
-.about-faq-top:focus,
-.about-faq-top:focus-visible,
-.about-faq-top:active{
-  outline:none;
-  border:none;
-  box-shadow:none;
-  background:transparent;
-}
-
-.about-faq-card{
-  background:#fff;
-  border:1px solid #E2E8F0;
-  border-radius:22px;
-  box-shadow:0 10px 24px rgba(15,23,42,.05);
-  overflow:hidden;
-  transition:.25s;
-  position:relative;
-  align-self:start;
-}
-
-.about-faq-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:1rem;
-  align-items:start;
-}
-
-
-.about-faq-plus{
-  width:34px;
-  height:34px;
-  border-radius:12px;
-  background:linear-gradient(135deg,#16314D,#215E46);
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
-  font-size:1.2rem;
-  line-height:1;
-}
-
-.about-faq-body{
-  max-height:0;
-  overflow:hidden;
-  transition:max-height .35s ease;
-}
-
-.about-faq-card.open .about-faq-body{
-  max-height:300px;
-}
-
-.about-faq-body p{
-  padding:0 1.2rem 1.2rem 1.2rem;
-  color:#5C6B7C;
-  line-height:1.8;
-  font-size:.95rem;
-}
-
-@media(max-width:850px){
-  .about-faq-grid{
-    grid-template-columns:1fr;
-  }
-}
-
-
-
-
-
+  .camp-page-top-inner,.camp-list-wrap{padding-left:1.2rem;padding-right:1.2rem;}
+  .camp-row-card{grid-template-columns:1fr;}
+  .camp-row-media{min-height:170px;}
+  .camp-row-head{flex-direction:column;}
+  .camp-row-bottom{flex-direction:column;align-items:flex-start;}
+  .camp-row-actions{width:100%;}
+  .camp-row-btn{flex:1;}
+}
+.bdg-open{background:#DCFCE7;color:#166534;}
+.bdg-up{background:#DBEAFE;color:#1D4ED8;border:1px solid #BFDBFE;}
+.bdg-full{background:#FEE2E2;color:#B91C1C;border:1px solid #FECACA;}
+
+.camp-hero{text-align:center;padding:4rem 2rem 2rem 2rem;}
+.camp-hero h1{font-family:'Playfair Display',serif;font-size:3rem;color:#1F2B3A;}
+.camp-hero p{max-width:600px;margin:1rem auto 0 auto;color:#5C6B7C;line-height:1.7;}
+.camp-grid{max-width:1200px;margin:2rem auto 4rem auto;padding:0 2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;}
+.camp-card{background:white;border-radius:14px;padding:2rem;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.08);transition:.25s;}
+.camp-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(0,0,0,0.12);}
+.camp-icon{width:90px;margin-bottom:1rem;}
+.camp-meta{color:#5C6B7C;font-size:.9rem;margin:4px 0;}
+.camp-price{font-size:1.8rem;color:#2E7D5B;font-weight:800;margin:1rem 0;}
+.camp-desc{color:#5C6B7C;font-size:.9rem;margin-bottom:1.2rem;}
+.camp-btn{width:100%;padding:12px;border:none;border-radius:10px;background:#2E7D5B;color:white;font-weight:700;cursor:pointer;}
+.camp-btn:hover{background:#276B4D;}
+
+.team-hero{background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);padding:5rem 0 4rem;position:relative;overflow:hidden;}
+.team-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(74,171,232,.16),transparent 32%),radial-gradient(circle at 80% 20%,rgba(31,168,94,.14),transparent 28%);pointer-events:none;}
+.team-hero-inner{width:100%;max-width:1200px;margin:0 auto;padding:0 2.5rem;position:relative;z-index:1;text-align:center;}
+.team-hero-kicker{display:inline-block;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--green2);font-weight:700;margin-bottom:1rem;}
+.team-hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4.5vw,4rem);line-height:1.08;color:#F4F8FC;margin-bottom:1rem;}
+.team-hero-sub{max-width:760px;margin:0 auto;color:rgba(220,233,245,.78);line-height:1.8;font-size:1rem;}
+.team-hero-actions{margin-top:1.8rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
+.team-wrap-light{background:#F5F6F8;padding:4rem 0;}
+.team-inner-light{width:100%;max-width:1200px;margin:0 auto;padding:0 2.5rem;}
+.founder-card{display:grid;grid-template-columns:300px 1fr;gap:2rem;background:#fff;border:1px solid #E2E8F0;border-radius:24px;padding:1.5rem;box-shadow:0 14px 40px rgba(15,23,42,.06);align-items:center;}
+.founder-visual{background:linear-gradient(135deg,#13263B,#0F3A28);border-radius:20px;min-height:320px;display:flex;align-items:center;justify-content:center;padding:1.5rem;overflow:hidden;}
+.founder-visual img{width:100%;max-width:220px;object-fit:contain;}
+.founder-copy h2{font-family:'Playfair Display',serif;font-size:2rem;color:#1F2B3A;margin-bottom:.6rem;}
+.founder-role{display:inline-block;background:#E8F7EF;color:#1F7A53;border:1px solid #CBEBD8;padding:.35rem .7rem;border-radius:999px;font-size:.8rem;font-weight:700;margin-bottom:1rem;}
+.founder-copy p{color:#5C6B7C;line-height:1.82;margin-bottom:.9rem;}
+.team-section-head{text-align:center;margin-bottom:2rem;}
+.team-section-head h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,3vw,2.8rem);color:#1F2B3A;margin-bottom:.7rem;}
+.team-section-head p{max-width:700px;margin:0 auto;color:#5C6B7C;line-height:1.8;}
+.team-grid-modern{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.4rem;}
+.team-card-modern{background:#fff;border:1px solid #E2E8F0;border-radius:22px;padding:1.4rem;box-shadow:0 12px 30px rgba(15,23,42,.05);transition:.25s;text-align:left;}
+.team-card-modern:hover{transform:translateY(-6px);box-shadow:0 22px 44px rgba(15,23,42,.10);}
+.team-card-top{display:flex;align-items:center;gap:.9rem;margin-bottom:1rem;}
+.team-avatar-modern{width:62px;height:62px;border-radius:18px;background:linear-gradient(135deg,#16314D,#215E46);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.6rem;flex-shrink:0;}
+.team-name-modern{font-weight:800;color:#1F2B3A;font-size:1.02rem;}
+.team-role-modern{display:inline-block;margin-top:.22rem;font-size:.76rem;font-weight:700;color:#2E7D5B;background:#ECFDF3;border:1px solid #D1F2DF;padding:.22rem .55rem;border-radius:999px;}
+.team-bio-modern{color:#5C6B7C;line-height:1.72;font-size:.92rem;margin-bottom:1rem;}
+.team-tags-modern{display:flex;flex-wrap:wrap;gap:.45rem;}
+.team-tags-modern span{font-size:.72rem;font-weight:700;color:#3A4A5B;background:#F8FAFC;border:1px solid #E2E8F0;padding:.3rem .55rem;border-radius:999px;}
+.team-features{margin-top:3.2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.team-feature{background:#fff;border:1px solid #E2E8F0;border-radius:20px;padding:1.4rem;box-shadow:0 10px 24px rgba(15,23,42,.04);}
+.team-feature h3{font-size:1.05rem;color:#1F2B3A;margin-bottom:.55rem;}
+.team-feature p{color:#5C6B7C;line-height:1.75;font-size:.92rem;}
+.team-cta{margin-top:3rem;background:linear-gradient(135deg,#12253B,#143524);border-radius:26px;padding:2rem;text-align:center;color:#EEF5FF;}
+.team-cta h3{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:.65rem;}
+.team-cta p{color:rgba(220,233,245,.78);line-height:1.8;max-width:700px;margin:0 auto;}
+.team-cta-actions{margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
+
+.reviews-page{background:#F5F6F8;min-height:100vh;}
+.reviews-hero{background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);padding:5rem 0 4rem;position:relative;overflow:hidden;}
+.reviews-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(74,171,232,.16),transparent 32%),radial-gradient(circle at 80% 20%,rgba(31,168,94,.14),transparent 28%);pointer-events:none;}
+.reviews-hero-inner{width:100%;max-width:1200px;margin:0 auto;padding:0 2.5rem;position:relative;z-index:1;text-align:center;}
+.reviews-kicker{display:inline-block;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--green2);font-weight:700;margin-bottom:1rem;}
+.reviews-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4.5vw,4rem);line-height:1.08;color:#F4F8FC;margin-bottom:1rem;}
+.reviews-sub{max-width:760px;margin:0 auto;color:rgba(220,233,245,.78);line-height:1.8;font-size:1rem;}
+.reviews-hero-actions{margin-top:1.8rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
+.reviews-rating-big{margin-top:1.8rem;display:flex;justify-content:center;align-items:center;gap:.9rem;flex-wrap:wrap;}
+.reviews-rating-score{font-family:'Playfair Display',serif;font-size:2.4rem;color:#fff;}
+.reviews-rating-stars{color:#FACC15;font-size:1.15rem;letter-spacing:2px;}
+.reviews-rating-meta{color:rgba(220,233,245,.75);font-size:.95rem;}
+.reviews-content{width:100%;max-width:1200px;margin:0 auto;padding:3rem 2.5rem 4.5rem;}
+.reviews-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:-2rem;margin-bottom:2.2rem;position:relative;z-index:2;}
+.reviews-stat{background:#fff;border:1px solid #E2E8F0;border-radius:20px;padding:1.4rem;text-align:center;box-shadow:0 10px 24px rgba(15,23,42,.05);}
+.reviews-stat-number{font-family:'Playfair Display',serif;font-size:2rem;color:#1F2B3A;margin-bottom:.3rem;}
+.reviews-stat-label{color:#5C6B7C;font-size:.92rem;}
+.reviews-grid-modern{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.3rem;}
+.review-card-modern{background:#fff;border:1px solid #E2E8F0;border-radius:22px;padding:1.4rem;box-shadow:0 10px 26px rgba(15,23,42,.05);transition:.25s;}
+.review-card-modern:hover{transform:translateY(-5px);box-shadow:0 20px 40px rgba(15,23,42,.09);}
+.review-card-head{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-bottom:.8rem;}
+.review-card-name{font-weight:800;color:#1F2B3A;font-size:1rem;}
+.review-card-date{font-size:.75rem;color:#64748B;background:#F8FAFC;border:1px solid #E2E8F0;padding:.3rem .55rem;border-radius:999px;white-space:nowrap;}
+.review-card-stars{color:#FACC15;font-size:1rem;letter-spacing:2px;margin-bottom:.8rem;}
+.review-card-text{color:#5C6B7C;line-height:1.8;font-size:.95rem;}
+.reviews-empty-modern{background:#fff;border:1px solid #E2E8F0;border-radius:22px;padding:3rem 1.5rem;text-align:center;color:#5C6B7C;box-shadow:0 10px 26px rgba(15,23,42,.05);}
+.reviews-empty-modern .icon{font-size:2.5rem;margin-bottom:.7rem;}
+.reviews-cta{margin-top:3rem;background:linear-gradient(135deg,#12253B,#143524);border-radius:26px;padding:2rem;text-align:center;color:#EEF5FF;}
+.reviews-cta h3{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:.65rem;}
+.reviews-cta p{color:rgba(220,233,245,.78);line-height:1.8;max-width:700px;margin:0 auto;}
+.reviews-cta-actions{margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
+@media(max-width:900px){.reviews-stats{grid-template-columns:1fr;margin-top:2rem;}}
+@media(max-width:850px){.reviews-hero-inner,.reviews-content{padding-left:1.2rem;padding-right:1.2rem;}}
+@media(max-width:900px){.founder-card{grid-template-columns:1fr;}.team-features{grid-template-columns:1fr;}}
+@media(max-width:850px){.team-hero-inner,.team-inner-light{padding:0 1.2rem;}}
+@media(max-width:950px){.home-split-wrap,.home-split-wrap.rev{grid-template-columns:1fr;gap:2rem;padding:0 1.2rem;}.home-split-wrap.rev .home-split-copy,.home-split-wrap.rev .home-split-media{order:initial;}.home-split-copy{max-width:100%;}.home-split-media{justify-content:flex-start;}.home-split-media img{max-width:100%;}}
+@media(max-width:850px){.hero-inner{grid-template-columns:1fr;}.board-wrap{display:none;}.about-g{grid-template-columns:1fr;}.fgrid{grid-template-columns:1fr;}.fg.full{grid-column:1;}.nav{padding:0 1rem;}.nb{padding:.38rem .5rem;font-size:.8rem;}.wrap{padding:3rem 1.2rem;}.nav-logo{font-size:1.2rem;}}
+
+.about-hero{background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);padding:5rem 0 4rem;position:relative;overflow:hidden;}
+.about-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(74,171,232,.16),transparent 32%),radial-gradient(circle at 80% 20%,rgba(31,168,94,.14),transparent 28%);pointer-events:none;}
+.about-hero-inner{width:100%;max-width:1200px;margin:0 auto;padding:0 2.5rem;position:relative;z-index:1;text-align:center;}
+.about-kicker{display:inline-block;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--green2);font-weight:700;margin-bottom:1rem;}
+.about-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4.5vw,4rem);line-height:1.08;color:#F4F8FC;margin-bottom:1rem;}
+.about-sub{max-width:760px;margin:0 auto;color:rgba(220,233,245,.78);line-height:1.8;font-size:1rem;}
+.about-hero-actions{margin-top:1.8rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
+.about-light{background:#F5F6F8;padding:4rem 0;}
+.about-inner-light{width:100%;max-width:1200px;margin:0 auto;padding:0 2.5rem;}
+.about-story{display:grid;grid-template-columns:1.05fr .95fr;gap:2rem;align-items:stretch;}
+.about-story-card{background:#fff;border:1px solid #E2E8F0;border-radius:24px;padding:1.7rem;box-shadow:0 12px 30px rgba(15,23,42,.05);}
+.about-story-card h2{font-family:'Playfair Display',serif;font-size:2rem;color:#1F2B3A;margin-bottom:1rem;}
+.about-story-card p{color:#5C6B7C;line-height:1.85;margin-bottom:1rem;}
+.about-visual-card{background:linear-gradient(135deg,#13263B,#0F3A28);border-radius:24px;padding:2rem;display:flex;align-items:center;justify-content:center;min-height:100%;box-shadow:0 12px 30px rgba(15,23,42,.05);}
+.about-visual-card img{width:100%;max-width:260px;object-fit:contain;}
+.about-section-head{text-align:center;margin:3rem 0 2rem;}
+.about-section-head h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,3vw,2.8rem);color:#1F2B3A;margin-bottom:.7rem;}
+.about-section-head p{max-width:720px;margin:0 auto;color:#5C6B7C;line-height:1.8;}
+.about-founder{display:grid;grid-template-columns:320px 1fr;gap:2rem;background:#fff;border:1px solid #E2E8F0;border-radius:24px;padding:1.5rem;box-shadow:0 12px 30px rgba(15,23,42,.05);align-items:center;}
+.about-founder-side{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:20px;min-height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;}
+.about-founder-mark{width:84px;height:84px;border-radius:22px;background:linear-gradient(135deg,#16314D,#215E46);color:#fff;display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:1rem;}
+.about-founder-name{font-weight:800;color:#1F2B3A;font-size:1.1rem;}
+.about-founder-role{margin-top:.35rem;display:inline-block;font-size:.78rem;font-weight:700;color:#2E7D5B;background:#ECFDF3;border:1px solid #D1F2DF;padding:.25rem .6rem;border-radius:999px;}
+.about-founder-copy h3{font-family:'Playfair Display',serif;font-size:1.9rem;color:#1F2B3A;margin-bottom:.8rem;}
+.about-founder-copy p{color:#5C6B7C;line-height:1.85;margin-bottom:1rem;}
+.about-values{margin-top:2rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.about-value{background:#fff;border:1px solid #E2E8F0;border-radius:22px;padding:1.4rem;box-shadow:0 10px 24px rgba(15,23,42,.04);}
+.about-value-icon{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#16314D,#215E46);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.35rem;margin-bottom:1rem;}
+.about-value h4{color:#1F2B3A;font-size:1.05rem;margin-bottom:.55rem;}
+.about-value p{color:#5C6B7C;line-height:1.75;font-size:.92rem;}
+.about-cta{margin-top:3rem;background:linear-gradient(135deg,#12253B,#143524);border-radius:26px;padding:2rem;text-align:center;color:#EEF5FF;}
+.about-cta h3{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:.65rem;}
+.about-cta p{color:rgba(220,233,245,.78);line-height:1.8;max-width:700px;margin:0 auto;}
+.about-cta-actions{margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
+@media(max-width:950px){.about-story,.about-founder{grid-template-columns:1fr;}.about-values{grid-template-columns:1fr 1fr;}}
+@media(max-width:850px){.about-hero-inner,.about-inner-light{padding-left:1.2rem;padding-right:1.2rem;}.about-values{grid-template-columns:1fr;}}
+.nav-logo-img{transition:transform .28s ease,filter .28s ease;transform-origin:center;}
+.nav-logo:hover .nav-logo-img{transform:scale(1.08);}
+.about-faq-section{background:#F5F6F8;padding:0 0 4rem 0;}
+.about-faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.about-faq-card:hover{transform:translateY(-3px);box-shadow:0 18px 38px rgba(15,23,42,.08);}
+.about-faq-card.open{border-color:#CBEBD8;box-shadow:0 18px 40px rgba(31,168,94,.10);}
+.about-faq-top{width:100%;border:none;outline:none;box-shadow:none;appearance:none;-webkit-appearance:none;background:transparent;padding:1.15rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:800;color:#1F2B3A;}
+.about-faq-top:focus,.about-faq-top:focus-visible,.about-faq-top:active{outline:none;border:none;box-shadow:none;background:transparent;}
+.about-faq-card{background:#fff;border:1px solid #E2E8F0;border-radius:22px;box-shadow:0 10px 24px rgba(15,23,42,.05);overflow:hidden;transition:.25s;position:relative;align-self:start;}
+.about-faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:start;}
+.about-faq-plus{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#16314D,#215E46);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.2rem;line-height:1;}
+.about-faq-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+.about-faq-card.open .about-faq-body{max-height:300px;}
+.about-faq-body p{padding:0 1.2rem 1.2rem 1.2rem;color:#5C6B7C;line-height:1.8;font-size:.95rem;}
+@media(max-width:850px){.about-faq-grid{grid-template-columns:1fr;}}
 `;
 
 const injectStyles = () => {
@@ -2020,9 +665,7 @@ const injectStyles = () => {
   document.head.appendChild(el);
 };
 
-/* ══════════════════════════════════════════
-   SMALL SHARED COMPONENTS
-══════════════════════════════════════════ */
+/* ══════════════════════════════════════════ SMALL SHARED COMPONENTS ══════════════════════════════════════════ */
 function Toast({ toasts }) {
   return (
     <div
@@ -2089,7 +732,6 @@ function Footer({ onNav, onContact }) {
   return (
     <footer className="footer">
       <div className="f-logo">♔ MyChessFamily</div>
-
       <div className="f-links">
         {[
           ["home", "Home"],
@@ -2107,11 +749,9 @@ function Footer({ onNav, onContact }) {
           Contact
         </button>
       </div>
-
       <p>
         📍 {CONTACT.city} &nbsp;·&nbsp; ✉ {CONTACT.email}
       </p>
-
       <div className="social-row">
         <a
           href={SOCIALS.instagram}
@@ -2121,7 +761,6 @@ function Footer({ onNav, onContact }) {
         >
           <FaInstagram />
         </a>
-
         <a
           href={SOCIALS.facebook}
           target="_blank"
@@ -2130,7 +769,6 @@ function Footer({ onNav, onContact }) {
         >
           <FaFacebookF />
         </a>
-
         <a
           href={SOCIALS.linkedin}
           target="_blank"
@@ -2163,7 +801,6 @@ function ContactModal({ onClose, showToast }) {
       }
     }
   };
-
   return (
     <div
       className="ovl"
@@ -2173,9 +810,7 @@ function ContactModal({ onClose, showToast }) {
         <button className="mcls" onClick={onClose}>
           ×
         </button>
-
         <h3>Contact Us</h3>
-
         <div style={{ display: "grid", gap: ".85rem" }}>
           <button
             type="button"
@@ -2194,7 +829,6 @@ function ContactModal({ onClose, showToast }) {
               Click to copy
             </span>
           </button>
-
           <div
             style={{
               color: "var(--muted)",
@@ -2223,18 +857,20 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
     medical: "",
   });
   const [done, setDone] = useState(false);
-
   const set = (k) => (e) => setF((p) => ({ ...p, [k]: e.target.value }));
-
   const submit = async () => {
-    const base = !f.fname || !f.lname || !f.parent || !f.email || !f.phone;
-    const campExtra = !f.dob || !f.level;
-
-    if (base || campExtra) {
+    if (
+      !f.fname ||
+      !f.lname ||
+      !f.parent ||
+      !f.email ||
+      !f.phone ||
+      !f.dob ||
+      !f.level
+    ) {
       showToast("Please fill in all required fields.", "e");
       return;
     }
-
     try {
       await api("/registrations/camp", {
         method: "POST",
@@ -2252,7 +888,6 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
           price: item.price,
         }),
       });
-
       setDone(true);
       onRegistered?.();
       showToast("🎉 Registration submitted!", "s");
@@ -2260,7 +895,6 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
       showToast(error.message || "Could not submit registration.", "e");
     }
   };
-
   return (
     <div
       className="ovl"
@@ -2271,7 +905,6 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
           ×
         </button>
         <h3>Sign Up: {item.name}</h3>
-
         {!done ? (
           <>
             <div className="fgrid">
@@ -2284,7 +917,6 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
                   onChange={set("fname")}
                 />
               </div>
-
               <div className="fg">
                 <label className="lbl">Last Name *</label>
                 <input
@@ -2294,7 +926,6 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
                   onChange={set("lname")}
                 />
               </div>
-
               <div className="fg">
                 <label className="lbl">Date of Birth *</label>
                 <input
@@ -2304,7 +935,6 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
                   onChange={set("dob")}
                 />
               </div>
-
               <div className="fg">
                 <label className="lbl">Chess Level *</label>
                 <select className="inp" value={f.level} onChange={set("level")}>
@@ -2315,7 +945,6 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
                   <option>Tournament player</option>
                 </select>
               </div>
-
               <div className="fg full">
                 <label className="lbl">Parent / Guardian *</label>
                 <input
@@ -2325,7 +954,6 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
                   onChange={set("parent")}
                 />
               </div>
-
               <div className="fg full">
                 <label className="lbl">Email *</label>
                 <input
@@ -2336,7 +964,6 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
                   onChange={set("email")}
                 />
               </div>
-
               <div className="fg full">
                 <label className="lbl">Phone *</label>
                 <input
@@ -2347,7 +974,6 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
                   onChange={set("phone")}
                 />
               </div>
-
               <div className="fg full">
                 <label className="lbl">Emergency Contact</label>
                 <input
@@ -2357,7 +983,6 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
                   onChange={set("emergency")}
                 />
               </div>
-
               <div className="fg full">
                 <label className="lbl">Allergies / Medical Notes</label>
                 <textarea
@@ -2368,7 +993,6 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
                 />
               </div>
             </div>
-
             <button className="sbtn" onClick={submit}>
               Submit Registration →
             </button>
@@ -2393,9 +1017,7 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
   );
 }
 
-/* ══════════════════════════════════════════
-   PAGES
-══════════════════════════════════════════ */
+/* ══════════════════════════════════════════ PAGES ══════════════════════════════════════════ */
 function HomePage({ onNav, onContact }) {
   const homeSections = [
     {
@@ -2449,7 +1071,6 @@ function HomePage({ onNav, onContact }) {
       onClick: onContact,
     },
   ];
-
   return (
     <div className="pg">
       <div className="hero">
@@ -2458,30 +1079,24 @@ function HomePage({ onNav, onContact }) {
             <div key={i} />
           ))}
         </div>
-
         <div className="hero-inner">
           <div>
             <div className="hero-badge">🗽 New York City · Ages 6–16</div>
-
             <h1>
               Where Kids Become <em>Chess Champions</em>
             </h1>
-
             <p className="hero-sub">
-              Join MyChessFamily — New York&apos;s premier chess club for young
+              Join MyChessFamily — New York's premier chess club for young
               minds. We build strategy, confidence, and lasting friendships
               through the timeless game of chess.
             </p>
-
             <div className="hero-btns">
               <button className="btn btn-g" onClick={() => onNav("programs")}>
                 ♟ Explore Programs
               </button>
-
               <button className="btn btn-g" onClick={() => onNav("camp")}>
                 ☀️ Join Summer Camp
               </button>
-
               <button
                 className="btn btn-g"
                 style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
@@ -2490,7 +1105,6 @@ function HomePage({ onNav, onContact }) {
                 ✉️ Contact
               </button>
             </div>
-
             <div className="stats">
               <div className="stat">
                 <div className="stat-n">500+</div>
@@ -2506,12 +1120,10 @@ function HomePage({ onNav, onContact }) {
               </div>
             </div>
           </div>
-
           <ChessBoard />
         </div>
       </div>
       <h1 className="home-main-title">What We Offer</h1>
-
       <div className="offer-grid">
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
@@ -2526,7 +1138,6 @@ function HomePage({ onNav, onContact }) {
           </p>
           <span>See More</span>
         </div>
-
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/privateicon.png"
@@ -2535,12 +1146,11 @@ function HomePage({ onNav, onContact }) {
           />
           <h3>Private Lessons</h3>
           <p>
-            Individual training tailored to each student’s level, pace, and
+            Individual training tailored to each student's level, pace, and
             goals.
           </p>
           <span>See More</span>
         </div>
-
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/tournamentpreparation.png"
@@ -2554,7 +1164,6 @@ function HomePage({ onNav, onContact }) {
           </p>
           <span>See More</span>
         </div>
-
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/teamtrain.png"
@@ -2568,7 +1177,6 @@ function HomePage({ onNav, onContact }) {
           </p>
           <span>See More</span>
         </div>
-
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/chesscamps.png"
@@ -2583,7 +1191,6 @@ function HomePage({ onNav, onContact }) {
           <span>See More</span>
         </div>
       </div>
-
       {homeSections.map((section, i) => (
         <div key={section.title}>
           <section className="home-split-sec">
@@ -2591,21 +1198,17 @@ function HomePage({ onNav, onContact }) {
               <div className="home-split-copy">
                 <div className="slbl">My Chess Family</div>
                 <h2 className="home-split-title">{section.title}</h2>
-
                 <p className="home-split-p">{section.text1}</p>
                 <p className="home-split-p">{section.text2}</p>
-
                 <button className="home-split-btn" onClick={section.onClick}>
                   {section.button}
                 </button>
               </div>
-
               <div className="home-split-media">
                 <img src={section.image} alt={section.title} />
               </div>
             </div>
           </section>
-
           {i !== homeSections.length - 1 && (
             <div
               style={{
@@ -2636,42 +1239,31 @@ function HomePage({ onNav, onContact }) {
           padding: "0 0 1rem 0",
         }}
       >
-        <div
-          style={{
-            width: "90%",
-            height: "2px",
-            background: "#D8DEE6",
-          }}
-        />
+        <div style={{ width: "90%", height: "2px", background: "#D8DEE6" }} />
       </div>
       <section className="home-split-sec">
         <div className="home-split-wrap">
           <div className="home-split-copy">
             <div className="slbl">About Us</div>
             <h2 className="home-split-title">About My Chess Family</h2>
-
             <p className="home-split-p">
               MyChessFamily is a youth chess community built to help students
               grow in skill, confidence, and character through thoughtful,
               engaging instruction.
             </p>
-
             <p className="home-split-p">
               From first lessons to competitive preparation, we focus on making
               each student feel supported, challenged, and excited to improve.
             </p>
-
             <p className="home-split-p">
               Our goal is not only to teach chess well, but also to create a
               strong, positive environment where students and families feel part
               of something meaningful.
             </p>
-
             <button className="home-split-btn" onClick={() => onNav("about")}>
               Learn More
             </button>
           </div>
-
           <div className="home-split-media">
             <img src="/pieces/logo.png" alt="About My Chess Family" />
           </div>
@@ -2694,18 +1286,16 @@ function ProgramsPage({ onNav, onContact }) {
       button: "Contact Us",
       onClick: onContact,
     },
-
     {
       title: "Private Lessons",
       text1:
-        "Individual chess lessons tailored to each student’s level, pace, and goals. Private coaching allows students to work closely with a coach on specific areas of improvement.",
+        "Individual chess lessons tailored to each student's level, pace, and goals. Private coaching allows students to work closely with a coach on specific areas of improvement.",
       text2:
         "Whether they are beginners building strong foundations or advanced players preparing for tournaments, students receive focused attention and personalized training.",
       image: "/images/privateicon.png",
       button: "Meet Our Team",
       onClick: () => onNav("team"),
     },
-
     {
       title: "Tournament Preparation",
       text1:
@@ -2716,7 +1306,6 @@ function ProgramsPage({ onNav, onContact }) {
       button: "Contact Us",
       onClick: onContact,
     },
-
     {
       title: "Team Training",
       text1:
@@ -2727,7 +1316,6 @@ function ProgramsPage({ onNav, onContact }) {
       button: "Contact Us",
       onClick: onContact,
     },
-
     {
       title: "Chess Camps",
       text1:
@@ -2739,7 +1327,6 @@ function ProgramsPage({ onNav, onContact }) {
       onClick: () => onNav("camp"),
     },
   ];
-
   return (
     <div className="pg">
       <div
@@ -2756,7 +1343,6 @@ function ProgramsPage({ onNav, onContact }) {
           and grow through the game of chess.
         </p>
       </div>
-
       {programSections.map((section, i) => (
         <div key={section.title}>
           <section className="home-split-sec">
@@ -2764,21 +1350,17 @@ function ProgramsPage({ onNav, onContact }) {
               <div className="home-split-copy">
                 <div className="slbl">My Chess Family</div>
                 <h2 className="home-split-title">{section.title}</h2>
-
                 <p className="home-split-p">{section.text1}</p>
                 <p className="home-split-p">{section.text2}</p>
-
                 <button className="home-split-btn" onClick={section.onClick}>
                   {section.button}
                 </button>
               </div>
-
               <div className="home-split-media">
                 <img src={section.image} alt={section.title} />
               </div>
             </div>
           </section>
-
           {i !== programSections.length - 1 && (
             <div
               style={{
@@ -2800,7 +1382,6 @@ function ProgramsPage({ onNav, onContact }) {
           )}
         </div>
       ))}
-
       <Footer onNav={onNav} onContact={onContact} />
     </div>
   );
@@ -2822,7 +1403,6 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
           </p>
         </div>
       </section>
-
       <section className="camp-list-wrap">
         {!camps.length ? (
           <div className="empty">
@@ -2834,9 +1414,8 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
             {camps.map((c) => (
               <div className="camp-row-card" key={c.id}>
                 <div className="camp-row-media">
-                  <img src={getImageSrc(c.image, BASE)} alt={c.name} />{" "}
+                  <img src={getImageSrc(c.image, BASE)} alt={c.name} />
                 </div>
-
                 <div className="camp-row-main">
                   <div className="camp-row-head">
                     <div>
@@ -2850,20 +1429,16 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
                         <span>⏰ {c.type}</span>
                       </div>
                     </div>
-
                     <div className="camp-row-badge">
                       <Badge status={c.status} />
                     </div>
                   </div>
-
                   <p className="camp-row-desc">{c.desc}</p>
-
                   <div className="camp-row-bottom">
                     <div className="camp-row-price">
                       ${c.price}
                       <span> / child</span>
                     </div>
-
                     <div className="camp-row-actions">
                       <button
                         className="camp-row-btn ghost"
@@ -2872,7 +1447,6 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
                       >
                         Contact
                       </button>
-
                       <button
                         className="camp-row-btn primary"
                         disabled={c.status === "full"}
@@ -2893,7 +1467,6 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
           </div>
         )}
       </section>
-
       {modal && (
         <CampRegModal
           item={modal}
@@ -2902,7 +1475,6 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
           onRegistered={onRegistered}
         />
       )}
-
       <Footer onNav={onNav} onContact={onContact} />
     </div>
   );
@@ -2932,12 +1504,10 @@ function AboutFaqSection() {
     },
     {
       q: "How do I choose the right program for my child?",
-      a: "We help families choose the best fit based on age, current level, goals, and learning style. You can contact us and we’ll guide you personally.",
+      a: "We help families choose the best fit based on age, current level, goals, and learning style. You can contact us and we'll guide you personally.",
     },
   ];
-
   const [openIndex, setOpenIndex] = useState(0);
-
   return (
     <section className="about-faq-section">
       <div className="about-inner-light">
@@ -2948,11 +1518,9 @@ function AboutFaqSection() {
             Chess Family.
           </p>
         </div>
-
         <div className="about-faq-grid">
           {faqs.map((item, i) => {
             const isOpen = openIndex === i;
-
             return (
               <div
                 key={item.q}
@@ -2966,7 +1534,6 @@ function AboutFaqSection() {
                   <span>{item.q}</span>
                   <span className="about-faq-plus">{isOpen ? "−" : "+"}</span>
                 </button>
-
                 <div className="about-faq-body">
                   <p>{item.a}</p>
                 </div>
@@ -2993,7 +1560,6 @@ function AboutPage({ onNav, onContact }) {
             confidence, resilience, and character through high-quality chess
             education in a supportive and inspiring environment.
           </p>
-
           <div className="about-hero-actions">
             <button className="btn btn-g" onClick={() => onNav("programs")}>
               ♟ View Programs
@@ -3008,7 +1574,6 @@ function AboutPage({ onNav, onContact }) {
           </div>
         </div>
       </section>
-
       <section className="about-light">
         <div className="about-inner-light">
           <div className="about-story">
@@ -3033,12 +1598,10 @@ function AboutPage({ onNav, onContact }) {
                 built on encouragement, discipline, and long-term growth.
               </p>
             </div>
-
             <div className="about-visual-card">
               <img src="/pieces/logo.png" alt="My Chess Family" />
             </div>
           </div>
-
           <div className="about-section-head">
             <h2>Founded With Purpose</h2>
             <p>
@@ -3047,14 +1610,12 @@ function AboutPage({ onNav, onContact }) {
               of chess.
             </p>
           </div>
-
           <div className="about-founder">
             <div className="about-founder-side">
               <div className="about-founder-mark">♔</div>
               <div className="about-founder-name">Dmitri Shevelev</div>
               <div className="about-founder-role">Founder & Head Coach</div>
             </div>
-
             <div className="about-founder-copy">
               <h3>Dmitri Shevelev</h3>
               <p>
@@ -3078,7 +1639,6 @@ function AboutPage({ onNav, onContact }) {
               </p>
             </div>
           </div>
-
           <div className="about-section-head">
             <h2>What We Help Students Build</h2>
             <p>
@@ -3086,7 +1646,6 @@ function AboutPage({ onNav, onContact }) {
               emotional strength, and long-term confidence.
             </p>
           </div>
-
           <div className="about-values">
             <div className="about-value">
               <div className="about-value-icon">♟</div>
@@ -3096,7 +1655,6 @@ function AboutPage({ onNav, onContact }) {
                 thoughtful decisions with greater clarity.
               </p>
             </div>
-
             <div className="about-value">
               <div className="about-value-icon">🧠</div>
               <h4>Focus & Discipline</h4>
@@ -3105,7 +1663,6 @@ function AboutPage({ onNav, onContact }) {
                 ability to stay engaged with challenging problems.
               </p>
             </div>
-
             <div className="about-value">
               <div className="about-value-icon">⭐</div>
               <h4>Confidence & Resilience</h4>
@@ -3114,7 +1671,6 @@ function AboutPage({ onNav, onContact }) {
                 continue improving with maturity and self-belief.
               </p>
             </div>
-
             <div className="about-value">
               <div className="about-value-icon">🤝</div>
               <h4>Community & Character</h4>
@@ -3124,7 +1680,6 @@ function AboutPage({ onNav, onContact }) {
               </p>
             </div>
           </div>
-
           <div className="about-cta">
             <h3>Discover the right path for your child</h3>
             <p>
@@ -3132,7 +1687,6 @@ function AboutPage({ onNav, onContact }) {
               Family offers a supportive environment to learn, improve, and grow
               with confidence.
             </p>
-
             <div className="about-cta-actions">
               <button className="btn btn-g" onClick={() => onNav("programs")}>
                 ♟ Explore Programs
@@ -3149,7 +1703,6 @@ function AboutPage({ onNav, onContact }) {
         </div>
       </section>
       <AboutFaqSection />
-
       <Footer onNav={onNav} onContact={onContact} />
     </div>
   );
@@ -3170,7 +1723,6 @@ function TeamPage({ onNav, onContact }) {
               players, and experienced mentors who help students grow in skill,
               confidence, and character through chess.
             </p>
-
             <div className="team-hero-actions">
               <button className="btn btn-g" onClick={onContact}>
                 ✉️ Contact Us
@@ -3185,32 +1737,27 @@ function TeamPage({ onNav, onContact }) {
             </div>
           </div>
         </section>
-
         <section className="team-wrap-light">
           <div className="team-inner-light">
             <div className="founder-card">
               <div className="founder-visual">
                 <img src="/pieces/logo.png" alt="Dmitri Shevelev" />
               </div>
-
               <div className="founder-copy">
                 <div className="founder-role">Founder & Head Coach</div>
                 <h2>Dmitri Shevelev</h2>
-
                 <p>
                   My Chess Family was founded by FIDE Master Dmitri Shevelev, an
                   experienced chess educator who has spent decades teaching
                   children how to think strategically, compete with confidence,
                   and grow through the game.
                 </p>
-
                 <p>
                   His teaching philosophy is built on empathy, discipline, and
                   personal connection. Every student is different, and the goal
                   is to match each child with the right support, the right pace,
                   and the right environment for long-term growth.
                 </p>
-
                 <p>
                   Under his leadership, My Chess Family has grown into a
                   community where students receive strong chess instruction
@@ -3218,9 +1765,7 @@ function TeamPage({ onNav, onContact }) {
                 </p>
               </div>
             </div>
-
             <div style={{ height: "3rem" }} />
-
             <div className="team-section-head">
               <h2>Our Coaching Team</h2>
               <p>
@@ -3229,21 +1774,17 @@ function TeamPage({ onNav, onContact }) {
                 every level.
               </p>
             </div>
-
             <div className="team-grid-modern">
               {TEAM.map((c) => (
                 <div className="team-card-modern" key={c.name}>
                   <div className="team-card-top">
                     <div className="team-avatar-modern">{c.av}</div>
-
                     <div>
                       <div className="team-name-modern">{c.name}</div>
                       <div className="team-role-modern">{c.role}</div>
                     </div>
                   </div>
-
                   <div className="team-bio-modern">{c.bio}</div>
-
                   <div className="team-tags-modern">
                     {c.tags.map((t) => (
                       <span key={t}>{t}</span>
@@ -3252,17 +1793,15 @@ function TeamPage({ onNav, onContact }) {
                 </div>
               ))}
             </div>
-
             <div className="team-features">
               <div className="team-feature">
                 <h3>Personalized Teaching</h3>
                 <p>
-                  Coaches focus on each student’s personality, level, and
+                  Coaches focus on each student's personality, level, and
                   learning style to create a more effective and encouraging
                   experience.
                 </p>
               </div>
-
               <div className="team-feature">
                 <h3>Competitive Experience</h3>
                 <p>
@@ -3271,7 +1810,6 @@ function TeamPage({ onNav, onContact }) {
                   guidance.
                 </p>
               </div>
-
               <div className="team-feature">
                 <h3>Supportive Community</h3>
                 <p>
@@ -3281,14 +1819,12 @@ function TeamPage({ onNav, onContact }) {
                 </p>
               </div>
             </div>
-
             <div className="team-cta">
               <h3>Want help choosing the right coach?</h3>
               <p>
-                We can help you choose the best fit based on your child’s age,
+                We can help you choose the best fit based on your child's age,
                 level, goals, and learning style.
               </p>
-
               <div className="team-cta-actions">
                 <button className="btn btn-g" onClick={onContact}>
                   ✉️ Contact Us
@@ -3307,7 +1843,6 @@ function TeamPage({ onNav, onContact }) {
             </div>
           </div>
         </section>
-
         <Footer onNav={onNav} onContact={onContact} />
       </div>
     </>
@@ -3330,7 +1865,6 @@ function ReviewsPage({ reviews, openModal, onNav, onContact }) {
   const avg = count
     ? approved.reduce((s, r) => s + (Number(r.rating) || 0), 0) / count
     : 0;
-
   return (
     <div className="pg reviews-page">
       <section className="reviews-hero">
@@ -3341,9 +1875,8 @@ function ReviewsPage({ reviews, openModal, onNav, onContact }) {
             Feedback from students and families who have experienced My Chess
             Family through lessons, camps, tournaments, and long-term coaching.
           </p>
-
           <div className="reviews-rating-big">
-            <div className="reviews-rating-score">{avg.toFixed(1)}/5.0</div>{" "}
+            <div className="reviews-rating-score">{avg.toFixed(1)}/5.0</div>
             <div className="reviews-rating-stars">
               <Stars rating={Math.round(avg)} />
             </div>
@@ -3351,7 +1884,6 @@ function ReviewsPage({ reviews, openModal, onNav, onContact }) {
               Based on {count} review{count !== 1 ? "s" : ""}
             </div>
           </div>
-
           <div className="reviews-hero-actions">
             <button className="btn btn-g" onClick={openModal}>
               ✍️ Write a Review
@@ -3366,25 +1898,21 @@ function ReviewsPage({ reviews, openModal, onNav, onContact }) {
           </div>
         </div>
       </section>
-
       <div className="reviews-content">
         <div className="reviews-stats">
           <div className="reviews-stat">
             <div className="reviews-stat-number">{avg.toFixed(1)}</div>
             <div className="reviews-stat-label">Average Rating</div>
           </div>
-
           <div className="reviews-stat">
             <div className="reviews-stat-number">{count}</div>
             <div className="reviews-stat-label">Published Reviews</div>
           </div>
-
           <div className="reviews-stat">
             <div className="reviews-stat-number">100%</div>
             <div className="reviews-stat-label">Focused On Student Growth</div>
           </div>
         </div>
-
         {!count ? (
           <div className="reviews-empty-modern">
             <div className="icon">📝</div>
@@ -3403,27 +1931,22 @@ function ReviewsPage({ reviews, openModal, onNav, onContact }) {
                     <div className="review-card-name">
                       {r.childName ? r.childName : "Anonymous"}
                     </div>
-
                     <div className="review-card-date">{r.date || ""}</div>
                   </div>
-
                   <div className="review-card-stars">
                     <Stars rating={r.rating} />
                   </div>
-
                   <div className="review-card-text">{r.text}</div>
                 </div>
               ))}
           </div>
         )}
-
         <div className="reviews-cta">
           <h3>Share your experience with My Chess Family</h3>
           <p>
             Your review helps other families understand what it feels like to
             learn, grow, and compete as part of our chess community.
           </p>
-
           <div className="reviews-cta-actions">
             <button className="btn btn-g" onClick={openModal}>
               ✍️ Leave a Review
@@ -3438,7 +1961,6 @@ function ReviewsPage({ reviews, openModal, onNav, onContact }) {
           </div>
         </div>
       </div>
-
       <Footer onNav={onNav} onContact={onContact} />
     </div>
   );
@@ -3449,13 +1971,11 @@ function ReviewModal({ onClose, showToast, reload }) {
   const [rating, setRating] = useState(5);
   const [text, setText] = useState("");
   const [done, setDone] = useState(false);
-
   const submit = async () => {
     if (!text.trim() || text.trim().length < 10) {
       showToast("Write at least 10 characters.", "e");
       return;
     }
-
     try {
       await api("/reviews", {
         method: "POST",
@@ -3465,7 +1985,6 @@ function ReviewModal({ onClose, showToast, reload }) {
           text: text.trim(),
         }),
       });
-
       setDone(true);
       showToast("✅ Review submitted! Waiting for admin approval.", "s");
       await reload?.();
@@ -3473,7 +1992,6 @@ function ReviewModal({ onClose, showToast, reload }) {
       showToast(e.message || "Could not submit review.", "e");
     }
   };
-
   return (
     <div
       className="ovl"
@@ -3484,7 +2002,6 @@ function ReviewModal({ onClose, showToast, reload }) {
           ×
         </button>
         <h3>Write a Review</h3>
-
         {!done ? (
           <>
             <div className="fg">
@@ -3496,7 +2013,6 @@ function ReviewModal({ onClose, showToast, reload }) {
                 placeholder="Optional"
               />
             </div>
-
             <div className="fg">
               <label className="lbl">Rating</label>
               <select
@@ -3511,7 +2027,6 @@ function ReviewModal({ onClose, showToast, reload }) {
                 <option value={1}>★☆☆☆☆ (1)</option>
               </select>
             </div>
-
             <div className="fg">
               <label className="lbl">Review *</label>
               <textarea
@@ -3521,7 +2036,6 @@ function ReviewModal({ onClose, showToast, reload }) {
                 placeholder="Share your experience..."
               />
             </div>
-
             <button className="sbtn" onClick={submit}>
               Submit Review →
             </button>
@@ -3550,7 +2064,6 @@ function LoginPage({ onLogin, showToast }) {
   const [u, setU] = useState("");
   const [p, setP] = useState("");
   const [err, setErr] = useState("");
-
   const submit = async () => {
     try {
       setErr("");
@@ -3565,7 +2078,6 @@ function LoginPage({ onLogin, showToast }) {
       setErr("❌ Wrong credentials. Use: admin / chess123");
     }
   };
-
   return (
     <div className="pg">
       <div className="login-box" style={{ marginTop: "4rem" }}>
@@ -3588,7 +2100,6 @@ function LoginPage({ onLogin, showToast }) {
         >
           Sign in to manage camps and view registrations.
         </p>
-
         <div className="fg" style={{ textAlign: "left" }}>
           <label className="lbl">Username</label>
           <input
@@ -3599,7 +2110,6 @@ function LoginPage({ onLogin, showToast }) {
             onKeyDown={(e) => e.key === "Enter" && submit()}
           />
         </div>
-
         <div className="fg" style={{ textAlign: "left", marginTop: ".7rem" }}>
           <label className="lbl">Password</label>
           <input
@@ -3611,7 +2121,6 @@ function LoginPage({ onLogin, showToast }) {
             onKeyDown={(e) => e.key === "Enter" && submit()}
           />
         </div>
-
         <p
           style={{
             fontSize: ".75rem",
@@ -3624,7 +2133,6 @@ function LoginPage({ onLogin, showToast }) {
           <strong style={{ color: "var(--green2)" }}>admin</strong> /{" "}
           <strong style={{ color: "var(--green2)" }}>chess123</strong>
         </p>
-
         <button className="sbtn" onClick={submit}>
           Sign In →
         </button>
@@ -3634,6 +2142,9 @@ function LoginPage({ onLogin, showToast }) {
   );
 }
 
+/* ══════════════════════════════════════════
+   ADMIN PAGE — FULLY RESPONSIVE
+══════════════════════════════════════════ */
 function AdminPage({
   camps,
   setCamps,
@@ -3645,7 +2156,6 @@ function AdminPage({
 }) {
   const [tab, setTab] = useState("camps");
   const [editingCampId, setEditingCampId] = useState(null);
-
   const [cf, setCf] = useState({
     name: "",
     dateStart: "",
@@ -3659,6 +2169,8 @@ function AdminPage({
     desc: "",
     image: "",
   });
+  const [campFile, setCampFile] = useState(null);
+  const [cDone, setCDone] = useState(false);
 
   const startEditCamp = (camp) => {
     setEditingCampId(camp.id);
@@ -3696,11 +2208,7 @@ function AdminPage({
     setCampFile(null);
   };
 
-  const [campFile, setCampFile] = useState(null);
-
   const setC = (k) => (e) => setCf((p) => ({ ...p, [k]: e.target.value }));
-  const [cDone, setCDone] = useState(false);
-
   const revenue = campRegs.reduce((s, r) => s + (r.price || 0), 0);
 
   const addCamp = async () => {
@@ -3708,35 +2216,23 @@ function AdminPage({
       showToast("Fill Name, Dates & Location.", "e");
       return;
     }
-
     try {
       let imagePath = cf.image || "/images/camp-default.jpg";
-
       if (campFile) {
         const fd = new FormData();
         fd.append("image", campFile);
-
         const BASE = import.meta.env.VITE_API_URL || "";
         const token = localStorage.getItem(AUTH_KEY);
-
         const uploadRes = await fetch(`${BASE}/api/admin/upload`, {
           method: "POST",
           headers: token ? { Authorization: `Bearer ${token}` } : {},
           body: fd,
         });
-
         const uploadData = await uploadRes.json().catch(() => ({}));
-
-        if (!uploadRes.ok) {
+        if (!uploadRes.ok)
           throw new Error(uploadData.error || "Image upload failed");
-        }
-
         imagePath = uploadData.image;
-        console.log("Uploaded image path:", imagePath);
       }
-
-      console.log("Creating/updating camp with image:", imagePath);
-
       const payload = {
         name: cf.name,
         dateStart: cf.dateStart,
@@ -3750,7 +2246,6 @@ function AdminPage({
         desc: cf.desc || "Registration open!",
         image: imagePath,
       };
-
       const data = editingCampId
         ? await api(`/admin/camps/${editingCampId}`, {
             method: "PATCH",
@@ -3760,13 +2255,10 @@ function AdminPage({
             method: "POST",
             body: JSON.stringify(payload),
           });
-
       setCamps(data.camps);
       setCDone(true);
       setTimeout(() => setCDone(false), 3000);
-
       resetCampForm();
-
       showToast(
         editingCampId ? "✅ Camp updated!" : "✅ Camp session published!",
         "s",
@@ -3814,6 +2306,7 @@ function AdminPage({
   return (
     <div className="pg">
       <div className="adm-wrap">
+        {/* ── Header ── */}
         <div
           style={{
             display: "flex",
@@ -3830,13 +2323,12 @@ function AdminPage({
             <h2
               style={{
                 fontFamily: "'Playfair Display',serif",
-                fontSize: "2rem",
+                fontSize: "clamp(1.4rem, 4vw, 2rem)",
               }}
             >
               Welcome, Admin! 👋
             </h2>
           </div>
-
           <button
             className="delbtn"
             style={{ fontSize: ".88rem", padding: ".45rem 1rem" }}
@@ -3846,6 +2338,7 @@ function AdminPage({
           </button>
         </div>
 
+        {/* ── Stats ── */}
         <div className="adm-stats">
           {[
             { n: camps.length, l: "Camp Sessions" },
@@ -3859,6 +2352,7 @@ function AdminPage({
           ))}
         </div>
 
+        {/* ── Tabs ── */}
         <div className="atabs">
           {[
             ["camps", "☀️ Manage Camps"],
@@ -3875,8 +2369,10 @@ function AdminPage({
           ))}
         </div>
 
+        {/* ══ TAB: CAMPS ══ */}
         {tab === "camps" && (
           <>
+            {/* Add / Edit Form */}
             <div className="add-form">
               <h3
                 style={{
@@ -3889,7 +2385,6 @@ function AdminPage({
                   ? "✏️ Edit Camp Session"
                   : "➕ Add New Camp Session"}
               </h3>
-
               <div className="fgrid">
                 <div className="fg full">
                   <label className="lbl">Camp Session Name *</label>
@@ -3900,7 +2395,6 @@ function AdminPage({
                     onChange={setC("name")}
                   />
                 </div>
-
                 <div className="fg">
                   <label className="lbl">Start Date *</label>
                   <input
@@ -3910,7 +2404,6 @@ function AdminPage({
                     onChange={setC("dateStart")}
                   />
                 </div>
-
                 <div className="fg">
                   <label className="lbl">End Date *</label>
                   <input
@@ -3920,7 +2413,6 @@ function AdminPage({
                     onChange={setC("dateEnd")}
                   />
                 </div>
-
                 <div className="fg">
                   <label className="lbl">Location *</label>
                   <input
@@ -3930,7 +2422,6 @@ function AdminPage({
                     onChange={setC("loc")}
                   />
                 </div>
-
                 <div className="fg">
                   <label className="lbl">Session Type</label>
                   <select
@@ -3942,7 +2433,6 @@ function AdminPage({
                     <option>Full Day (9AM–5PM)</option>
                   </select>
                 </div>
-
                 <div className="fg">
                   <label className="lbl">Age Group</label>
                   <select className="inp" value={cf.age} onChange={setC("age")}>
@@ -3952,7 +2442,6 @@ function AdminPage({
                     <option>Seniors (14–16)</option>
                   </select>
                 </div>
-
                 <div className="fg">
                   <label className="lbl">Price per Child ($)</label>
                   <input
@@ -3963,7 +2452,6 @@ function AdminPage({
                     onChange={setC("price")}
                   />
                 </div>
-
                 <div className="fg">
                   <label className="lbl">Max Spots</label>
                   <input
@@ -3974,7 +2462,6 @@ function AdminPage({
                     onChange={setC("spots")}
                   />
                 </div>
-
                 <div className="fg">
                   <label className="lbl">Status</label>
                   <select
@@ -3987,7 +2474,6 @@ function AdminPage({
                     <option value="full">Full</option>
                   </select>
                 </div>
-
                 <div className="fg full">
                   <label className="lbl">Camp Image</label>
                   <input
@@ -3997,7 +2483,6 @@ function AdminPage({
                     onChange={(e) => setCampFile(e.target.files?.[0] || null)}
                   />
                 </div>
-
                 <div className="fg full">
                   <label className="lbl">Description</label>
                   <textarea
@@ -4008,7 +2493,6 @@ function AdminPage({
                   />
                 </div>
               </div>
-
               <button className="sbtn" onClick={addCamp}>
                 {editingCampId ? "Update Camp Session →" : "Add Camp Session →"}
               </button>
@@ -4022,7 +2506,6 @@ function AdminPage({
                   Cancel Edit
                 </button>
               )}
-
               {cDone && (
                 <div className="ok-box">
                   <div style={{ fontSize: "1.4rem" }}>✅</div>
@@ -4031,16 +2514,10 @@ function AdminPage({
               )}
             </div>
 
-            <h3
-              style={{
-                fontFamily: "'Playfair Display',serif",
-                fontSize: "1.15rem",
-                marginBottom: ".9rem",
-              }}
-            >
+            {/* Camp List */}
+            <h3 className="adm-section-title">
               All Camp Sessions ({camps.length})
             </h3>
-
             {!camps.length ? (
               <div className="empty">
                 <div className="empty-i">☀️</div>
@@ -4051,68 +2528,50 @@ function AdminPage({
                 const rc = campRegs.filter((r) => r.campId === c.id).length;
                 return (
                   <div className="ei" key={c.id}>
-                    <div
-                      style={{
-                        flex: 1,
-                        display: "flex",
-                        gap: "1rem",
-                        alignItems: "center",
-                      }}
-                    >
+                    {/* Content: image + text */}
+                    <div className="ei-inner">
                       <img
                         src={getImageSrc(
                           c.image,
                           import.meta.env.VITE_API_URL || "",
                         )}
                         alt={c.name}
-                        style={{
-                          width: "90px",
-                          height: "70px",
-                          objectFit: "cover",
-                          borderRadius: "10px",
-                          border: "1px solid rgba(255,255,255,.08)",
-                          flexShrink: 0,
-                        }}
+                        className="ei-img"
                       />
-
-                      <div>
+                      <div className="ei-text">
                         <div className="ei-name">{c.name}</div>
                         <div className="ei-meta">
-                          📅 {fmtDShort(c.dateStart)} – {fmtDShort(c.dateEnd)} ·
-                          📍 {c.location} · {c.type} · 💵 ${c.price} · 📝 {rc}{" "}
-                          sign-up{rc !== 1 ? "s" : ""}
+                          📅 {fmtDShort(c.dateStart)} – {fmtDShort(c.dateEnd)}
+                        </div>
+                        <div className="ei-meta">
+                          📍 {c.location} · {c.type}
+                        </div>
+                        <div className="ei-meta">
+                          💵 ${c.price} · 📝 {rc} sign-up{rc !== 1 ? "s" : ""}
                         </div>
                         <div
                           className="ei-meta"
-                          style={{ marginTop: ".25rem" }}
+                          style={{ marginTop: ".2rem", opacity: 0.7 }}
                         >
                           Image: {c.image || "none"}
                         </div>
                       </div>
                     </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: ".5rem",
-                        flexShrink: 0,
-                        alignItems: "center",
-                        flexWrap: "wrap",
-                      }}
-                    >
+                    {/* Actions */}
+                    <div className="ei-actions">
                       <button
                         className="sbtn"
                         style={{
                           padding: ".45rem .8rem",
                           width: "auto",
                           marginTop: 0,
+                          fontSize: ".82rem",
                         }}
                         onClick={() => startEditCamp(c)}
                         type="button"
                       >
-                        Edit
+                        ✏️ Edit
                       </button>
-
                       <select
                         className="ssel"
                         value={c.status}
@@ -4122,7 +2581,6 @@ function AdminPage({
                         <option value="upcoming">Upcoming</option>
                         <option value="full">Full</option>
                       </select>
-
                       <button className="delbtn" onClick={() => delC(c.id)}>
                         🗑
                       </button>
@@ -4134,109 +2592,196 @@ function AdminPage({
           </>
         )}
 
+        {/* ══ TAB: CAMP SIGN-UPS ══ */}
         {tab === "campregs" && (
           <>
-            <h3
-              style={{
-                fontFamily: "'Playfair Display',serif",
-                fontSize: "1.15rem",
-                marginBottom: ".9rem",
-              }}
-            >
+            <h3 className="adm-section-title">
               Camp Sign-Ups ({campRegs.length})
             </h3>
-
             {!campRegs.length ? (
               <div className="empty">
                 <div className="empty-i">🏕</div>
                 <p>No camp sign-ups yet.</p>
               </div>
             ) : (
-              <div className="twrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Date</th>
-                      <th>Child</th>
-                      <th>DOB</th>
-                      <th>Level</th>
-                      <th>Camp Session</th>
-                      <th>Parent</th>
-                      <th>Email</th>
-                      <th>Phone</th>
-                      <th>Emergency</th>
-                      <th>Medical</th>
-                      <th>Fee</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {campRegs.map((r, i) => (
-                      <tr key={r.id}>
-                        <td style={{ color: "var(--muted)" }}>{i + 1}</td>
-                        <td
-                          style={{ whiteSpace: "nowrap", fontSize: ".78rem" }}
-                        >
-                          {r.date}
-                          <br />
-                          <span style={{ color: "var(--muted)" }}>
-                            {r.time}
-                          </span>
-                        </td>
-                        <td>
-                          <strong>{r.childName}</strong>
-                        </td>
-                        <td style={{ fontSize: ".8rem" }}>{r.dob}</td>
-                        <td style={{ fontSize: ".8rem" }}>{r.level}</td>
-                        <td style={{ fontSize: ".82rem", maxWidth: 160 }}>
-                          {r.campName}
-                        </td>
-                        <td>{r.parent}</td>
-                        <td style={{ fontSize: ".8rem" }}>{r.email}</td>
-                        <td style={{ fontSize: ".8rem" }}>{r.phone}</td>
-                        <td style={{ fontSize: ".8rem" }}>{r.emergency}</td>
-                        <td
+              <>
+                {/* Desktop table */}
+                <div className="twrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Date</th>
+                        <th>Child</th>
+                        <th>DOB</th>
+                        <th>Level</th>
+                        <th>Camp Session</th>
+                        <th>Parent</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Emergency</th>
+                        <th>Medical</th>
+                        <th>Fee</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {campRegs.map((r, i) => (
+                        <tr key={r.id}>
+                          <td style={{ color: "var(--muted)" }}>{i + 1}</td>
+                          <td
+                            style={{ whiteSpace: "nowrap", fontSize: ".78rem" }}
+                          >
+                            {r.date}
+                            <br />
+                            <span style={{ color: "var(--muted)" }}>
+                              {r.time}
+                            </span>
+                          </td>
+                          <td>
+                            <strong>{r.childName}</strong>
+                          </td>
+                          <td style={{ fontSize: ".8rem" }}>{r.dob}</td>
+                          <td style={{ fontSize: ".8rem" }}>{r.level}</td>
+                          <td style={{ fontSize: ".82rem", maxWidth: 160 }}>
+                            {r.campName}
+                          </td>
+                          <td>{r.parent}</td>
+                          <td style={{ fontSize: ".8rem" }}>{r.email}</td>
+                          <td style={{ fontSize: ".8rem" }}>{r.phone}</td>
+                          <td style={{ fontSize: ".8rem" }}>{r.emergency}</td>
+                          <td
+                            style={{
+                              fontSize: ".8rem",
+                              color:
+                                r.medical === "None"
+                                  ? "var(--muted)"
+                                  : "#fc8181",
+                            }}
+                          >
+                            {r.medical}
+                          </td>
+                          <td
+                            style={{ color: "var(--green2)", fontWeight: 700 }}
+                          >
+                            ${r.price}
+                          </td>
+                          <td>
+                            <button
+                              className="delbtn"
+                              onClick={() => deleteCampReg(r.id)}
+                            >
+                              🗑 Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile cards — shown via CSS at ≤700px */}
+                <div className="reg-cards">
+                  {campRegs.map((r, i) => (
+                    <div className="reg-card" key={r.id}>
+                      <div className="reg-card-row">
+                        <div>
+                          <div className="reg-card-label">Child</div>
+                          <div
+                            className="reg-card-value"
+                            style={{ fontWeight: 700, color: "#EEF5FF" }}
+                          >
+                            {r.childName}
+                          </div>
+                        </div>
+                        <div
                           style={{
-                            fontSize: ".8rem",
-                            color:
-                              r.medical === "None" ? "var(--muted)" : "#fc8181",
+                            color: "var(--green2)",
+                            fontWeight: 700,
+                            fontSize: "1.1rem",
                           }}
                         >
-                          {r.medical}
-                        </td>
-                        <td style={{ color: "var(--green2)", fontWeight: 700 }}>
                           ${r.price}
-                        </td>
-                        <td>
-                          <button
-                            className="delbtn"
-                            onClick={() => deleteCampReg(r.id)}
-                          >
-                            🗑 Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                        </div>
+                      </div>
+                      <div className="reg-card-row">
+                        <div>
+                          <div className="reg-card-label">Camp</div>
+                          <div className="reg-card-value">{r.campName}</div>
+                        </div>
+                      </div>
+                      <div className="reg-card-row">
+                        <div>
+                          <div className="reg-card-label">Level</div>
+                          <div className="reg-card-value">{r.level}</div>
+                        </div>
+                        <div>
+                          <div className="reg-card-label">DOB</div>
+                          <div className="reg-card-value">{r.dob}</div>
+                        </div>
+                      </div>
+                      <div className="reg-card-row">
+                        <div>
+                          <div className="reg-card-label">Parent</div>
+                          <div className="reg-card-value">{r.parent}</div>
+                        </div>
+                      </div>
+                      <div className="reg-card-row">
+                        <div>
+                          <div className="reg-card-label">Email</div>
+                          <div className="reg-card-value">{r.email}</div>
+                        </div>
+                      </div>
+                      <div className="reg-card-row">
+                        <div>
+                          <div className="reg-card-label">Phone</div>
+                          <div className="reg-card-value">{r.phone}</div>
+                        </div>
+                      </div>
+                      {r.emergency && r.emergency !== "—" && (
+                        <div className="reg-card-row">
+                          <div>
+                            <div className="reg-card-label">Emergency</div>
+                            <div className="reg-card-value">{r.emergency}</div>
+                          </div>
+                        </div>
+                      )}
+                      {r.medical && r.medical !== "None" && (
+                        <div className="reg-card-row">
+                          <div>
+                            <div className="reg-card-label">Medical</div>
+                            <div
+                              className="reg-card-value"
+                              style={{ color: "#fc8181" }}
+                            >
+                              {r.medical}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      <div style={{ marginTop: ".6rem" }}>
+                        <button
+                          className="delbtn"
+                          style={{ width: "100%", textAlign: "center" }}
+                          onClick={() => deleteCampReg(r.id)}
+                        >
+                          🗑 Delete Sign-Up
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
           </>
         )}
 
+        {/* ══ TAB: REVIEWS ══ */}
         {tab === "reviews" && (
           <>
-            <h3
-              style={{
-                fontFamily: "'Playfair Display',serif",
-                fontSize: "1.15rem",
-                marginBottom: ".9rem",
-              }}
-            >
+            <h3 className="adm-section-title">
               Reviews ({adminReviews.length})
             </h3>
-
             {!adminReviews.length ? (
               <div className="empty">
                 <div className="empty-i">⭐</div>
@@ -4247,36 +2792,45 @@ function AdminPage({
                 .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
                 .map((r) => (
                   <div className="ei" key={r.id}>
-                    <div style={{ flex: 1 }}>
+                    <div
+                      className="ei-inner"
+                      style={{ flexDirection: "column" }}
+                    >
                       <div className="ei-name">
                         {r.childName || "Anonymous"} · {r.rating}/5
                       </div>
-                      <div className="ei-meta" style={{ marginTop: 6 }}>
+                      <div
+                        className="ei-meta"
+                        style={{ marginTop: 6, wordBreak: "break-word" }}
+                      >
                         {r.text}
-                        <div style={{ marginTop: 6, color: "var(--muted)" }}>
-                          Status:{" "}
-                          <b
-                            style={{
-                              color: r.approved ? "var(--green2)" : "#fc8181",
-                            }}
-                          >
-                            {r.approved ? "Approved" : "Pending"}
-                          </b>
-                        </div>
+                      </div>
+                      <div
+                        style={{
+                          marginTop: 6,
+                          fontSize: ".8rem",
+                          color: "var(--muted)",
+                        }}
+                      >
+                        Status:{" "}
+                        <b
+                          style={{
+                            color: r.approved ? "var(--green2)" : "#fc8181",
+                          }}
+                        >
+                          {r.approved ? "Approved" : "Pending"}
+                        </b>
                       </div>
                     </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: ".5rem",
-                        alignItems: "center",
-                      }}
-                    >
+                    <div className="ei-actions">
                       {!r.approved && (
                         <button
                           className="sbtn"
-                          style={{ padding: ".45rem .8rem", width: "auto" }}
+                          style={{
+                            padding: ".45rem .8rem",
+                            width: "auto",
+                            fontSize: ".82rem",
+                          }}
                           onClick={async () => {
                             try {
                               await api(`/admin/reviews/${r.id}/approve`, {
@@ -4292,7 +2846,6 @@ function AdminPage({
                           Approve
                         </button>
                       )}
-
                       <button
                         className="delbtn"
                         onClick={async () => {
@@ -4321,13 +2874,10 @@ function AdminPage({
   );
 }
 
-/* ══════════════════════════════════════════
-   ROOT
-══════════════════════════════════════════ */
+/* ══════════════════════════════════════════ ROOT ══════════════════════════════════════════ */
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
-
   const pathToPage = {
     "/": "home",
     "/programs": "programs",
@@ -4338,23 +2888,17 @@ export default function App() {
     "/login": "login",
     "/admin": "admin",
   };
-
   const page = pathToPage[location.pathname] || "home";
 
   const [reviews, setReviews] = useState([]);
   const [adminReviews, setAdminReviews] = useState([]);
   const [reviewOpen, setReviewOpen] = useState(false);
-
   const [isAdmin, setIsAdmin] = useState(false);
   const [hideHeader, setHideHeader] = useState(false);
-
   const [toasts, setToasts] = useState([]);
-
   const [camps, setCamps] = useState(DEF_CAMPS);
   const [campRegs, setCampRegs] = useState([]);
-
   const [contactOpen, setContactOpen] = useState(false);
-
   const [mobileOpen, setMobileOpen] = useState(false);
   const toggleMobile = useCallback(() => setMobileOpen((v) => !v), []);
   const closeMobile = useCallback(() => setMobileOpen(false), []);
@@ -4377,19 +2921,11 @@ export default function App() {
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
-
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
-      if (currentScrollY > lastScrollY && currentScrollY > 120) {
-        setHideHeader(true);
-      } else {
-        setHideHeader(false);
-      }
-
+      setHideHeader(currentScrollY > lastScrollY && currentScrollY > 120);
       lastScrollY = currentScrollY;
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -4417,11 +2953,9 @@ export default function App() {
 
   const loadAdminData = useCallback(async () => {
     if (!localStorage.getItem(AUTH_KEY)) return;
-
     try {
       const data = await api("/admin/registrations");
       setCampRegs(data.campRegs || []);
-
       const rev = await api("/admin/reviews");
       setAdminReviews(rev.reviews || []);
     } catch {
@@ -4441,7 +2975,6 @@ export default function App() {
   useEffect(() => {
     const token = localStorage.getItem(AUTH_KEY);
     if (!token) return;
-
     api("/admin/registrations")
       .then((data) => {
         setCampRegs(data.campRegs || []);
@@ -4459,28 +2992,23 @@ export default function App() {
 
   useEffect(() => {
     if (!isAdmin) return;
-
     setTimeout(() => {
       loadAdminData();
     }, 0);
-
     const interval = setInterval(() => {
       loadAdminData();
     }, 10000);
-
     return () => clearInterval(interval);
   }, [isAdmin, loadAdminData]);
 
   const go = useCallback(
     (p) => {
       setMobileOpen(false);
-
       if (p === "admin" && !isAdmin) {
         navigate("/login");
         window.scrollTo(0, 0);
         return;
       }
-
       navigate(p === "home" ? "/" : `/${p}`);
       window.scrollTo(0, 0);
     },
@@ -4509,9 +3037,7 @@ export default function App() {
   const handleLogout = async () => {
     try {
       await api("/admin/logout", { method: "POST" });
-    } catch {
-      // ignore
-    }
+    } catch {}
     localStorage.removeItem(AUTH_KEY);
     setIsAdmin(false);
     setCampRegs([]);
@@ -4527,14 +3053,9 @@ export default function App() {
             src="/pieces/logo.png"
             alt="company logo"
             className="nav-logo-img"
-            style={{
-              width: "145px",
-              height: "115px",
-              marginBottom: "10px",
-            }}
+            style={{ width: "145px", height: "115px", marginBottom: "10px" }}
           />
         </div>
-
         <div className="nav-links">
           {[
             ["home", "Home"],
@@ -4553,15 +3074,12 @@ export default function App() {
               {l}
             </button>
           ))}
-
           <button className="nb" onClick={openContact} type="button">
             Contact
           </button>
         </div>
-
         <div className="nav-right">
           {isAdmin && <span className="adm-dot">● Admin</span>}
-
           <button
             className={`nb cta${isAdmin ? " adm" : ""}`}
             onClick={() => (isAdmin ? go("admin") : go("login"))}
@@ -4569,7 +3087,6 @@ export default function App() {
           >
             {isAdmin ? "Dashboard" : "Admin Login"}
           </button>
-
           <button
             className={`burger${mobileOpen ? " on" : ""}`}
             onClick={toggleMobile}
@@ -4589,7 +3106,6 @@ export default function App() {
         className={`mnav-ovl${mobileOpen ? " on" : ""}`}
         onClick={closeMobile}
       />
-
       <div className={`mnav${mobileOpen ? " on" : ""}`}>
         <div className="mnav-h">
           <div
@@ -4599,7 +3115,6 @@ export default function App() {
           >
             ♔ MyChessFamily
           </div>
-
           <button
             className="mnav-close"
             onClick={closeMobile}
@@ -4609,7 +3124,6 @@ export default function App() {
             ×
           </button>
         </div>
-
         <div className="mnav-links">
           {[
             ["home", "Home"],
@@ -4632,7 +3146,6 @@ export default function App() {
               <span style={{ color: "var(--muted)", fontWeight: 600 }}>›</span>
             </button>
           ))}
-
           <button
             className="mnav-btn"
             onClick={() => {
@@ -4645,7 +3158,6 @@ export default function App() {
             <span style={{ color: "var(--muted)", fontWeight: 600 }}>✉</span>
           </button>
         </div>
-
         <div className="mnav-cta">
           <button
             className="btn btn-g btn-w"
@@ -4665,12 +3177,10 @@ export default function App() {
           path="/"
           element={<HomePage onNav={go} onContact={openContact} />}
         />
-
         <Route
           path="/programs"
           element={<ProgramsPage onNav={go} onContact={openContact} />}
         />
-
         <Route
           path="/camp"
           element={
@@ -4683,12 +3193,10 @@ export default function App() {
             />
           }
         />
-
         <Route
           path="/team"
           element={<TeamPage onNav={go} onContact={openContact} />}
         />
-
         <Route
           path="/reviews"
           element={
@@ -4700,17 +3208,14 @@ export default function App() {
             />
           }
         />
-
         <Route
           path="/about"
           element={<AboutPage onNav={go} onContact={openContact} />}
         />
-
         <Route
           path="/login"
           element={<LoginPage onLogin={handleLogin} showToast={showToast} />}
         />
-
         <Route
           path="/admin"
           element={
@@ -4734,7 +3239,6 @@ export default function App() {
       {contactOpen && (
         <ContactModal onClose={closeContact} showToast={showToast} />
       )}
-
       {reviewOpen && (
         <ReviewModal
           onClose={() => setReviewOpen(false)}
@@ -4742,7 +3246,6 @@ export default function App() {
           reload={loadReviews}
         />
       )}
-
       <Toast toasts={toasts} />
     </div>
   );
