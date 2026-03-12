@@ -3311,7 +3311,7 @@ const GALLERY_CSS = `
 
 /* ── 404 PAGE ── */
 .notfound-pg{
-  width:100%;min-height:100vh;
+  width:100vw;min-height:100vh;
   display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,#09131E 0%,#0D1E2C 55%,#091A10 100%);
   position:relative;overflow:hidden;padding:8rem 2rem 4rem;
@@ -3322,7 +3322,7 @@ const GALLERY_CSS = `
              radial-gradient(ellipse at 20% 75%,rgba(26,94,168,.1) 0%,transparent 50%);
 }
 .notfound-inner{
-  position:relative;z-index:2;text-align:center;max-width:640px;margin:0 auto;
+  position:relative;z-index:2;text-align:center;max-width:100%;margin:0 auto;
 }
 .notfound-board{
   display:grid;grid-template-columns:repeat(8,1fr);
