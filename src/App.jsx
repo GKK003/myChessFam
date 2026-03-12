@@ -284,11 +284,35 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .fg{margin-bottom:.9rem;}
 .fg.full{grid-column:1/-1;}
 .lbl{display:block;font-size:.8rem;font-weight:600;color:rgba(180,210,240,.85);margin-bottom:.32rem;letter-spacing:.3px;}
-.inp{width:98%;padding:.72rem .95rem;background:rgba(26,94,168,.09);border:1.5px solid rgba(74,171,232,.18);border-radius:8px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:.91rem;transition:.2s;outline:none;}
+.inp{width:100%;padding:.72rem .95rem;background:rgba(26,94,168,.09);border:1.5px solid rgba(74,171,232,.18);border-radius:8px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:.91rem;transition:.2s;outline:none;}
 .inp:focus{border-color:var(--green2);background:rgba(21,122,69,.09);box-shadow:0 0 0 3px rgba(45,204,116,.12);}
 .inp::placeholder{color:rgba(180,210,240,.22);}
 select.inp option{background:#0D1E30;}
 textarea.inp{min-height:85px;resize:vertical;}
+
+/* ── DATE INPUT — mobile fix ── */
+input[type="date"].inp,
+input[type="date"]{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  box-sizing:border-box;
+  -webkit-appearance:none;
+  appearance:none;
+  display:block;
+}
+/* Prevent iOS from rendering date picker wider than the input */
+input[type="date"]::-webkit-date-and-time-value{
+  text-align:left;
+}
+/* Ensure the calendar icon doesn't push the input wider on mobile */
+@media(max-width:600px){
+  input[type="date"].inp,
+  input[type="date"]{
+    font-size:.85rem;
+    padding:.72rem .7rem;
+  }
+}
 .sbtn{width:100%;padding:.95rem;background:var(--green);color:#fff;font-weight:700;font-family:'DM Sans',sans-serif;font-size:.97rem;border:none;border-radius:9px;cursor:pointer;transition:.22s;margin-top:.25rem;}
 .sbtn:hover{background:var(--green2);transform:translateY(-2px);box-shadow:0 8px 26px rgba(21,122,69,.45);}
 .ok-box{display:flex;flex-direction:column;align-items:center;background:rgba(21,122,69,.14);border:1px solid var(--green2);border-radius:10px;padding:1.3rem;text-align:center;margin-top:.85rem;animation:fu .4s ease;}
@@ -333,8 +357,10 @@ textarea.inp{min-height:85px;resize:vertical;}
 @media(max-width:600px){.add-form{padding:1.2rem .95rem;}}
 
 /* Force fgrid to single column on small screens */
+/* This also fixes date inputs sitting side-by-side and overflowing */
 @media(max-width:600px){
   .fgrid{grid-template-columns:1fr !important;}
+  .fgrid .fg{grid-column:1 !important;}
   .fg.full{grid-column:1 !important;}
 }
 
