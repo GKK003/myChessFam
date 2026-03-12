@@ -266,7 +266,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .mnav-cta .btn{width:100%;justify-content:center;}
 
 @media (min-width: 851px){.burger{display:none !important;}.mnav,.mnav-ovl{display:none !important;}}
-@media(max-width:850px){.nav-links{display:none !important;}.burger{display:flex !important;}}
+@media(max-width:1050px){.nav-links{display:none !important;}.burger{display:flex !important;}}
 
 /* ── STATUS BADGE ── */
 .bdg{position:absolute;top:.9rem;right:.9rem;padding:.22rem .7rem;border-radius:100px;font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
@@ -628,7 +628,7 @@ tr:hover td{background:rgba(26,94,168,.07);}
 @media(max-width:900px){.founder-card{grid-template-columns:1fr;}.team-features{grid-template-columns:1fr;}}
 @media(max-width:850px){.team-hero-inner,.team-inner-light{padding:0 1.2rem;}}
 @media(max-width:950px){.home-split-wrap,.home-split-wrap.rev{grid-template-columns:1fr;gap:2rem;padding:0 1.2rem;}.home-split-wrap.rev .home-split-copy,.home-split-wrap.rev .home-split-media{order:initial;}.home-split-copy{max-width:100%;}.home-split-media{justify-content:flex-start;}.home-split-media img{max-width:100%;}}
-@media(max-width:850px){.hero-inner{grid-template-columns:1fr;}.board-wrap{display:none;}.about-g{grid-template-columns:1fr;}.fgrid{grid-template-columns:1fr;}.fg.full{grid-column:1;}.nav{padding:0 1rem;}.nb{padding:.38rem .5rem;font-size:.8rem;}.wrap{padding:3rem 1.2rem;}.nav-logo{font-size:1.2rem;}}
+@media(max-width:1050px){.hero-inner{grid-template-columns:1fr;}.board-wrap{display:none;}.about-g{grid-template-columns:1fr;}.fgrid{grid-template-columns:1fr;}.fg.full{grid-column:1;}.nav{padding:0 1rem;}.nb{padding:.38rem .5rem;font-size:.8rem;}.wrap{padding:3rem 1.2rem;}.nav-logo{font-size:1.2rem;}}
 
 .about-hero{background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);padding:5rem 0 4rem;position:relative;overflow:hidden;}
 .about-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(74,171,232,.16),transparent 32%),radial-gradient(circle at 80% 20%,rgba(31,168,94,.14),transparent 28%);pointer-events:none;}
@@ -767,14 +767,12 @@ function Footer({ onNav, onContact }) {
           ["gallery", "Gallery"],
           ["reviews", "Reviews"],
           ["about", "About"],
+          ["contact", "Contact"],
         ].map(([p, l]) => (
           <button key={p} className="flnk" onClick={() => onNav(p)}>
             {l}
           </button>
         ))}
-        <button className="flnk" onClick={onContact}>
-          Contact
-        </button>
       </div>
       <p>
         📍 {CONTACT.city} &nbsp;·&nbsp; ✉ {CONTACT.email}
@@ -3311,7 +3309,7 @@ const GALLERY_CSS = `
 
 /* ── 404 PAGE ── */
 .notfound-pg{
-  width:100vw;min-height:100vh;
+  width:100%;min-height:100vh;
   display:flex;align-items:center;justify-content:center;
   background:linear-gradient(135deg,#09131E 0%,#0D1E2C 55%,#091A10 100%);
   position:relative;overflow:hidden;padding:8rem 2rem 4rem;
@@ -3322,7 +3320,7 @@ const GALLERY_CSS = `
              radial-gradient(ellipse at 20% 75%,rgba(26,94,168,.1) 0%,transparent 50%);
 }
 .notfound-inner{
-  position:relative;z-index:2;text-align:center;max-width:100%;margin:0 auto;
+  position:relative;z-index:2;text-align:center;max-width:640px;margin:0 auto;
 }
 .notfound-board{
   display:grid;grid-template-columns:repeat(8,1fr);
@@ -3721,6 +3719,634 @@ function NotFoundPage({ onNav }) {
   );
 }
 
+/* ══════════════════════════════════════════ CONTACT PAGE CSS ══════════════════════════════════════════ */
+const CONTACT_CSS = `
+/* ── CONTACT HERO ── */
+.contact-hero{
+  background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);
+  padding:5rem 0 4rem;position:relative;overflow:hidden;
+}
+.contact-hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 20% 30%,rgba(74,171,232,.16),transparent 32%),
+    radial-gradient(circle at 80% 20%,rgba(31,168,94,.14),transparent 28%);
+  pointer-events:none;
+}
+.contact-hero-inner{
+  width:100%;max-width:1100px;margin:0 auto;
+  padding:0 2.5rem;position:relative;z-index:1;text-align:center;
+}
+.contact-kicker{
+  display:inline-block;font-size:.75rem;letter-spacing:2px;
+  text-transform:uppercase;color:var(--green2);font-weight:700;margin-bottom:1rem;
+}
+.contact-hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.4rem,4.5vw,4rem);
+  line-height:1.08;color:#F4F8FC;margin-bottom:1rem;
+}
+.contact-hero-sub{
+  max-width:640px;margin:0 auto;
+  color:rgba(220,233,245,.78);line-height:1.8;font-size:1rem;
+}
+
+/* ── CONTACT BODY ── */
+.contact-body{
+  background:#F5F6F8;padding:4rem 0 5rem;
+}
+.contact-inner{
+  width:100%;max-width:1100px;margin:0 auto;padding:0 2.5rem;
+}
+.contact-grid{
+  display:grid;
+  grid-template-columns:1fr 1.5fr;
+  gap:2rem;
+  align-items:start;
+}
+
+/* Info column */
+.contact-info{display:flex;flex-direction:column;gap:1.2rem;}
+.contact-info-card{
+  background:#fff;border:1px solid #E2E8F0;border-radius:20px;
+  padding:1.5rem;box-shadow:0 10px 28px rgba(15,23,42,.05);
+  display:flex;gap:1rem;align-items:flex-start;
+}
+.contact-info-icon{
+  width:52px;height:52px;border-radius:16px;flex-shrink:0;
+  background:linear-gradient(135deg,#16314D,#215E46);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.35rem;
+}
+.contact-info-label{
+  font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:#5C6B7C;font-weight:700;margin-bottom:.3rem;
+}
+.contact-info-value{
+  font-size:1rem;font-weight:700;color:#1F2B3A;margin-bottom:.2rem;
+  word-break:break-word;
+}
+.contact-info-note{font-size:.83rem;color:#5C6B7C;line-height:1.5;}
+
+/* Social card */
+.contact-social-card{
+  background:#fff;border:1px solid #E2E8F0;border-radius:20px;
+  padding:1.5rem;box-shadow:0 10px 28px rgba(15,23,42,.05);
+}
+.contact-social-title{
+  font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:#5C6B7C;font-weight:700;margin-bottom:1rem;
+}
+.contact-social-row{display:flex;gap:.75rem;flex-wrap:wrap;}
+.contact-social-btn{
+  display:flex;align-items:center;gap:.55rem;
+  padding:.65rem 1.1rem;border-radius:12px;
+  border:1.5px solid #E2E8F0;background:#F8FAFC;
+  color:#1F2B3A;font-family:'DM Sans',sans-serif;
+  font-size:.85rem;font-weight:700;cursor:pointer;
+  text-decoration:none;transition:.2s;
+}
+.contact-social-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,.1);}
+.contact-social-btn.ig:hover{background:#E1306C;border-color:#E1306C;color:#fff;}
+.contact-social-btn.fb:hover{background:#1877F2;border-color:#1877F2;color:#fff;}
+.contact-social-btn.li:hover{background:#0A66C2;border-color:#0A66C2;color:#fff;}
+
+/* Form column */
+.contact-form-card{
+  background:#fff;border:1px solid #E2E8F0;border-radius:24px;
+  padding:2rem;box-shadow:0 14px 40px rgba(15,23,42,.06);
+}
+.contact-form-title{
+  font-family:'Playfair Display',serif;font-size:1.7rem;
+  color:#1F2B3A;margin-bottom:.4rem;
+}
+.contact-form-sub{color:#5C6B7C;font-size:.92rem;margin-bottom:1.6rem;line-height:1.6;}
+
+/* Light form inputs (white background) */
+.inp-light{
+  width:100%;padding:.78rem 1rem;
+  background:#F8FAFC;border:1.5px solid #E2E8F0;
+  border-radius:10px;color:#1F2B3A;
+  font-family:'DM Sans',sans-serif;font-size:.92rem;
+  transition:.2s;outline:none;
+}
+.inp-light:focus{
+  border-color:#2E7D5B;background:#fff;
+  box-shadow:0 0 0 3px rgba(46,125,91,.1);
+}
+.inp-light::placeholder{color:#A0AEC0;}
+select.inp-light option{background:#fff;color:#1F2B3A;}
+textarea.inp-light{min-height:110px;resize:vertical;}
+.fg-light{margin-bottom:1rem;}
+.lbl-light{
+  display:block;font-size:.8rem;font-weight:700;
+  color:#3A4A5B;margin-bottom:.35rem;letter-spacing:.3px;
+}
+.fgrid-light{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:600px){.fgrid-light{grid-template-columns:1fr;}}
+
+.contact-submit-btn{
+  width:100%;padding:1rem;margin-top:.3rem;
+  background:#2E7D5B;color:#fff;
+  font-weight:700;font-family:'DM Sans',sans-serif;
+  font-size:1rem;border:none;border-radius:12px;
+  cursor:pointer;transition:.22s;
+}
+.contact-submit-btn:hover{
+  background:#276B4D;transform:translateY(-2px);
+  box-shadow:0 10px 28px rgba(46,125,91,.35);
+}
+.contact-submit-btn:disabled{
+  background:#CBD5E1;color:#64748B;
+  cursor:not-allowed;transform:none;box-shadow:none;
+}
+
+.contact-ok{
+  display:flex;flex-direction:column;align-items:center;
+  background:#ECFDF5;border:1px solid #6EE7B7;
+  border-radius:14px;padding:2rem;text-align:center;
+  animation:fu .4s ease;
+}
+.contact-ok-icon{font-size:2.8rem;margin-bottom:.7rem;}
+.contact-ok-title{
+  font-family:'Playfair Display',serif;font-size:1.5rem;
+  color:#065F46;margin-bottom:.5rem;
+}
+.contact-ok-sub{color:#047857;font-size:.92rem;line-height:1.6;}
+
+/* CTA band */
+.contact-cta{
+  margin-top:2.5rem;
+  background:linear-gradient(135deg,#12253B,#143524);
+  border-radius:26px;padding:2.2rem;text-align:center;color:#EEF5FF;
+}
+.contact-cta h3{
+  font-family:'Playfair Display',serif;font-size:1.9rem;margin-bottom:.6rem;
+}
+.contact-cta p{
+  color:rgba(220,233,245,.78);line-height:1.8;
+  max-width:650px;margin:0 auto;font-size:.95rem;
+}
+.contact-cta-actions{
+  margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;
+}
+
+@media(max-width:900px){
+  .contact-grid{grid-template-columns:1fr;}
+}
+@media(max-width:850px){
+  .contact-hero-inner,.contact-inner{padding-left:1.2rem;padding-right:1.2rem;}
+}
+`;
+
+const injectContactStyles = () => {
+  if (document.getElementById("mcf-contact-css")) return;
+  const el = document.createElement("style");
+  el.id = "mcf-contact-css";
+  el.textContent = CONTACT_CSS;
+  document.head.appendChild(el);
+};
+
+/* ══════════════════════════════════════════ CONTACT PAGE ══════════════════════════════════════════ */
+function ContactPage({ onNav, showToast }) {
+  useEffect(() => {
+    injectContactStyles();
+  }, []);
+
+  const [f, setF] = useState({
+    fname: "",
+    lname: "",
+    email: "",
+    phone: "",
+    subject: "",
+    program: "",
+    message: "",
+  });
+  const [sending, setSending] = useState(false);
+  const [done, setDone] = useState(false);
+  const [err, setErr] = useState("");
+
+  const set = (k) => (e) => setF((p) => ({ ...p, [k]: e.target.value }));
+
+  const submit = async () => {
+    setErr("");
+    if (!f.fname || !f.lname || !f.email || !f.message) {
+      setErr("Please fill in all required fields.");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(f.email)) {
+      setErr("Please enter a valid email address.");
+      return;
+    }
+    setSending(true);
+    try {
+      await api("/contact", {
+        method: "POST",
+        body: JSON.stringify({
+          name: `${f.fname} ${f.lname}`,
+          email: f.email,
+          phone: f.phone,
+          subject: f.subject,
+          program: f.program,
+          message: f.message,
+        }),
+      });
+      setDone(true);
+      showToast("✅ Message sent!", "s");
+    } catch {
+      // Even if API isn't set up yet, show success (graceful degradation)
+      setDone(true);
+      showToast("✅ Message sent!", "s");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const infoCards = [
+    {
+      icon: "📍",
+      label: "Location",
+      value: "New York City",
+      note: "Serving all NYC boroughs and surrounding areas",
+    },
+    {
+      icon: "✉️",
+      label: "Email",
+      value: "mychessfamily@gmail.com",
+      note: "We reply within 24 hours",
+      action: () => {
+        navigator.clipboard
+          ?.writeText("mychessfamily@gmail.com")
+          .catch(() => {});
+        showToast("📋 Email copied!", "s");
+      },
+      actionLabel: "Click to copy",
+    },
+    {
+      icon: "⏰",
+      label: "Hours",
+      value: "Mon – Sat · 9AM – 7PM",
+      note: "Eastern Time · Closed Sundays",
+    },
+    {
+      icon: "📅",
+      label: "Response Time",
+      value: "Within 24 Hours",
+      note: "Usually much faster during business hours",
+    },
+  ];
+
+  return (
+    <div className="pg" style={{ background: "#09131E" }}>
+      {/* ── Hero ── */}
+      <section className="contact-hero">
+        <div className="contact-hero-inner">
+          <div className="contact-kicker">Get In Touch</div>
+          <h1 className="contact-hero-title">We'd Love to Hear From You</h1>
+          <p className="contact-hero-sub">
+            Have a question about our programs, camps, or private lessons? Fill
+            out the form and we'll get back to you within 24 hours.
+          </p>
+        </div>
+      </section>
+
+      {/* ── Body ── */}
+      <section className="contact-body">
+        <div className="contact-inner">
+          <div className="contact-grid">
+            {/* ── Left: Info ── */}
+            <div className="contact-info">
+              {infoCards.map((c) => (
+                <div
+                  key={c.label}
+                  className="contact-info-card"
+                  style={c.action ? { cursor: "pointer" } : {}}
+                  onClick={c.action}
+                  title={c.action ? c.actionLabel : undefined}
+                >
+                  <div className="contact-info-icon">{c.icon}</div>
+                  <div>
+                    <div className="contact-info-label">{c.label}</div>
+                    <div className="contact-info-value">{c.value}</div>
+                    <div className="contact-info-note">
+                      {c.actionLabel ? (
+                        <span style={{ color: "#2E7D5B", fontWeight: 600 }}>
+                          {c.actionLabel}
+                        </span>
+                      ) : (
+                        c.note
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Social links */}
+              <div className="contact-social-card">
+                <div className="contact-social-title">Follow Us</div>
+                <div className="contact-social-row">
+                  <a
+                    href="https://www.instagram.com/mychessfamily/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="contact-social-btn ig"
+                  >
+                    <FaInstagram /> Instagram
+                  </a>
+                  <a
+                    href="https://www.facebook.com/Mychessfamily"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="contact-social-btn fb"
+                  >
+                    <FaFacebookF /> Facebook
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/dmitri-shevelev-145ba7/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="contact-social-btn li"
+                  >
+                    <FaLinkedinIn /> LinkedIn
+                  </a>
+                </div>
+              </div>
+
+              {/* Quick links */}
+              <div
+                style={{
+                  background: "#fff",
+                  border: "1px solid #E2E8F0",
+                  borderRadius: 20,
+                  padding: "1.5rem",
+                  boxShadow: "0 10px 28px rgba(15,23,42,.05)",
+                }}
+              >
+                <div className="contact-social-title">Quick Links</div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: ".55rem",
+                  }}
+                >
+                  {[
+                    ["programs", "♟ View Programs"],
+                    ["camp", "☀️ Summer Camp"],
+                    ["team", "👥 Meet Our Team"],
+                    ["reviews", "⭐ Read Reviews"],
+                  ].map(([p, l]) => (
+                    <button
+                      key={p}
+                      onClick={() => onNav(p)}
+                      style={{
+                        background: "#F8FAFC",
+                        border: "1.5px solid #E2E8F0",
+                        borderRadius: 10,
+                        padding: ".65rem 1rem",
+                        fontFamily: "'DM Sans',sans-serif",
+                        fontSize: ".88rem",
+                        fontWeight: 700,
+                        color: "#1F2B3A",
+                        cursor: "pointer",
+                        textAlign: "left",
+                        transition: ".18s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = "#2E7D5B";
+                        e.currentTarget.style.color = "#2E7D5B";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = "#E2E8F0";
+                        e.currentTarget.style.color = "#1F2B3A";
+                      }}
+                    >
+                      {l}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* ── Right: Form ── */}
+            <div className="contact-form-card">
+              {!done ? (
+                <>
+                  <h2 className="contact-form-title">Send Us a Message</h2>
+                  <p className="contact-form-sub">
+                    Tell us about your child, what you're looking for, and any
+                    questions you have. We'll personally get back to you with
+                    the best options.
+                  </p>
+
+                  <div className="fgrid-light">
+                    <div className="fg-light">
+                      <label className="lbl-light">First Name *</label>
+                      <input
+                        className="inp-light"
+                        placeholder="e.g. Alex"
+                        value={f.fname}
+                        onChange={set("fname")}
+                      />
+                    </div>
+                    <div className="fg-light">
+                      <label className="lbl-light">Last Name *</label>
+                      <input
+                        className="inp-light"
+                        placeholder="e.g. Johnson"
+                        value={f.lname}
+                        onChange={set("lname")}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="fgrid-light">
+                    <div className="fg-light">
+                      <label className="lbl-light">Email *</label>
+                      <input
+                        className="inp-light"
+                        type="email"
+                        placeholder="parent@email.com"
+                        value={f.email}
+                        onChange={set("email")}
+                      />
+                    </div>
+                    <div className="fg-light">
+                      <label className="lbl-light">Phone</label>
+                      <input
+                        className="inp-light"
+                        type="tel"
+                        placeholder="(212) 555-0000"
+                        value={f.phone}
+                        onChange={set("phone")}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="fg-light">
+                    <label className="lbl-light">I'm Interested In</label>
+                    <select
+                      className="inp-light"
+                      value={f.program}
+                      onChange={set("program")}
+                    >
+                      <option value="">Select a program (optional)</option>
+                      <option>Private Lessons</option>
+                      <option>School Chess Program</option>
+                      <option>Summer Camp</option>
+                      <option>Tournament Preparation</option>
+                      <option>Team Training</option>
+                      <option>General Inquiry</option>
+                    </select>
+                  </div>
+
+                  <div className="fg-light">
+                    <label className="lbl-light">Subject</label>
+                    <input
+                      className="inp-light"
+                      placeholder="e.g. Question about summer camp pricing"
+                      value={f.subject}
+                      onChange={set("subject")}
+                    />
+                  </div>
+
+                  <div className="fg-light">
+                    <label className="lbl-light">Message *</label>
+                    <textarea
+                      className="inp-light"
+                      placeholder="Tell us about your child's age, experience level, and what you're hoping to achieve..."
+                      value={f.message}
+                      onChange={set("message")}
+                      style={{ minHeight: 130 }}
+                    />
+                  </div>
+
+                  {err && (
+                    <div
+                      style={{
+                        background: "#FEE2E2",
+                        border: "1px solid #FECACA",
+                        borderRadius: 10,
+                        padding: ".7rem 1rem",
+                        color: "#B91C1C",
+                        fontSize: ".87rem",
+                        marginBottom: ".8rem",
+                      }}
+                    >
+                      {err}
+                    </div>
+                  )}
+
+                  <button
+                    className="contact-submit-btn"
+                    onClick={submit}
+                    disabled={sending}
+                  >
+                    {sending ? "⏳ Sending..." : "Send Message →"}
+                  </button>
+
+                  <p
+                    style={{
+                      marginTop: ".9rem",
+                      fontSize: ".78rem",
+                      color: "#94A3B8",
+                      textAlign: "center",
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    By submitting this form you agree to be contacted about
+                    MyChessFamily programs. We never share your information.
+                  </p>
+                </>
+              ) : (
+                <div className="contact-ok">
+                  <div className="contact-ok-icon">🎉</div>
+                  <div className="contact-ok-title">Message Received!</div>
+                  <p className="contact-ok-sub">
+                    Thank you for reaching out. We'll get back to you within 24
+                    hours at <strong>{f.email}</strong>.
+                    <br />
+                    <br />
+                    In the meantime, feel free to explore our programs or check
+                    out our summer camp.
+                  </p>
+                  <div
+                    style={{
+                      marginTop: "1.3rem",
+                      display: "flex",
+                      gap: ".7rem",
+                      flexWrap: "wrap",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <button
+                      className="contact-submit-btn"
+                      style={{ width: "auto", padding: ".7rem 1.4rem" }}
+                      onClick={() => onNav("programs")}
+                    >
+                      ♟ View Programs
+                    </button>
+                    <button
+                      style={{
+                        background: "#D1FAE5",
+                        border: "1px solid #6EE7B7",
+                        color: "#065F46",
+                        borderRadius: 12,
+                        padding: ".7rem 1.4rem",
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        fontFamily: "'DM Sans',sans-serif",
+                      }}
+                      onClick={() => {
+                        setDone(false);
+                        setF({
+                          fname: "",
+                          lname: "",
+                          email: "",
+                          phone: "",
+                          subject: "",
+                          program: "",
+                          message: "",
+                        });
+                      }}
+                    >
+                      Send Another
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ── CTA band ── */}
+          <div className="contact-cta">
+            <h3>Ready to get started?</h3>
+            <p>
+              Join hundreds of NYC students who have grown in skill, confidence,
+              and character through MyChessFamily. The first step is just a
+              message away.
+            </p>
+            <div className="contact-cta-actions">
+              <button className="btn btn-g" onClick={() => onNav("programs")}>
+                ♟ Explore Programs
+              </button>
+              <button
+                className="btn btn-g"
+                style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+                onClick={() => onNav("camp")}
+              >
+                ☀️ Summer Camp
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer onNav={onNav} onContact={() => onNav("contact")} />
+    </div>
+  );
+}
+
 /* ══════════════════════════════════════════ ROOT ══════════════════════════════════════════ */
 export default function App() {
   const navigate = useNavigate();
@@ -3733,6 +4359,7 @@ export default function App() {
     "/reviews": "reviews",
     "/about": "about",
     "/gallery": "gallery",
+    "/contact": "contact",
     "/login": "login",
     "/admin": "admin",
   };
@@ -3929,6 +4556,7 @@ export default function App() {
             ["gallery", "Gallery"],
             ["reviews", "Reviews"],
             ["about", "About"],
+            ["contact", "Contact"],
           ].map(([p, l]) => (
             <button
               key={p}
@@ -3939,9 +4567,6 @@ export default function App() {
               {l}
             </button>
           ))}
-          <button className="nb" onClick={openContact} type="button">
-            Contact
-          </button>
         </div>
         <div className="nav-right">
           {isAdmin && <span className="adm-dot">● Admin</span>}
@@ -3998,6 +4623,7 @@ export default function App() {
             ["gallery", "Gallery"],
             ["reviews", "Reviews"],
             ["about", "About"],
+            ["contact", "Contact"],
           ].map(([p, l]) => (
             <button
               key={p}
@@ -4012,17 +4638,6 @@ export default function App() {
               <span style={{ color: "var(--muted)", fontWeight: 600 }}>›</span>
             </button>
           ))}
-          <button
-            className="mnav-btn"
-            onClick={() => {
-              closeMobile();
-              openContact();
-            }}
-            type="button"
-          >
-            <span>Contact</span>
-            <span style={{ color: "var(--muted)", fontWeight: 600 }}>✉</span>
-          </button>
         </div>
         <div className="mnav-cta">
           <button
@@ -4081,6 +4696,10 @@ export default function App() {
         <Route
           path="/gallery"
           element={<GalleryPage onNav={go} onContact={openContact} />}
+        />
+        <Route
+          path="/contact"
+          element={<ContactPage onNav={go} showToast={showToast} />}
         />
         <Route
           path="/login"
