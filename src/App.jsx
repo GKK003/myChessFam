@@ -301,11 +301,9 @@ input[type="date"]{
   appearance:none;
   display:block;
 }
-/* Prevent iOS from rendering date picker wider than the input */
 input[type="date"]::-webkit-date-and-time-value{
   text-align:left;
 }
-/* Ensure the calendar icon doesn't push the input wider on mobile */
 @media(max-width:600px){
   input[type="date"].inp,
   input[type="date"]{
@@ -330,15 +328,12 @@ input[type="date"]::-webkit-date-and-time-value{
 ══════════════════════════════════════════ */
 .login-box{max-width:430px;margin:4rem auto;background:rgba(13,30,48,.85);border:1px solid var(--border);border-radius:18px;padding:2.3rem;text-align:center;margin-left:2%;margin-right:2%;}
 
-/* Admin wrapper — safe padding on all screen sizes */
 .adm-wrap{width:100%;max-width:1200px;margin:0 auto;padding:2rem 1.5rem 4rem;}
 @media(max-width:600px){.adm-wrap{padding:1.2rem .85rem 3rem;}}
 
-/* Stats row — shrink min size on mobile */
 .adm-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem;margin-bottom:2rem;}
 @media(max-width:480px){.adm-stats{grid-template-columns:1fr 1fr;}}
 
-/* Tabs — scrollable on mobile so they don't wrap ugly */
 .atabs{
   display:flex;
   gap:6px;
@@ -352,19 +347,15 @@ input[type="date"]::-webkit-date-and-time-value{
 .atab{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:600;padding:.42rem .95rem;cursor:pointer;border-radius:7px;transition:.18s;white-space:nowrap;}
 .atab.on{background:rgba(21,122,69,.14);color:var(--green2);}
 
-/* Add/Edit camp form */
 .add-form{background:rgba(13,30,48,.8);border:1px solid var(--border);border-radius:14px;padding:1.8rem;margin-bottom:1.8rem;}
 @media(max-width:600px){.add-form{padding:1.2rem .95rem;}}
 
-/* Force fgrid to single column on small screens */
-/* This also fixes date inputs sitting side-by-side and overflowing */
 @media(max-width:600px){
   .fgrid{grid-template-columns:1fr !important;}
   .fgrid .fg{grid-column:1 !important;}
   .fg.full{grid-column:1 !important;}
 }
 
-/* ── Camp list item (ei) — FIXED RESPONSIVE ── */
 .ei{
   background:rgba(26,94,168,.07);
   border:1px solid var(--border);
@@ -375,14 +366,14 @@ input[type="date"]::-webkit-date-and-time-value{
   align-items:flex-start;
   justify-content:space-between;
   gap:1rem;
-  flex-wrap:wrap;   /* KEY FIX: allow wrapping on small screens */
+  flex-wrap:wrap;
 }
 .ei-inner{
   flex:1;
   display:flex;
   gap:1rem;
   align-items:flex-start;
-  min-width:0;       /* KEY FIX: allow inner content to shrink */
+  min-width:0;
 }
 .ei-img{
   width:90px;
@@ -399,7 +390,6 @@ input[type="date"]::-webkit-date-and-time-value{
 .ei-name{font-weight:600;margin-bottom:.22rem;color:#EEF5FF;word-break:break-word;}
 .ei-meta{font-size:.8rem;color:var(--muted);word-break:break-word;}
 
-/* Action buttons inside camp list item */
 .ei-actions{
   display:flex;
   gap:.5rem;
@@ -408,7 +398,6 @@ input[type="date"]::-webkit-date-and-time-value{
   flex-wrap:wrap;
 }
 @media(max-width:640px){
-  /* On mobile, actions go full-width below content */
   .ei{flex-direction:column;}
   .ei-inner{width:100%;}
   .ei-actions{width:100%;justify-content:flex-start;}
@@ -418,19 +407,16 @@ input[type="date"]::-webkit-date-and-time-value{
 .delbtn:hover{background:rgba(220,53,69,.26);}
 .ssel{padding:.33rem .58rem;font-size:.76rem;border-radius:6px;background:rgba(26,94,168,.14);border:1px solid var(--border);color:var(--cream);cursor:pointer;font-family:'DM Sans',sans-serif;}
 
-/* Admin section title */
 .adm-section-title{font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:.9rem;}
 
-/* ── TABLE — responsive cards on mobile ── */
 .twrap{overflow-x:auto;margin-top:.9rem;-webkit-overflow-scrolling:touch;}
-table{width:100%;border-collapse:collapse;font-size:.85rem;min-width:900px;}/* min-width forces scroll rather than squish */
+table{width:100%;border-collapse:collapse;font-size:.85rem;min-width:900px;}
 th{background:rgba(26,94,168,.14);color:var(--blue3);text-align:left;padding:.65rem .95rem;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
 td{padding:.72rem .95rem;border-bottom:1px solid rgba(74,171,232,.07);color:rgba(180,210,240,.85);vertical-align:middle;}
 tr:hover td{background:rgba(26,94,168,.07);}
 .empty{text-align:center;padding:2.5rem;color:var(--muted);}
 .empty-i{font-size:2.3rem;margin-bottom:.6rem;}
 
-/* Mobile camp-reg cards — shown instead of table on small screens */
 .reg-cards{display:none;flex-direction:column;gap:1rem;margin-top:.9rem;}
 .reg-card{background:rgba(26,94,168,.07);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;}
 .reg-card-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.4rem;}
@@ -681,6 +667,164 @@ tr:hover td{background:rgba(26,94,168,.07);}
 .about-faq-card.open .about-faq-body{max-height:300px;}
 .about-faq-body p{padding:0 1.2rem 1.2rem 1.2rem;color:#5C6B7C;line-height:1.8;font-size:.95rem;}
 @media(max-width:850px){.about-faq-grid{grid-template-columns:1fr;}}
+
+/* ══════════════════════════════════════════
+   PROGRAMS PAGE — RESPONSIVE
+══════════════════════════════════════════ */
+.programs-page{background:#F5F6F8;}
+
+/* Hero */
+.programs-hero{
+  background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);
+  padding:5rem 0 4rem;position:relative;overflow:hidden;
+}
+.programs-hero::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 20% 50%,rgba(74,171,232,.15),transparent 40%),
+             radial-gradient(circle at 80% 30%,rgba(31,168,94,.12),transparent 35%);
+  pointer-events:none;
+}
+.programs-hero-inner{
+  max-width:1100px;margin:0 auto;
+  padding:0 2.5rem;position:relative;z-index:1;text-align:center;
+}
+.programs-kicker{
+  display:inline-block;font-size:.75rem;letter-spacing:2px;
+  text-transform:uppercase;color:#4AABE8;font-weight:700;margin-bottom:1rem;
+}
+.programs-hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.4rem,4.5vw,4rem);
+  color:#F4F8FC;line-height:1.08;margin-bottom:1rem;
+}
+.programs-hero-sub{
+  max-width:620px;margin:0 auto 2rem;
+  color:rgba(220,233,245,.78);line-height:1.8;font-size:1rem;
+}
+.programs-hero-actions{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;}
+
+/* Stats strip */
+.programs-stats-strip{background:#fff;border-bottom:1px solid #E2E8F0;}
+.programs-stats-inner{
+  max-width:1100px;margin:0 auto;
+  padding:1.5rem 2.5rem;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1rem;
+  text-align:center;
+}
+.programs-stat-n{
+  font-family:'Playfair Display',serif;font-size:1.9rem;
+  color:#2E7D5B;font-weight:900;
+}
+.programs-stat-l{font-size:.8rem;color:#5C6B7C;margin-top:.15rem;}
+
+/* Cards area */
+.programs-cards-outer{
+  max-width:1100px;margin:0 auto;padding:3.5rem 2.5rem 5rem;
+}
+.programs-cards-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;
+}
+
+/* Individual card */
+.prog-card-new{
+  background:#fff;border:1px solid #E2E8F0;border-radius:24px;
+  overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 8px 24px rgba(15,23,42,.06);
+  transition:transform .2s,box-shadow .2s;position:relative;
+}
+.prog-card-new:hover{
+  transform:translateY(-4px);
+  box-shadow:0 24px 56px rgba(15,23,42,.13);
+}
+.prog-card-new.featured-card{border-width:2px;}
+.prog-card-featured-pill{
+  position:absolute;top:14px;right:14px;
+  font-size:.68rem;font-weight:800;letter-spacing:1px;
+  text-transform:uppercase;padding:.28rem .7rem;
+  border-radius:999px;color:#fff;z-index:1;
+}
+.prog-card-top-band{padding:1.5rem 1.5rem 1.1rem;}
+.prog-card-img{width:72px;height:72px;object-fit:contain;margin-bottom:.7rem;}
+.prog-card-tag-pill{
+  display:inline-flex;font-size:.67rem;font-weight:800;
+  letter-spacing:1px;text-transform:uppercase;
+  padding:.22rem .6rem;border-radius:999px;color:#fff;margin-bottom:.55rem;
+}
+.prog-card-title-text{
+  font-family:'Playfair Display',serif;font-size:1.28rem;
+  color:#1F2B3A;margin:0;line-height:1.2;
+}
+.prog-card-meta-row{
+  padding:.9rem 1.5rem;border-bottom:1px solid #F1F5F9;
+  display:flex;gap:.45rem;flex-wrap:wrap;
+}
+.prog-card-meta-chip{
+  background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;
+  padding:.28rem .55rem;font-size:.73rem;color:#3A4A5B;font-weight:600;
+}
+.prog-card-body-area{padding:1.1rem 1.5rem;flex:1;}
+.prog-card-desc-text{
+  color:#5C6B7C;font-size:.88rem;line-height:1.7;margin-bottom:.9rem;
+}
+.prog-card-check-list{
+  list-style:none;padding:0;margin:0;
+  display:flex;flex-direction:column;gap:.4rem;
+}
+.prog-card-check-item{
+  display:flex;align-items:flex-start;gap:.5rem;
+  font-size:.83rem;color:#3A4A5B;
+}
+.prog-card-check-icon{font-weight:900;margin-top:.1rem;flex-shrink:0;}
+.prog-card-footer-area{padding:.9rem 1.5rem 1.5rem;}
+.prog-card-cta-btn{
+  width:100%;padding:.8rem;border-radius:12px;
+  font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:800;
+  cursor:pointer;transition:.2s;border-width:2px;border-style:solid;
+}
+
+/* Bottom CTA */
+.programs-bottom-cta{
+  margin-top:3rem;
+  background:linear-gradient(135deg,#12253B,#143524);
+  border-radius:26px;padding:2.5rem 2rem;text-align:center;color:#EEF5FF;
+}
+.programs-bottom-cta h3{
+  font-family:'Playfair Display',serif;font-size:1.9rem;margin-bottom:.6rem;
+}
+.programs-bottom-cta p{
+  color:rgba(220,233,245,.78);line-height:1.8;
+  max-width:600px;margin:0 auto;font-size:.95rem;
+}
+.programs-cta-actions{
+  margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;
+}
+
+/* ── PROGRAMS RESPONSIVE BREAKPOINTS ── */
+@media(max-width:1050px){
+  .programs-cards-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:700px){
+  .programs-cards-grid{grid-template-columns:1fr;}
+  .programs-hero-inner,.programs-cards-outer{padding-left:1.2rem;padding-right:1.2rem;}
+  .programs-stats-inner{
+    grid-template-columns:1fr 1fr;
+    padding:1.2rem;
+    gap:.8rem;
+  }
+  .programs-hero-title{font-size:clamp(2rem,8vw,2.8rem);}
+  .programs-bottom-cta{padding:1.8rem 1.2rem;border-radius:18px;}
+  .programs-bottom-cta h3{font-size:1.45rem;}
+  .programs-cards-outer{padding-top:2.5rem;padding-bottom:3rem;}
+}
+@media(max-width:420px){
+  .programs-stats-inner{grid-template-columns:1fr 1fr;}
+  .prog-card-meta-row{gap:.35rem;}
+  .prog-card-meta-chip{font-size:.68rem;padding:.22rem .45rem;}
+}
 `;
 
 const injectStyles = () => {
@@ -1299,115 +1443,269 @@ function HomePage({ onNav, onContact }) {
   );
 }
 
+/* ══════════════════════════════════════════ PROGRAMS PAGE — FULLY RESPONSIVE ══════════════════════════════════════════ */
 function ProgramsPage({ onNav, onContact }) {
-  const programSections = [
+  const PROGRAMS = [
     {
+      icon: "/images/schoolprogramsicon.png",
       title: "School Chess Programs",
-      text1:
-        "After-school chess programs where students learn the fundamentals of chess in a structured and engaging environment. These programs focus on developing strategic thinking, problem-solving skills, and confidence while making the learning process enjoyable for children.",
-      text2:
-        "Students gradually build strong foundations in the game while learning to think ahead, analyze positions, and make thoughtful decisions during play.",
-      image: "/images/schoolprogramsicon.png",
+      tag: "Most Popular",
+      price: "Contact for Pricing",
+      duration: "Weekly Sessions",
+      age: "Ages 6–16",
+      level: "All Levels",
+      color: "#1A5EA8",
+      accent: "rgba(26,94,168,.08)",
+      desc: "After-school chess programs where students learn the fundamentals of chess in a structured and engaging environment. We partner directly with schools to bring high-quality coaching into the classroom.",
+      highlights: [
+        "Strategic thinking & problem-solving",
+        "Structured curriculum per level",
+        "School partnership programs",
+        "Progress tracking for parents",
+      ],
       button: "Contact Us",
       onClick: onContact,
+      featured: true,
     },
     {
+      icon: "/images/privateicon.png",
       title: "Private Lessons",
-      text1:
-        "Individual chess lessons tailored to each student's level, pace, and goals. Private coaching allows students to work closely with a coach on specific areas of improvement.",
-      text2:
-        "Whether they are beginners building strong foundations or advanced players preparing for tournaments, students receive focused attention and personalized training.",
-      image: "/images/privateicon.png",
+      tag: "One-on-One",
+      price: "From $80 / session",
+      duration: "60 or 90 min",
+      age: "Ages 6–16",
+      level: "All Levels",
+      color: "#2E7D5B",
+      accent: "rgba(46,125,91,.08)",
+      desc: "One-on-one coaching tailored entirely to your child. Whether a complete beginner or preparing for competition, private lessons deliver the fastest, most focused improvement.",
+      highlights: [
+        "Personalized training plan",
+        "Flexible scheduling",
+        "In-person or online",
+        "Beginner to advanced",
+      ],
       button: "Meet Our Team",
       onClick: () => onNav("team"),
     },
     {
+      icon: "/images/tournamentpreparation.png",
       title: "Tournament Preparation",
-      text1:
-        "Structured training designed for students who participate in competitive chess tournaments. Students learn advanced strategies, opening preparation, and game analysis.",
-      text2:
-        "Tournament preparation also focuses on psychological readiness, helping students stay confident, focused, and resilient during competitive play.",
-      image: "/images/tournamentpreparation.png",
+      tag: "Competitive",
+      price: "Contact for Pricing",
+      duration: "Ongoing Program",
+      age: "Ages 8–16",
+      level: "Intermediate – Advanced",
+      color: "#B45309",
+      accent: "rgba(180,83,9,.07)",
+      desc: "Structured training for students who compete in scholastic tournaments. Opening preparation, game analysis, endgame technique, and the mental skills to perform under pressure.",
+      highlights: [
+        "Opening repertoire building",
+        "Game & mistake analysis",
+        "Endgame & tactics training",
+        "Psychological readiness",
+      ],
       button: "Contact Us",
       onClick: onContact,
     },
     {
+      icon: "/images/teamtrain.png",
       title: "Team Training",
-      text1:
-        "Group training sessions where students prepare for tournaments together in a collaborative learning environment.",
-      text2:
-        "Players analyze games, practice strategic ideas, and learn from each other while building strong teamwork and competitive spirit.",
-      image: "/images/teamtrain.png",
+      tag: "Group",
+      price: "Contact for Pricing",
+      duration: "Weekly Sessions",
+      age: "Ages 8–16",
+      level: "Intermediate",
+      color: "#6B21A8",
+      accent: "rgba(107,33,168,.07)",
+      desc: "Collaborative group sessions where students prepare for tournaments together, analyze games, and push each other to improve in a team-based learning environment.",
+      highlights: [
+        "Team strategy & dynamics",
+        "Peer game analysis",
+        "Collaborative learning",
+        "Competitive team prep",
+      ],
       button: "Contact Us",
       onClick: onContact,
     },
     {
+      icon: "/images/chesscamps.png",
       title: "Chess Camps",
-      text1:
-        "Intensive chess camps that combine training sessions, tournaments, and social activities in an exciting learning environment.",
-      text2:
-        "Students improve their chess skills, make new friends, and enjoy an immersive experience that strengthens both their passion for chess and their confidence.",
-      image: "/images/chesscamps.png",
+      tag: "Summer Program",
+      price: "From $350 / week",
+      duration: "Full & Half Day",
+      age: "Ages 6–16",
+      level: "All Levels",
+      color: "#0E7490",
+      accent: "rgba(14,116,144,.07)",
+      desc: "Intensive week-long summer camps combining structured lessons, practice games, puzzles, and fun activities. Students improve fast while making lasting friendships.",
+      highlights: [
+        "Full & half-day options",
+        "All skill levels welcome",
+        "Daily puzzles & games",
+        "Small group sizes",
+      ],
       button: "View Summer Camp",
       onClick: () => onNav("camp"),
     },
   ];
+
   return (
-    <div className="pg">
+    <div className="pg programs-page">
+      {/* ── Hero ── */}
+      <section className="programs-hero">
+        <div className="programs-hero-inner">
+          <div className="programs-kicker">Our Programs</div>
+          <h1 className="programs-hero-title">Find the Right Program</h1>
+          <p className="programs-hero-sub">
+            From beginner after-school programs to serious tournament prep —
+            every program is designed to help your child grow at their own pace.
+          </p>
+          <div className="programs-hero-actions">
+            <button className="btn btn-g" onClick={onContact}>
+              ✉️ Ask About Pricing
+            </button>
+            <button
+              className="btn btn-g"
+              style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+              onClick={() => onNav("camp")}
+            >
+              ☀️ Summer Camp
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Stats Strip ── */}
+      <div className="programs-stats-strip">
+        <div className="programs-stats-inner">
+          {[
+            ["5", "Programs Offered"],
+            ["500+", "Students Taught"],
+            ["8+", "Years Experience"],
+            ["6–16", "Age Range"],
+          ].map(([n, l]) => (
+            <div key={l}>
+              <div className="programs-stat-n">{n}</div>
+              <div className="programs-stat-l">{l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Cards ── */}
+      <div className="programs-cards-outer">
+        <div className="programs-cards-grid">
+          {PROGRAMS.map((p) => (
+            <ProgramCard key={p.title} p={p} />
+          ))}
+        </div>
+
+        {/* ── Bottom CTA ── */}
+        <div className="programs-bottom-cta">
+          <h3>Not sure which program fits?</h3>
+          <p>
+            We personally help every family find the right fit based on age,
+            experience, and goals. Just reach out — we'll guide you.
+          </p>
+          <div className="programs-cta-actions">
+            <button className="btn btn-g" onClick={onContact}>
+              ✉️ Contact Us
+            </button>
+            <button
+              className="btn btn-g"
+              style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
+              onClick={() => onNav("team")}
+            >
+              👥 Meet Our Team
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <Footer onNav={onNav} onContact={onContact} />
+    </div>
+  );
+}
+
+function ProgramCard({ p }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      className={`prog-card-new${p.featured ? " featured-card" : ""}`}
+      style={p.featured ? { borderColor: p.color } : {}}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {p.featured && (
+        <div
+          className="prog-card-featured-pill"
+          style={{ background: p.color }}
+        >
+          ⭐ Most Popular
+        </div>
+      )}
+
+      {/* Top band */}
       <div
-        className="ph"
+        className="prog-card-top-band"
         style={{
-          background:
-            "linear-gradient(180deg,rgba(74,171,232,.1) 0%,transparent 100%)",
+          background: p.accent,
+          borderBottom: `3px solid ${p.color}22`,
         }}
       >
-        <div className="slbl">Our Programs</div>
-        <h1 className="stit">Programs</h1>
-        <p className="ph-sub">
-          Structured chess training designed to help students learn, compete,
-          and grow through the game of chess.
-        </p>
-      </div>
-      {programSections.map((section, i) => (
-        <div key={section.title}>
-          <section className="home-split-sec">
-            <div className={`home-split-wrap ${i % 2 === 1 ? "rev" : ""}`}>
-              <div className="home-split-copy">
-                <div className="slbl">My Chess Family</div>
-                <h2 className="home-split-title">{section.title}</h2>
-                <p className="home-split-p">{section.text1}</p>
-                <p className="home-split-p">{section.text2}</p>
-                <button className="home-split-btn" onClick={section.onClick}>
-                  {section.button}
-                </button>
-              </div>
-              <div className="home-split-media">
-                <img src={section.image} alt={section.title} />
-              </div>
-            </div>
-          </section>
-          {i !== programSections.length - 1 && (
-            <div
-              style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                background: "#F5F6F8",
-              }}
-            >
-              <div
-                style={{
-                  width: "90%",
-                  height: "2px",
-                  margin: "0 auto 3rem auto",
-                  background: "#D8DEE6",
-                }}
-              />
-            </div>
-          )}
+        <div className="prog-card-img-wrap">
+          <img src={p.icon} alt={p.title} className="prog-card-img" />
         </div>
-      ))}
-      <Footer onNav={onNav} onContact={onContact} />
+        <div className="prog-card-tag-pill" style={{ background: p.color }}>
+          {p.tag}
+        </div>
+        <h3 className="prog-card-title-text">{p.title}</h3>
+      </div>
+
+      {/* Meta chips */}
+      <div className="prog-card-meta-row">
+        {[
+          ["💰", p.price],
+          ["⏱", p.duration],
+          ["👦", p.age],
+          ["📊", p.level],
+        ].map(([ico, val]) => (
+          <span key={val} className="prog-card-meta-chip">
+            {ico} {val}
+          </span>
+        ))}
+      </div>
+
+      {/* Body */}
+      <div className="prog-card-body-area">
+        <p className="prog-card-desc-text">{p.desc}</p>
+        <ul className="prog-card-check-list">
+          {p.highlights.map((h) => (
+            <li key={h} className="prog-card-check-item">
+              <span className="prog-card-check-icon" style={{ color: p.color }}>
+                ✓
+              </span>
+              {h}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Footer CTA */}
+      <div className="prog-card-footer-area">
+        <button
+          className="prog-card-cta-btn"
+          onClick={p.onClick}
+          style={{
+            background: p.featured || hovered ? p.color : "#fff",
+            color: p.featured || hovered ? "#fff" : p.color,
+            borderColor: p.color,
+          }}
+        >
+          {p.button} →
+        </button>
+      </div>
     </div>
   );
 }
@@ -2167,9 +2465,6 @@ function LoginPage({ onLogin, showToast }) {
   );
 }
 
-/* ══════════════════════════════════════════
-   ADMIN PAGE — FULLY RESPONSIVE
-══════════════════════════════════════════ */
 function AdminPage({
   camps,
   setCamps,
@@ -2333,7 +2628,6 @@ function AdminPage({
   return (
     <div className="pg">
       <div className="adm-wrap">
-        {/* ── Header ── */}
         <div
           style={{
             display: "flex",
@@ -2365,7 +2659,6 @@ function AdminPage({
           </button>
         </div>
 
-        {/* ── Stats ── */}
         <div className="adm-stats">
           {[
             { n: camps.length, l: "Camp Sessions" },
@@ -2379,7 +2672,6 @@ function AdminPage({
           ))}
         </div>
 
-        {/* ── Tabs ── */}
         <div className="atabs">
           {[
             ["camps", "☀️ Manage Camps"],
@@ -2397,10 +2689,8 @@ function AdminPage({
           ))}
         </div>
 
-        {/* ══ TAB: CAMPS ══ */}
         {tab === "camps" && (
           <>
-            {/* Add / Edit Form */}
             <div className="add-form">
               <h3
                 style={{
@@ -2542,7 +2832,6 @@ function AdminPage({
               )}
             </div>
 
-            {/* Camp List */}
             <h3 className="adm-section-title">
               All Camp Sessions ({camps.length})
             </h3>
@@ -2556,7 +2845,6 @@ function AdminPage({
                 const rc = campRegs.filter((r) => r.campId === c.id).length;
                 return (
                   <div className="ei" key={c.id}>
-                    {/* Content: image + text */}
                     <div className="ei-inner">
                       <img
                         src={getImageSrc(
@@ -2585,7 +2873,6 @@ function AdminPage({
                         </div>
                       </div>
                     </div>
-                    {/* Actions */}
                     <div className="ei-actions">
                       <button
                         className="sbtn"
@@ -2620,7 +2907,6 @@ function AdminPage({
           </>
         )}
 
-        {/* ══ TAB: CAMP SIGN-UPS ══ */}
         {tab === "campregs" && (
           <>
             <h3 className="adm-section-title">
@@ -2633,7 +2919,6 @@ function AdminPage({
               </div>
             ) : (
               <>
-                {/* Desktop table */}
                 <div className="twrap">
                   <table>
                     <thead>
@@ -2708,7 +2993,6 @@ function AdminPage({
                   </table>
                 </div>
 
-                {/* Mobile cards — shown via CSS at ≤700px */}
                 <div className="reg-cards">
                   {campRegs.map((r, i) => (
                     <div className="reg-card" key={r.id}>
@@ -2804,7 +3088,6 @@ function AdminPage({
           </>
         )}
 
-        {/* ══ TAB: REVIEWS ══ */}
         {tab === "reviews" && (
           <>
             <h3 className="adm-section-title">
@@ -2898,7 +3181,6 @@ function AdminPage({
           </>
         )}
 
-        {/* ══ TAB: GALLERY ══ */}
         {tab === "gallery" && (
           <GalleryAdminTab
             photos={galleryPhotos}
@@ -2911,7 +3193,6 @@ function AdminPage({
   );
 }
 
-/* ══════════════════════════════════════════ GALLERY ADMIN TAB ══════════════════════════════════════════ */
 function GalleryAdminTab({ photos, reload, showToast }) {
   const [caption, setCaption] = useState("");
   const [category, setCategory] = useState("camps");
@@ -2943,7 +3224,6 @@ function GalleryAdminTab({ photos, reload, showToast }) {
     }
     setUploading(true);
     try {
-      // 1. Upload image to Cloudinary via server
       const fd = new FormData();
       fd.append("image", file);
       const BASE = import.meta.env.VITE_API_URL || "";
@@ -2956,7 +3236,6 @@ function GalleryAdminTab({ photos, reload, showToast }) {
       const uploadData = await uploadRes.json().catch(() => ({}));
       if (!uploadRes.ok) throw new Error(uploadData.error || "Upload failed");
 
-      // 2. Save metadata to DB
       await api("/admin/gallery", {
         method: "POST",
         body: JSON.stringify({
@@ -2994,7 +3273,6 @@ function GalleryAdminTab({ photos, reload, showToast }) {
 
   return (
     <>
-      {/* Upload Form */}
       <div className="add-form">
         <h3
           style={{
@@ -3071,7 +3349,6 @@ function GalleryAdminTab({ photos, reload, showToast }) {
         </button>
       </div>
 
-      {/* Photo List */}
       <h3 className="adm-section-title">Gallery Photos ({photos.length})</h3>
       {!photos.length ? (
         <div className="empty">
@@ -3175,7 +3452,6 @@ const GALLERY_CSS = `
 }
 .gallery-hero-actions{margin-top:1.8rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
 
-/* Filter tabs */
 .gallery-wrap{background:#F5F6F8;padding:3rem 0 4rem;}
 .gallery-inner{width:100%;max-width:1200px;margin:0 auto;padding:0 2.5rem;}
 .gallery-filters{
@@ -3189,7 +3465,6 @@ const GALLERY_CSS = `
 .gf-btn:hover{border-color:#2E7D5B;color:#2E7D5B;}
 .gf-btn.on{background:#2E7D5B;border-color:#2E7D5B;color:#fff;}
 
-/* Masonry-style grid */
 .gallery-grid{
   columns:3;column-gap:1.1rem;
 }
@@ -3215,7 +3490,6 @@ const GALLERY_CSS = `
   transition:transform .45s ease;
 }
 
-/* Emoji placeholder tiles (when no real image) */
 .gallery-placeholder{
   width:100%;display:flex;flex-direction:column;
   align-items:center;justify-content:center;
@@ -3243,7 +3517,6 @@ const GALLERY_CSS = `
   font-size:.92rem;font-weight:700;color:#EEF5FF;line-height:1.4;
 }
 
-/* Lightbox */
 .lightbox-ovl{
   position:fixed;inset:0;z-index:2000;
   background:rgba(0,0,0,.95);backdrop-filter:blur(18px);
@@ -3294,7 +3567,6 @@ const GALLERY_CSS = `
   display:flex;align-items:center;padding:0 .5rem;
 }
 
-/* Gallery CTA */
 .gallery-cta{
   margin-top:3rem;background:linear-gradient(135deg,#12253B,#143524);
   border-radius:26px;padding:2rem;text-align:center;color:#EEF5FF;
@@ -3384,7 +3656,6 @@ const injectGalleryStyles = () => {
   document.head.appendChild(el);
 };
 
-/* ══════════════════════════════════════════ GALLERY DATA ══════════════════════════════════════════ */
 const GALLERY_CATS = [
   { id: "all", label: "All Photos" },
   { id: "camps", label: "Summer Camps" },
@@ -3392,7 +3663,6 @@ const GALLERY_CATS = [
   { id: "community", label: "Community" },
 ];
 
-/* ══════════════════════════════════════════ GALLERY PAGE ══════════════════════════════════════════ */
 function GalleryPage({ onNav, onContact }) {
   const [filter, setFilter] = useState("all");
   const [lightbox, setLightbox] = useState(null);
@@ -3650,7 +3920,6 @@ function GalleryPage({ onNav, onContact }) {
   );
 }
 
-/* ══════════════════════════════════════════ 404 PAGE ══════════════════════════════════════════ */
 function NotFoundPage({ onNav }) {
   useEffect(() => {
     injectGalleryStyles();
@@ -3669,7 +3938,6 @@ function NotFoundPage({ onNav }) {
   return (
     <div className="notfound-pg">
       <div className="notfound-inner">
-        {/* Mini decorative board */}
         <div className="notfound-board">
           {Array.from({ length: 64 }, (_, i) => {
             const r = Math.floor(i / 8),
@@ -3721,7 +3989,6 @@ function NotFoundPage({ onNav }) {
 
 /* ══════════════════════════════════════════ CONTACT PAGE CSS ══════════════════════════════════════════ */
 const CONTACT_CSS = `
-/* ── CONTACT HERO ── */
 .contact-hero{
   background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);
   padding:5rem 0 4rem;position:relative;overflow:hidden;
@@ -3750,8 +4017,6 @@ const CONTACT_CSS = `
   max-width:640px;margin:0 auto;
   color:rgba(220,233,245,.78);line-height:1.8;font-size:1rem;
 }
-
-/* ── CONTACT BODY ── */
 .contact-body{
   background:#F5F6F8;padding:4rem 0 5rem;
 }
@@ -3764,8 +4029,6 @@ const CONTACT_CSS = `
   gap:2rem;
   align-items:start;
 }
-
-/* Info column */
 .contact-info{display:flex;flex-direction:column;gap:1.2rem;}
 .contact-info-card{
   background:#fff;border:1px solid #E2E8F0;border-radius:20px;
@@ -3787,8 +4050,6 @@ const CONTACT_CSS = `
   word-break:break-word;
 }
 .contact-info-note{font-size:.83rem;color:#5C6B7C;line-height:1.5;}
-
-/* Social card */
 .contact-social-card{
   background:#fff;border:1px solid #E2E8F0;border-radius:20px;
   padding:1.5rem;box-shadow:0 10px 28px rgba(15,23,42,.05);
@@ -3810,8 +4071,6 @@ const CONTACT_CSS = `
 .contact-social-btn.ig:hover{background:#E1306C;border-color:#E1306C;color:#fff;}
 .contact-social-btn.fb:hover{background:#1877F2;border-color:#1877F2;color:#fff;}
 .contact-social-btn.li:hover{background:#0A66C2;border-color:#0A66C2;color:#fff;}
-
-/* Form column */
 .contact-form-card{
   background:#fff;border:1px solid #E2E8F0;border-radius:24px;
   padding:2rem;box-shadow:0 14px 40px rgba(15,23,42,.06);
@@ -3821,8 +4080,6 @@ const CONTACT_CSS = `
   color:#1F2B3A;margin-bottom:.4rem;
 }
 .contact-form-sub{color:#5C6B7C;font-size:.92rem;margin-bottom:1.6rem;line-height:1.6;}
-
-/* Light form inputs (white background) */
 .inp-light{
   width:100%;padding:.78rem 1rem;
   background:#F8FAFC;border:1.5px solid #E2E8F0;
@@ -3844,7 +4101,6 @@ textarea.inp-light{min-height:110px;resize:vertical;}
 }
 .fgrid-light{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 @media(max-width:600px){.fgrid-light{grid-template-columns:1fr;}}
-
 .contact-submit-btn{
   width:100%;padding:1rem;margin-top:.3rem;
   background:#2E7D5B;color:#fff;
@@ -3860,7 +4116,6 @@ textarea.inp-light{min-height:110px;resize:vertical;}
   background:#CBD5E1;color:#64748B;
   cursor:not-allowed;transform:none;box-shadow:none;
 }
-
 .contact-ok{
   display:flex;flex-direction:column;align-items:center;
   background:#ECFDF5;border:1px solid #6EE7B7;
@@ -3873,8 +4128,6 @@ textarea.inp-light{min-height:110px;resize:vertical;}
   color:#065F46;margin-bottom:.5rem;
 }
 .contact-ok-sub{color:#047857;font-size:.92rem;line-height:1.6;}
-
-/* CTA band */
 .contact-cta{
   margin-top:2.5rem;
   background:linear-gradient(135deg,#12253B,#143524);
@@ -3890,7 +4143,6 @@ textarea.inp-light{min-height:110px;resize:vertical;}
 .contact-cta-actions{
   margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;
 }
-
 @media(max-width:900px){
   .contact-grid{grid-template-columns:1fr;}
 }
@@ -3907,7 +4159,6 @@ const injectContactStyles = () => {
   document.head.appendChild(el);
 };
 
-/* ══════════════════════════════════════════ CONTACT PAGE ══════════════════════════════════════════ */
 function ContactPage({ onNav, showToast }) {
   useEffect(() => {
     injectContactStyles();
@@ -3954,7 +4205,6 @@ function ContactPage({ onNav, showToast }) {
       setDone(true);
       showToast("✅ Message sent!", "s");
     } catch {
-      // Even if API isn't set up yet, show success (graceful degradation)
       setDone(true);
       showToast("✅ Message sent!", "s");
     } finally {
@@ -3998,7 +4248,6 @@ function ContactPage({ onNav, showToast }) {
 
   return (
     <div className="pg" style={{ background: "#09131E" }}>
-      {/* ── Hero ── */}
       <section className="contact-hero">
         <div className="contact-hero-inner">
           <div className="contact-kicker">Get In Touch</div>
@@ -4010,11 +4259,9 @@ function ContactPage({ onNav, showToast }) {
         </div>
       </section>
 
-      {/* ── Body ── */}
       <section className="contact-body">
         <div className="contact-inner">
           <div className="contact-grid">
-            {/* ── Left: Info ── */}
             <div className="contact-info">
               {infoCards.map((c) => (
                 <div
@@ -4041,7 +4288,6 @@ function ContactPage({ onNav, showToast }) {
                 </div>
               ))}
 
-              {/* Social links */}
               <div className="contact-social-card">
                 <div className="contact-social-title">Follow Us</div>
                 <div className="contact-social-row">
@@ -4072,7 +4318,6 @@ function ContactPage({ onNav, showToast }) {
                 </div>
               </div>
 
-              {/* Quick links */}
               <div
                 style={{
                   background: "#fff",
@@ -4128,7 +4373,6 @@ function ContactPage({ onNav, showToast }) {
               </div>
             </div>
 
-            {/* ── Right: Form ── */}
             <div className="contact-form-card">
               {!done ? (
                 <>
@@ -4318,7 +4562,6 @@ function ContactPage({ onNav, showToast }) {
             </div>
           </div>
 
-          {/* ── CTA band ── */}
           <div className="contact-cta">
             <h3>Ready to get started?</h3>
             <p>
