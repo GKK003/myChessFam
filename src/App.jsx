@@ -3049,7 +3049,6 @@ function GalleryAdminTab({ photos, reload, showToast }) {
               onChange={(e) => setCategory(e.target.value)}
             >
               <option value="camps">Summer Camps</option>
-              <option value="tournaments">Tournaments</option>
               <option value="lessons">Lessons</option>
               <option value="community">Community</option>
             </select>
@@ -3391,7 +3390,6 @@ const injectGalleryStyles = () => {
 const GALLERY_CATS = [
   { id: "all", label: "All Photos" },
   { id: "camps", label: "Summer Camps" },
-  { id: "tournaments", label: "Tournaments" },
   { id: "lessons", label: "Lessons" },
   { id: "community", label: "Community" },
 ];
@@ -3451,9 +3449,9 @@ function GalleryPage({ onNav, onContact }) {
           <div className="gallery-kicker">Photo Gallery</div>
           <h1 className="gallery-title">Life at MyChessFamily</h1>
           <p className="gallery-sub">
-            A look inside our lessons, tournaments, summer camps, and the
-            moments that make our chess community special. Real students. Real
-            growth. Real memories.
+            A look inside our lessons, summer camps, and the moments that make
+            our chess community special. Real students. Real growth. Real
+            memories.
           </p>
           <div className="gallery-hero-actions">
             <button className="btn btn-g" onClick={() => onNav("camp")}>
@@ -3484,7 +3482,6 @@ function GalleryPage({ onNav, onContact }) {
               ["500+", "Students Taught"],
               ["8+", "Years of Memories"],
               ["3", "Camps Per Year"],
-              ["50+", "Tournaments"],
             ].map(([n, l]) => (
               <div
                 key={l}
