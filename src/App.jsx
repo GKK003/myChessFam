@@ -901,7 +901,6 @@ function ChessBoard() {
 function Footer({ onNav, onContact }) {
   return (
     <footer className="footer">
-      <div className="f-logo">♔ MyChessFamily</div>
       <div className="f-links">
         {[
           ["home", "Home"],
@@ -921,6 +920,7 @@ function Footer({ onNav, onContact }) {
       <p>
         📍 {CONTACT.city} &nbsp;·&nbsp; ✉ {CONTACT.email}
       </p>
+
       <div className="social-row">
         <a
           href={SOCIALS.instagram}
@@ -946,6 +946,21 @@ function Footer({ onNav, onContact }) {
         >
           <FaLinkedinIn />
         </a>
+      </div>
+      <div
+        style={{
+          marginTop: "1.5rem",
+          paddingTop: "1.2rem",
+          borderTop: "1px solid rgba(74,171,232,0.1)",
+          fontSize: ".78rem",
+          color: "rgba(180,210,240,0.35)",
+          letterSpacing: ".3px",
+        }}
+      >
+        Designed &amp; built by{" "}
+        <span style={{ color: "rgba(180,210,240,0.55)", fontWeight: 600 }}>
+          Giorgi Kostava
+        </span>
       </div>
     </footer>
   );
