@@ -410,6 +410,7 @@ app.post("/api/contact", async (req, res) => {
       const stamp = nowStamp();
 
       const htmlBody = `
+      
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -552,6 +553,43 @@ app.post("/api/contact", async (req, res) => {
     console.error("Contact email error:", err);
     // Still return 200 so the user sees success
     return res.json({ ok: true });
+  }
+});
+
+/* =========================
+   AI CHAT
+========================= */
+app.post("/api/chat", async (req, res) => {
+  try {
+    const { message } = req.body || {};
+    if (!message) return res.status(400).json({ error: "Missing message" });
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 500,
+        system: `You are a friendly assistant for MyChessFamily — a youth chess club in New York City for ages 6–16. 
+Help visitors with questions about programs (private lessons, school programs, tournament prep, team training, summer camps), pricing, registration, schedules, and the coaching team. 
+Founder is FIDE Master Dmitri Shevelev. Email: mychessfamily@gmail.com. Location: New York City.
+Keep answers short, warm, and encouraging. If you don't know something specific, tell them to email mychessfamily@gmail.com.`,
+        messages: [{ role: "user", content: String(message) }],
+      }),
+    });
+
+    const data = await response.json();
+    const reply =
+      data?.content?.[0]?.text ||
+      "Sorry, I couldn't get a response. Please email mychessfamily@gmail.com!";
+    return res.json({ reply });
+  } catch (err) {
+    console.error("Chat error:", err);
+    return res.status(500).json({ error: "Server error" });
   }
 });
 

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { FaInstagram, FaFacebookF, FaLinkedinIn } from "react-icons/fa";
+import ChatBot from "./ChatBot";
 
 /* ══════════════════════════════════════════ API ══════════════════════════════════════════ */
 const AUTH_KEY = "mcf_admin_token";
@@ -5004,6 +5005,7 @@ export default function App() {
         />
       )}
       <Toast toasts={toasts} />
+      <ChatBot />
     </div>
   );
 }
