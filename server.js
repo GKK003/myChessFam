@@ -575,7 +575,6 @@ app.post("/api/chat", async (req, res) => {
         model: "claude-sonnet-4-6",
         max_tokens: 500,
         system: `You are a friendly assistant for MyChessFamily — a youth chess club in New York City for ages 6–16. 
-Help visitors with questions about programs (private lessons, school programs, tournament prep, team training, summer camps), pricing, registration, schedules, and the coaching team. 
 Founder is FIDE Master Dmitri Shevelev. Email: mychessfamily@gmail.com. Location: New York City.
 Keep answers short, warm, and encouraging. If you don't know something specific, tell them to email mychessfamily@gmail.com.`,
         messages: [{ role: "user", content: String(message) }],
@@ -592,7 +591,6 @@ Keep answers short, warm, and encouraging. If you don't know something specific,
     return res.status(500).json({ error: "Server error" });
   }
 });
-
 /* =========================
    PUBLIC GALLERY ROUTE
 ========================= */
