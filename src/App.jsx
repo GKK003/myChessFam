@@ -3539,12 +3539,7 @@ const GALLERY_CSS = `
   font-size:.92rem;font-weight:700;color:#EEF5FF;line-height:1.4;
 }
 
-.lightbox-ovl{
-  position:fixed;inset:0;z-index:2000;
-  background:rgba(0,0,0,.95);backdrop-filter:blur(18px);
-  display:flex;align-items:center;justify-content:center;
-  padding:1.5rem;animation:fu .2s ease;
-}
+
 .lightbox-inner{
   position:relative;max-width:900px;width:100%;
   display:flex;flex-direction:column;align-items:center;
@@ -3569,9 +3564,9 @@ const GALLERY_CSS = `
   padding:.25rem .7rem;border-radius:999px;margin-bottom:.5rem;
 }
 .lightbox-close{
-  position:fixed;top:1.2rem;right:1.2rem;
+  position:fixed;top:1.5rem;right:1.5rem;
   background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);
-  color:#EEF5FF;font-size:1.4rem;width:44px;height:44px;border-radius:50%;
+color:#EEF5FF;font-size:1.2rem;width:40px;height:40px;border-radius:50%;
   cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s;
   z-index:2001;box-shadow:0 4px 16px rgba(0,0,0,.4);
 }
@@ -3588,6 +3583,13 @@ const GALLERY_CSS = `
 .lightbox-counter{
   color:rgba(220,233,245,.5);font-size:.85rem;
   display:flex;align-items:center;padding:0 .5rem;
+}
+  .lightbox-ovl{
+  position:fixed;inset:0;z-index:2000;
+  background:rgba(0,0,0,.95);backdrop-filter:blur(18px);
+  display:flex;align-items:center;justify-content:center;
+  padding:1.5rem;animation:fu .2s ease;
+  overflow:visible;
 }
 
 .gallery-cta{
