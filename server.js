@@ -556,42 +556,100 @@ app.post("/api/contact", async (req, res) => {
   }
 });
 
-/* =========================
-   AI CHAT
-========================= */
 app.post("/api/chat", async (req, res) => {
   try {
-    const { message } = req.body || {};
-    if (!message) return res.status(400).json({ error: "Missing message" });
+    const { message, history = [] } = req.body || {};
+    const userMessage = String(message || "").trim();
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 500,
-        system: `You are a friendly assistant for MyChessFamily — a youth chess club in New York City for ages 6–16. 
-Founder is FIDE Master Dmitri Shevelev. Email: mychessfamily@gmail.com. Location: New York City.
-Keep answers short, warm, and encouraging. If you don't know something specific, tell them to email mychessfamily@gmail.com.`,
-        messages: [{ role: "user", content: String(message) }],
-      }),
+    if (!userMessage) {
+      return res.status(400).json({ error: "Missing message" });
+    }
+
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({ error: "GEMINI_API_KEY is missing" });
+    }
+
+    const safeHistory = Array.isArray(history)
+      ? history
+          .filter(
+            (m) =>
+              m &&
+              (m.role === "user" || m.role === "assistant") &&
+              typeof m.content === "string" &&
+              m.content.trim(),
+          )
+          .slice(-8)
+      : [];
+
+    const parts = [];
+
+    parts.push({
+      text: `
+You are the website assistant for MyChessFamily, a youth chess program in New York City.
+
+Facts:
+- Ages 6–16
+- Founder: FIDE Master Dmitri Shevelev
+- Email: mychessfamily@gmail.com
+- Location: New York City
+- Topics: private lessons, school programs, camps, tournament prep, team training
+
+Rules:
+- Be warm, short, and helpful
+- Keep answers focused on MyChessFamily
+- Do not invent pricing or schedules
+- If unsure, say: "For exact details, please email mychessfamily@gmail.com."
+      `.trim(),
     });
 
-    const data = await response.json();
+    for (const item of safeHistory) {
+      parts.push({
+        text: `${item.role === "assistant" ? "Assistant" : "User"}: ${item.content}`,
+      });
+    }
+
+    parts.push({ text: `User: ${userMessage}` });
+
+    const geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts,
+            },
+          ],
+          generationConfig: {
+            temperature: 0.4,
+            maxOutputTokens: 300,
+          },
+        }),
+      },
+    );
+
+    const data = await geminiRes.json().catch(() => null);
+
+    if (!geminiRes.ok) {
+      console.error("Gemini API error:", data || geminiRes.statusText);
+      return res.status(500).json({
+        error: data?.error?.message || "Gemini request failed",
+      });
+    }
+
     const reply =
-      data?.content?.[0]?.text ||
-      "Sorry, I couldn't get a response. Please email mychessfamily@gmail.com!";
+      data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
+      "Sorry, I couldn't reply right now. Please email mychessfamily@gmail.com.";
+
     return res.json({ reply });
   } catch (err) {
     console.error("Chat error:", err);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: err.message || "Server error" });
   }
-});
-/* =========================
+}); /* =========================
    PUBLIC GALLERY ROUTE
 ========================= */
 app.get("/api/gallery", async (_req, res) => {
