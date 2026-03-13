@@ -682,7 +682,7 @@ app.post("/api/chat", async (req, res) => {
         instagram: "https://www.instagram.com/mychessfamily/",
         facebook: "https://www.facebook.com/Mychessfamily",
         linkedin: "https://www.linkedin.com/in/dmitri-shevelev-145ba7/",
-        contactPerson: "Dea",
+        contactPerson: "Dmitri",
       },
     };
 
@@ -704,8 +704,8 @@ You are the official website assistant for My Chess Family.
 Use ONLY the information in the KNOWLEDGE section below.
 Do not invent prices, schedules, class times, addresses, ages, policies, or names that are not provided.
 If the user asks something not clearly covered by the knowledge, say:
-"For exact details, please write to Dea or contact My Chess Family directly."
-
+"For exact details, please contact My Chess Family directly by email at mychessfamily@gmail.com"
+.
 Behavior rules:
 - Be warm, smart, and logical.
 - Answer clearly in 2-6 sentences.
@@ -768,8 +768,7 @@ ${JSON.stringify(KNOWLEDGE, null, 2)}
 
     const reply =
       data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
-      "Sorry, I couldn't reply right now. For exact details, please write to Dea or contact My Chess Family directly.";
-
+      "Sorry, I couldn't reply right now. For exact details, please email My Chess Family at mychessfamily@gmail.com.";
     return res.json({ reply });
   } catch (err) {
     console.error("Chat error:", err);
