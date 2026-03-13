@@ -3569,12 +3569,13 @@ const GALLERY_CSS = `
   padding:.25rem .7rem;border-radius:999px;margin-bottom:.5rem;
 }
 .lightbox-close{
-  position:absolute;top:-2.2rem;right:0;
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
-  color:#EEF5FF;font-size:1.4rem;width:40px;height:40px;border-radius:50%;
+  position:fixed;top:1.2rem;right:1.2rem;
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);
+  color:#EEF5FF;font-size:1.4rem;width:44px;height:44px;border-radius:50%;
   cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s;
+  z-index:2001;box-shadow:0 4px 16px rgba(0,0,0,.4);
 }
-.lightbox-close:hover{background:rgba(255,255,255,.18);}
+.lightbox-close:hover{background:rgba(255,255,255,.25);}
 .lightbox-nav{
   display:flex;gap:1rem;margin-top:1.2rem;
 }
