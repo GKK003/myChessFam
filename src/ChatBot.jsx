@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useLang } from "./LangContext";
 
 const api = async (path, options = {}) => {
   const BASE = import.meta.env.VITE_API_URL || "";
@@ -17,8 +18,7 @@ const api = async (path, options = {}) => {
 };
 
 const CHAT_CSS = `
-.cb-wrap{position:fixed;bottom:1.8rem;right:1.8rem;z-index:1500;display:flex;flex-direction:column;align-items:flex-end;gap:.75rem;}
-.cb-box{
+.cb-wrap{position:fixed;bottom:1.8rem;right:1.8rem;z-index:900;display:flex;flex-direction:column;align-items:flex-end;gap:.75rem;}.cb-box{
   width:340px;
   max-width:calc(100vw - 24px);
   border-radius:18px;
@@ -29,17 +29,11 @@ const CHAT_CSS = `
   animation:chatPop .28s ease;
   transform-origin:bottom right;
 }
-
 @keyframes chatPop{
-  from{
-    opacity:0;
-    transform:translateY(10px) scale(.96);
-  }
-  to{
-    opacity:1;
-    transform:translateY(0) scale(1);
-  }
-}.cb-head{background:linear-gradient(135deg,#09131E,#143524);padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;}
+  from{opacity:0;transform:translateY(10px) scale(.96);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+.cb-head{background:linear-gradient(135deg,#09131E,#143524);padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;}
 .cb-head-left{display:flex;align-items:center;gap:.65rem;}
 .cb-head-dot{width:8px;height:8px;border-radius:50%;background:#1FA85E;box-shadow:0 0 6px rgba(31,168,94,.6);}
 .cb-head-title{font-size:1rem;font-weight:700;color:#EEF5FF;}
@@ -61,42 +55,15 @@ const CHAT_CSS = `
 .cb-send{padding:.68rem 1rem;background:#1FA85E;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem;flex-shrink:0;}
 .cb-send:disabled{background:rgba(255,255,255,.08);cursor:not-allowed;}
 .cb-bubble{
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  background:#1FA85E;
-  border:none;
-  cursor:pointer;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width:56px;height:56px;border-radius:50%;background:#1FA85E;border:none;cursor:pointer;color:#fff;
+  display:flex;align-items:center;justify-content:center;
   box-shadow:0 6px 22px rgba(21,122,69,.45);
-  transition:
-    transform .25s ease,
-    box-shadow .25s ease,
-    background .25s ease;
+  transition:transform .25s ease,box-shadow .25s ease,background .25s ease;
 }
-
-.cb-bubble:hover{
-  transform:translateY(-3px) scale(1.04);
-  box-shadow:0 12px 30px rgba(21,122,69,.55);
-}
-
-.cb-bubble-icon{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  line-height:1;
-  font-size:1.5rem;
-  transition:
-    transform .28s ease,
-    opacity .2s ease;
-}
-
-.cb-bubble.open .cb-bubble-icon{
-  transform:rotate(90deg) scale(1.08);
-}.cb-suggestions{display:flex;flex-wrap:wrap;gap:.4rem;padding:.6rem .9rem 0;}
+.cb-bubble:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 12px 30px rgba(21,122,69,.55);}
+.cb-bubble-icon{display:inline-flex;align-items:center;justify-content:center;line-height:1;font-size:1.5rem;transition:transform .28s ease,opacity .2s ease;}
+.cb-bubble.open .cb-bubble-icon{transform:rotate(90deg) scale(1.08);}
+.cb-suggestions{display:flex;flex-wrap:wrap;gap:.4rem;padding:.6rem .9rem 0;}
 .cb-sug{background:rgba(26,94,168,.09);border:1px solid rgba(74,171,232,.18);color:rgba(180,210,240,.8);font-size:.73rem;font-weight:600;padding:.3rem .7rem;border-radius:999px;cursor:pointer;}
 .cb-sug:hover{border-color:#1FA85E;color:#1FA85E;}
 @media (max-width: 520px){
@@ -106,25 +73,27 @@ const CHAT_CSS = `
 }
 `;
 
-const SUGGESTIONS = [
-  "What programs do you offer?",
-  "How much is summer camp?",
-  "Do you offer private lessons?",
-  "What age groups do you teach?",
-];
-
 export default function ChatBot() {
+  const { t } = useLang();
+  const cb = t.chatbot;
+
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      from: "bot",
-      text: "Hi! I’m the MyChessFamily assistant. Ask me about programs, camps, private lessons, or age groups.",
-    },
-  ]);
+  const [messages, setMessages] = useState([{ from: "bot", text: cb.welcome }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
   const bottomRef = useRef(null);
+
+  // Update welcome message when language changes (only if chat is at default state)
+  useEffect(() => {
+    setMessages((prev) => {
+      if (prev.length === 1 && prev[0].from === "bot") {
+        return [{ from: "bot", text: cb.welcome }];
+      }
+      return prev;
+    });
+    setShowSuggestions(true);
+  }, [cb.welcome]);
 
   useEffect(() => {
     if (!document.getElementById("mcf-chat-css")) {
@@ -171,9 +140,7 @@ export default function ChatBot() {
         ...prev,
         {
           from: "bot",
-          text:
-            data.reply ||
-            "Sorry, I couldn’t respond right now. Please email mychessfamily@gmail.com.",
+          text: data.reply || cb.fallback,
         },
       ]);
     } catch (err) {
@@ -181,9 +148,7 @@ export default function ChatBot() {
         ...prev,
         {
           from: "bot",
-          text:
-            err.message ||
-            "Sorry, something went wrong. Please email mychessfamily@gmail.com.",
+          text: err.message || cb.fallback,
         },
       ]);
     } finally {
@@ -199,8 +164,8 @@ export default function ChatBot() {
             <div className="cb-head-left">
               <div className="cb-head-dot" />
               <div>
-                <div className="cb-head-title">♟ Chess Assistant</div>
-                <div className="cb-head-sub">MyChessFamily help desk</div>
+                <div className="cb-head-title">{cb.title}</div>
+                <div className="cb-head-sub">{cb.sub}</div>
               </div>
             </div>
             <button className="cb-close" onClick={() => setOpen(false)}>
@@ -228,7 +193,7 @@ export default function ChatBot() {
 
           {showSuggestions && (
             <div className="cb-suggestions">
-              {SUGGESTIONS.map((s) => (
+              {cb.suggestions.map((s) => (
                 <button key={s} className="cb-sug" onClick={() => send(s)}>
                   {s}
                 </button>
@@ -239,7 +204,7 @@ export default function ChatBot() {
           <div className="cb-footer">
             <input
               className="cb-input"
-              placeholder="Ask about programs, camps, lessons..."
+              placeholder={cb.placeholder}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && send()}
@@ -250,7 +215,7 @@ export default function ChatBot() {
               onClick={() => send()}
               disabled={loading || !input.trim()}
             >
-              Send
+              {cb.send}
             </button>
           </div>
         </div>

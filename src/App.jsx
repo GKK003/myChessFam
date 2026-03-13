@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { FaInstagram, FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import ChatBot from "./ChatBot";
+import { useLang } from "./LangContext";
 
 /* ══════════════════════════════════════════ API ══════════════════════════════════════════ */
 const AUTH_KEY = "mcf_admin_token";
@@ -267,8 +268,8 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .mnav-cta{margin-top:auto;padding:1rem 1.2rem 1.2rem;border-top:1px solid rgba(74,171,232,.12);}
 .mnav-cta .btn{width:100%;justify-content:center;}
 
-@media (min-width: 1091px){.burger{display:none !important;}.mnav,.mnav-ovl{display:none !important;}}
-@media(max-width:1090px){.nav-links{display:none !important;}.burger{display:flex !important;}}
+@media (min-width: 1091px){.burger{display:none !important;}.mnav,.mnav-ovl{display:none !important;}   }
+@media(max-width:1090px){.nav-links{display:none !important;}.burger{display:flex !important;} .nb{display:none}}
 
 /* ── STATUS BADGE ── */
 .bdg{position:absolute;top:.9rem;right:.9rem;padding:.22rem .7rem;border-radius:100px;font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
@@ -566,11 +567,38 @@ tr:hover td{background:rgba(26,94,168,.07);}
 .team-grid-modern{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.4rem;}
 .team-card-modern{background:#fff;border:1px solid #E2E8F0;border-radius:22px;padding:1.4rem;box-shadow:0 12px 30px rgba(15,23,42,.05);transition:.25s;text-align:left;}
 .team-card-modern:hover{transform:translateY(-6px);box-shadow:0 22px 44px rgba(15,23,42,.10);}
-.team-card-top{display:flex;align-items:center;gap:.9rem;margin-bottom:1rem;}
-.team-avatar-modern{width:62px;height:62px;border-radius:18px;background:linear-gradient(135deg,#16314D,#215E46);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.6rem;flex-shrink:0;}
-.team-name-modern{font-weight:800;color:#1F2B3A;font-size:1.02rem;}
-.team-role-modern{display:inline-block;margin-top:.22rem;font-size:.76rem;font-weight:700;color:#2E7D5B;background:#ECFDF3;border:1px solid #D1F2DF;padding:.22rem .55rem;border-radius:999px;}
-.team-bio-modern{color:#5C6B7C;line-height:1.72;font-size:.92rem;margin-bottom:1rem;}
+.team-card-top{
+  display:flex;
+  align-items:flex-start;
+  gap:.9rem;
+  margin-bottom:1rem;
+}.team-avatar-modern{width:62px;height:62px;border-radius:18px;background:linear-gradient(135deg,#16314D,#215E46);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.6rem;flex-shrink:0;}
+.team-name-modern{
+  font-weight:800;
+  color:#1F2B3A;
+  font-size:1.02rem;
+  line-height:1.25;
+}
+.team-role-modern{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  margin-top:.35rem;
+  font-size:.76rem;
+  font-weight:700;
+  color:#2E7D5B;
+  background:#ECFDF3;
+  border:1px solid #D1F2DF;
+  padding:.38rem .75rem;
+  border-radius:999px;
+  line-height:1.25;
+  white-space:normal;
+  word-break:break-word;
+  max-width:100%;
+}
+
+  .team-bio-modern{color:#5C6B7C;line-height:1.72;font-size:.92rem;margin-bottom:1rem;}
 .team-tags-modern{display:flex;flex-wrap:wrap;gap:.45rem;}
 .team-tags-modern span{font-size:.72rem;font-weight:700;color:#3A4A5B;background:#F8FAFC;border:1px solid #E2E8F0;padding:.3rem .55rem;border-radius:999px;}
 .team-features{margin-top:3.2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
@@ -581,6 +609,7 @@ tr:hover td{background:rgba(26,94,168,.07);}
 .team-cta h3{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:.65rem;}
 .team-cta p{color:rgba(220,233,245,.78);line-height:1.8;max-width:700px;margin:0 auto;}
 .team-cta-actions{margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
+
 
 .reviews-page{background:#F5F6F8;min-height:100vh;}
 .reviews-hero{background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);padding:5rem 0 4rem;position:relative;overflow:hidden;}
@@ -676,160 +705,149 @@ tr:hover td{background:rgba(26,94,168,.07);}
    PROGRAMS PAGE — RESPONSIVE
 ══════════════════════════════════════════ */
 .programs-page{background:#F5F6F8;}
-
-/* Hero */
-.programs-hero{
-  background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);
-  padding:5rem 0 4rem;position:relative;overflow:hidden;
-}
-.programs-hero::before{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(circle at 20% 50%,rgba(74,171,232,.15),transparent 40%),
-             radial-gradient(circle at 80% 30%,rgba(31,168,94,.12),transparent 35%);
-  pointer-events:none;
-}
-.programs-hero-inner{
-  max-width:1100px;margin:0 auto;
-  padding:0 2.5rem;position:relative;z-index:1;text-align:center;
-}
-.programs-kicker{
-  display:inline-block;font-size:.75rem;letter-spacing:2px;
-  text-transform:uppercase;color:#4AABE8;font-weight:700;margin-bottom:1rem;
-}
-.programs-hero-title{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2.4rem,4.5vw,4rem);
-  color:#F4F8FC;line-height:1.08;margin-bottom:1rem;
-}
-.programs-hero-sub{
-  max-width:620px;margin:0 auto 2rem;
-  color:rgba(220,233,245,.78);line-height:1.8;font-size:1rem;
-}
+.programs-hero{background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);padding:5rem 0 4rem;position:relative;overflow:hidden;}
+.programs-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 50%,rgba(74,171,232,.15),transparent 40%),radial-gradient(circle at 80% 30%,rgba(31,168,94,.12),transparent 35%);pointer-events:none;}
+.programs-hero-inner{max-width:1100px;margin:0 auto;padding:0 2.5rem;position:relative;z-index:1;text-align:center;}
+.programs-kicker{display:inline-block;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:#4AABE8;font-weight:700;margin-bottom:1rem;}
+.programs-hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4.5vw,4rem);color:#F4F8FC;line-height:1.08;margin-bottom:1rem;}
+.programs-hero-sub{max-width:620px;margin:0 auto 2rem;color:rgba(220,233,245,.78);line-height:1.8;font-size:1rem;}
 .programs-hero-actions{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;}
-
-/* Stats strip */
 .programs-stats-strip{background:#fff;border-bottom:1px solid #E2E8F0;}
-.programs-stats-inner{
-  max-width:1100px;margin:0 auto;
-  padding:1.5rem 2.5rem;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:1rem;
-  text-align:center;
-}
-.programs-stat-n{
-  font-family:'Playfair Display',serif;font-size:1.9rem;
-  color:#2E7D5B;font-weight:900;
-}
+.programs-stats-inner{max-width:1100px;margin:0 auto;padding:1.5rem 2.5rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;text-align:center;}
+.programs-stat-n{font-family:'Playfair Display',serif;font-size:1.9rem;color:#2E7D5B;font-weight:900;}
 .programs-stat-l{font-size:.8rem;color:#5C6B7C;margin-top:.15rem;}
-
-/* Cards area */
-.programs-cards-outer{
-  max-width:1100px;margin:0 auto;padding:3.5rem 2.5rem 5rem;
-}
-.programs-cards-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:1.5rem;
-}
-
-/* Individual card */
-.prog-card-new{
-  background:#fff;border:1px solid #E2E8F0;border-radius:24px;
-  overflow:hidden;display:flex;flex-direction:column;
-  box-shadow:0 8px 24px rgba(15,23,42,.06);
-  transition:transform .2s,box-shadow .2s;position:relative;
-}
-.prog-card-new:hover{
-  transform:translateY(-4px);
-  box-shadow:0 24px 56px rgba(15,23,42,.13);
-}
+.programs-cards-outer{max-width:1100px;margin:0 auto;padding:3.5rem 2.5rem 5rem;}
+.programs-cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.prog-card-new{background:#fff;border:1px solid #E2E8F0;border-radius:24px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 24px rgba(15,23,42,.06);transition:transform .2s,box-shadow .2s;position:relative;}
+.prog-card-new:hover{transform:translateY(-4px);box-shadow:0 24px 56px rgba(15,23,42,.13);}
 .prog-card-new.featured-card{border-width:2px;}
-.prog-card-featured-pill{
-  position:absolute;top:14px;right:14px;
-  font-size:.68rem;font-weight:800;letter-spacing:1px;
-  text-transform:uppercase;padding:.28rem .7rem;
-  border-radius:999px;color:#fff;z-index:1;
-}
+.prog-card-featured-pill{position:absolute;top:14px;right:14px;font-size:.68rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:.28rem .7rem;border-radius:999px;color:#fff;z-index:1;}
 .prog-card-top-band{padding:1.5rem 1.5rem 1.1rem;}
 .prog-card-img{width:72px;height:72px;object-fit:contain;margin-bottom:.7rem;}
-.prog-card-tag-pill{
-  display:inline-flex;font-size:.67rem;font-weight:800;
-  letter-spacing:1px;text-transform:uppercase;
-  padding:.22rem .6rem;border-radius:999px;color:#fff;margin-bottom:.55rem;
-}
-.prog-card-title-text{
-  font-family:'Playfair Display',serif;font-size:1.28rem;
-  color:#1F2B3A;margin:0;line-height:1.2;
-}
-.prog-card-meta-row{
-  padding:.9rem 1.5rem;border-bottom:1px solid #F1F5F9;
-  display:flex;gap:.45rem;flex-wrap:wrap;
-}
-.prog-card-meta-chip{
-  background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;
-  padding:.28rem .55rem;font-size:.73rem;color:#3A4A5B;font-weight:600;
-}
+.prog-card-tag-pill{display:inline-flex;font-size:.67rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:.22rem .6rem;border-radius:999px;color:#fff;margin-bottom:.55rem;}
+.prog-card-title-text{font-family:'Playfair Display',serif;font-size:1.28rem;color:#1F2B3A;margin:0;line-height:1.2;}
+.prog-card-meta-row{padding:.9rem 1.5rem;border-bottom:1px solid #F1F5F9;display:flex;gap:.45rem;flex-wrap:wrap;}
+.prog-card-meta-chip{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:.28rem .55rem;font-size:.73rem;color:#3A4A5B;font-weight:600;}
 .prog-card-body-area{padding:1.1rem 1.5rem;flex:1;}
-.prog-card-desc-text{
-  color:#5C6B7C;font-size:.88rem;line-height:1.7;margin-bottom:.9rem;
-}
-.prog-card-check-list{
-  list-style:none;padding:0;margin:0;
-  display:flex;flex-direction:column;gap:.4rem;
-}
-.prog-card-check-item{
-  display:flex;align-items:flex-start;gap:.5rem;
-  font-size:.83rem;color:#3A4A5B;
-}
+.prog-card-desc-text{color:#5C6B7C;font-size:.88rem;line-height:1.7;margin-bottom:.9rem;}
+.prog-card-check-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.4rem;}
+.prog-card-check-item{display:flex;align-items:flex-start;gap:.5rem;font-size:.83rem;color:#3A4A5B;}
 .prog-card-check-icon{font-weight:900;margin-top:.1rem;flex-shrink:0;}
 .prog-card-footer-area{padding:.9rem 1.5rem 1.5rem;}
-.prog-card-cta-btn{
-  width:100%;padding:.82rem;border-radius:9px;
-  font-family:'DM Sans',sans-serif;font-size:.93rem;font-weight:800;
-  cursor:pointer;transition:transform .22s ease,box-shadow .28s ease,background .22s ease,color .22s ease;
-  border-width:2px;border-style:solid;position:relative;overflow:hidden;
-}
-
-/* Bottom CTA */
-.programs-bottom-cta{
-  margin-top:3rem;
-  background:linear-gradient(135deg,#12253B,#143524);
-  border-radius:26px;padding:2.5rem 2rem;text-align:center;color:#EEF5FF;
-}
-.programs-bottom-cta h3{
-  font-family:'Playfair Display',serif;font-size:1.9rem;margin-bottom:.6rem;
-}
-.programs-bottom-cta p{
-  color:rgba(220,233,245,.78);line-height:1.8;
-  max-width:600px;margin:0 auto;font-size:.95rem;
-}
-.programs-cta-actions{
-  margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;
-}
-
-/* ── PROGRAMS RESPONSIVE BREAKPOINTS ── */
-@media(max-width:1050px){
-  .programs-cards-grid{grid-template-columns:repeat(2,1fr);}
-}
-@media(max-width:700px){
-  .programs-cards-grid{grid-template-columns:1fr;}
-  .programs-hero-inner,.programs-cards-outer{padding-left:1.2rem;padding-right:1.2rem;}
-  .programs-stats-inner{
-    grid-template-columns:1fr 1fr;
-    padding:1.2rem;
-    gap:.8rem;
+.prog-card-cta-btn{width:100%;padding:.82rem;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:.93rem;font-weight:800;cursor:pointer;transition:transform .22s ease,box-shadow .28s ease,background .22s ease,color .22s ease;border-width:2px;border-style:solid;position:relative;overflow:hidden;}
+.programs-bottom-cta{margin-top:3rem;background:linear-gradient(135deg,#12253B,#143524);border-radius:26px;padding:2.5rem 2rem;text-align:center;color:#EEF5FF;}
+.programs-bottom-cta h3{font-family:'Playfair Display',serif;font-size:1.9rem;margin-bottom:.6rem;}
+.programs-bottom-cta p{color:rgba(220,233,245,.78);line-height:1.8;max-width:600px;margin:0 auto;font-size:.95rem;}
+.programs-cta-actions{margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
+@media(max-width:1050px){.programs-cards-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:700px){.programs-cards-grid{grid-template-columns:1fr;}.programs-hero-inner,.programs-cards-outer{padding-left:1.2rem;padding-right:1.2rem;}.programs-stats-inner{grid-template-columns:1fr 1fr;padding:1.2rem;gap:.8rem;}.programs-hero-title{font-size:clamp(2rem,8vw,2.8rem);}.programs-bottom-cta{padding:1.8rem 1.2rem;border-radius:18px;}.programs-bottom-cta h3{font-size:1.45rem;}.programs-cards-outer{padding-top:2.5rem;padding-bottom:3rem;}}
+@media(max-width:420px){.programs-stats-inner{grid-template-columns:1fr 1fr;}.prog-card-meta-row{gap:.35rem;}.prog-card-meta-chip{font-size:.68rem;padding:.22rem .45rem;}}
+@media (max-width: 420px) {
+  .home-split-sec {
+    padding: 3rem 0;
   }
-  .programs-hero-title{font-size:clamp(2rem,8vw,2.8rem);}
-  .programs-bottom-cta{padding:1.8rem 1.2rem;border-radius:18px;}
-  .programs-bottom-cta h3{font-size:1.45rem;}
-  .programs-cards-outer{padding-top:2.5rem;padding-bottom:3rem;}
+
+  .home-split-wrap,
+  .home-split-wrap.rev {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 0 1rem;
+  }
+
+  .home-split-copy {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .slbl {
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    word-break: break-word;
+  }
+
+  .home-split-title {
+    font-size: clamp(1.9rem, 9vw, 2.45rem);
+    line-height: 1.1;
+    word-break: break-word;
+  }
+
+  .home-split-p {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    margin-bottom: 0.9rem;
+  }
+
+  .home-split-btn {
+    width: 100%;
+    padding: 0.95rem 1rem;
+  }
+
+  .home-split-media {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .home-split-media img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 14px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .home-main-title {
+    font-size: clamp(2rem, 10vw, 2.6rem);
+    padding: 3rem 1rem 1.5rem;
+  }
+
+  .offer-grid {
+    grid-template-columns: 1fr;
+    padding: 1.25rem 1rem 3rem;
+  }
+
+  .offer-card {
+    padding: 1.4rem 1.1rem;
+  }
+
+  .offer-card span {
+    width: 100%;
+  }
+
+  .hero-inner {
+    padding: 2rem 1rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 10vw, 2.8rem);
+  }
+
+  .hero-sub {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .hero-btns {
+    flex-direction: column;
+  }
+
+  .hero-btns .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .wrap {
+    padding: 2.5rem 1rem;
+  }
 }
-@media(max-width:420px){
-  .programs-stats-inner{grid-template-columns:1fr 1fr;}
-  .prog-card-meta-row{gap:.35rem;}
-  .prog-card-meta-chip{font-size:.68rem;padding:.22rem .45rem;}
-}
+
+
+
+
 `;
 
 const injectStyles = () => {
@@ -864,6 +882,7 @@ function Toast({ toasts }) {
 }
 
 function Badge({ status }) {
+  const { t } = useLang();
   const cls =
     status === "open"
       ? "bdg bdg-open"
@@ -871,7 +890,11 @@ function Badge({ status }) {
         ? "bdg bdg-full"
         : "bdg bdg-up";
   const lbl =
-    status === "open" ? "Open" : status === "full" ? "Full" : "Upcoming";
+    status === "open"
+      ? t.badge.open
+      : status === "full"
+        ? t.badge.full
+        : t.badge.upcoming;
   return <span className={cls}>{lbl}</span>;
 }
 
@@ -904,18 +927,19 @@ function ChessBoard() {
 }
 
 function Footer({ onNav, onContact }) {
+  const { t } = useLang();
   return (
     <footer className="footer">
       <div className="f-links">
         {[
-          ["home", "Home"],
-          ["programs", "Programs"],
-          ["camp", "Summer Camp"],
-          ["team", "Our Team"],
-          ["gallery", "Gallery"],
-          ["reviews", "Reviews"],
-          ["about", "About"],
-          ["contact", "Contact"],
+          ["home", t.footer.links.home],
+          ["programs", t.footer.links.programs],
+          ["camp", t.footer.links.camp],
+          ["team", t.footer.links.team],
+          ["gallery", t.footer.links.gallery],
+          ["reviews", t.footer.links.reviews],
+          ["about", t.footer.links.about],
+          ["contact", t.footer.links.contact],
         ].map(([p, l]) => (
           <button key={p} className="flnk" onClick={() => onNav(p)}>
             {l}
@@ -962,7 +986,7 @@ function Footer({ onNav, onContact }) {
           letterSpacing: ".3px",
         }}
       >
-        Designed &amp; built by{" "}
+        {t.footer.builtBy}{" "}
         <span style={{ color: "rgba(180,210,240,0.55)", fontWeight: 600 }}>
           Giorgi Kostava
         </span>
@@ -972,10 +996,12 @@ function Footer({ onNav, onContact }) {
 }
 
 function ContactModal({ onClose, showToast }) {
+  const { t } = useLang();
+  const cm = t.contactModal;
   const copyEmail = async () => {
     try {
       await navigator.clipboard.writeText(CONTACT.email);
-      showToast("📋 Email copied!", "s");
+      showToast(t.toast.emailCopied, "s");
     } catch {
       try {
         const ta = document.createElement("textarea");
@@ -984,7 +1010,7 @@ function ContactModal({ onClose, showToast }) {
         ta.select();
         document.execCommand("copy");
         document.body.removeChild(ta);
-        showToast("📋 Email copied!", "s");
+        showToast(t.toast.emailCopied, "s");
       } catch {
         showToast("Could not copy email.", "e");
       }
@@ -997,9 +1023,9 @@ function ContactModal({ onClose, showToast }) {
     >
       <div className="modal">
         <button className="mcls" onClick={onClose}>
-          ×
+          {t.common.close}
         </button>
-        <h3>Contact Us</h3>
+        <h3>{cm.title}</h3>
         <div style={{ display: "grid", gap: ".85rem" }}>
           <button
             type="button"
@@ -1015,7 +1041,7 @@ function ContactModal({ onClose, showToast }) {
           >
             <span>✉️ {CONTACT.email}</span>
             <span style={{ color: "var(--muted)", fontSize: ".85rem" }}>
-              Click to copy
+              {cm.clickToCopy}
             </span>
           </button>
           <div
@@ -1025,7 +1051,7 @@ function ContactModal({ onClose, showToast }) {
               lineHeight: 1.6,
             }}
           >
-            For fastest response, email us.
+            {cm.fastest}
           </div>
         </div>
       </div>
@@ -1034,6 +1060,8 @@ function ContactModal({ onClose, showToast }) {
 }
 
 function CampRegModal({ item, onClose, showToast, onRegistered }) {
+  const { t } = useLang();
+  const rm = t.camp.regModal;
   const [f, setF] = useState({
     fname: "",
     lname: "",
@@ -1057,7 +1085,7 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
       !f.dob ||
       !f.level
     ) {
-      showToast("Please fill in all required fields.", "e");
+      showToast(rm.required, "e");
       return;
     }
     try {
@@ -1079,7 +1107,7 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
       });
       setDone(true);
       onRegistered?.();
-      showToast("🎉 Registration submitted!", "s");
+      showToast(t.toast.regSubmitted, "s");
     } catch (error) {
       showToast(error.message || "Could not submit registration.", "e");
     }
@@ -1091,32 +1119,34 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
     >
       <div className="modal">
         <button className="mcls" onClick={onClose}>
-          ×
+          {t.common.close}
         </button>
-        <h3>Sign Up: {item.name}</h3>
+        <h3>
+          {rm.title} {item.name}
+        </h3>
         {!done ? (
           <>
             <div className="fgrid">
               <div className="fg">
-                <label className="lbl">First Name *</label>
+                <label className="lbl">{rm.firstName} *</label>
                 <input
                   className="inp"
-                  placeholder="e.g. Alex"
+                  placeholder={rm.firstNamePh}
                   value={f.fname}
                   onChange={set("fname")}
                 />
               </div>
               <div className="fg">
-                <label className="lbl">Last Name *</label>
+                <label className="lbl">{rm.lastName} *</label>
                 <input
                   className="inp"
-                  placeholder="e.g. Johnson"
+                  placeholder={rm.lastNamePh}
                   value={f.lname}
                   onChange={set("lname")}
                 />
               </div>
               <div className="fg">
-                <label className="lbl">Date of Birth *</label>
+                <label className="lbl">{rm.dob} *</label>
                 <input
                   className="inp"
                   type="date"
@@ -1125,71 +1155,70 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
                 />
               </div>
               <div className="fg">
-                <label className="lbl">Chess Level *</label>
+                <label className="lbl">{rm.level} *</label>
                 <select className="inp" value={f.level} onChange={set("level")}>
-                  <option value="">Select level</option>
-                  <option>Never played before</option>
-                  <option>Knows the basics</option>
-                  <option>Plays regularly</option>
-                  <option>Tournament player</option>
+                  <option value="">{rm.levelPh}</option>
+                  {rm.levelOpts.map((opt) => (
+                    <option key={opt}>{opt}</option>
+                  ))}
                 </select>
               </div>
               <div className="fg full">
-                <label className="lbl">Parent / Guardian *</label>
+                <label className="lbl">{rm.parent} *</label>
                 <input
                   className="inp"
-                  placeholder="Full name"
+                  placeholder={rm.parentPh}
                   value={f.parent}
                   onChange={set("parent")}
                 />
               </div>
               <div className="fg full">
-                <label className="lbl">Email *</label>
+                <label className="lbl">{rm.email} *</label>
                 <input
                   className="inp"
                   type="email"
-                  placeholder="parent@email.com"
+                  placeholder={rm.emailPh}
                   value={f.email}
                   onChange={set("email")}
                 />
               </div>
               <div className="fg full">
-                <label className="lbl">Phone *</label>
+                <label className="lbl">{rm.phone} *</label>
                 <input
                   className="inp"
                   type="tel"
-                  placeholder="(212) 555-0000"
+                  placeholder={rm.phonePh}
                   value={f.phone}
                   onChange={set("phone")}
                 />
               </div>
               <div className="fg full">
-                <label className="lbl">Emergency Contact</label>
+                <label className="lbl">{rm.emergency}</label>
                 <input
                   className="inp"
-                  placeholder="Name · (212) 555-0001"
+                  placeholder={rm.emergencyPh}
                   value={f.emergency}
                   onChange={set("emergency")}
                 />
               </div>
               <div className="fg full">
-                <label className="lbl">Allergies / Medical Notes</label>
+                <label className="lbl">{rm.medical}</label>
                 <textarea
                   className="inp"
-                  placeholder="Any info we should know..."
+                  placeholder={rm.medicalPh}
                   value={f.medical}
                   onChange={set("medical")}
                 />
               </div>
             </div>
             <button className="sbtn" onClick={submit}>
-              Submit Registration →
+              {rm.submitBtn}
             </button>
           </>
         ) : (
           <div className="ok-box">
             <div style={{ fontSize: "2rem" }}>🎉</div>
-            <strong style={{ marginTop: ".5rem" }}>You're registered!</strong>
+            <strong style={{ marginTop: ".5rem" }}>{rm.successTitle}</strong>
             <p
               style={{
                 fontSize: ".86rem",
@@ -1197,7 +1226,7 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
                 marginTop: ".4rem",
               }}
             >
-              Confirmation details will be sent to your email.
+              {rm.successSub}
             </p>
           </div>
         )}
@@ -1208,58 +1237,51 @@ function CampRegModal({ item, onClose, showToast, onRegistered }) {
 
 /* ══════════════════════════════════════════ PAGES ══════════════════════════════════════════ */
 function HomePage({ onNav, onContact }) {
+  const { t } = useLang();
+
   const homeSections = [
     {
-      title: "Private Lessons",
-      text1:
-        "My Chess Family offers structured chess training for students of all levels through school programs, private lessons, camps, team training, and tournament preparation.",
-      text2:
-        "Students grow not only as chess players, but also as individuals in a supportive community built around learning, discipline, and confidence.",
+      title: t.home.section1Title,
+      text1: t.home.section1Text1,
+      text2: t.home.section1Text2,
       image: "/images/info.png",
-      button: "Explore Programs",
+      button: t.home.section1Btn,
       onClick: () => onNav("programs"),
     },
     {
-      title: "Personalized Coaching",
-      text1:
-        "Every student learns differently. Our coaches build personal connections with students to understand their thinking style, motivation, and learning pace.",
-      text2:
-        "Through individual lessons and targeted guidance, students receive training that matches their level and helps them progress with confidence.",
+      title: t.home.section2Title,
+      text1: t.home.section2Text1,
+      text2: t.home.section2Text2,
       image: "/images/info.png",
-      button: "View Programs",
+      button: t.home.section2Btn,
       onClick: () => onNav("programs"),
     },
     {
-      title: "Chess Tournaments",
-      text1:
-        "Tournaments give students real-game experience and help them apply what they learn under pressure. They develop focus, resilience, and better decision-making.",
-      text2:
-        "We encourage healthy competition, sportsmanship, and steady growth through events that challenge players while keeping the experience positive and rewarding.",
+      title: t.home.section3Title,
+      text1: t.home.section3Text1,
+      text2: t.home.section3Text2,
       image: "/images/info.png",
-      button: "Read Reviews",
+      button: t.home.section3Btn,
       onClick: () => onNav("reviews"),
     },
     {
-      title: "Chess Camps",
-      text1:
-        "Our chess camps combine structured training, tournaments, and fun activities in a dynamic learning environment.",
-      text2:
-        "Students strengthen their chess skills, build friendships, and enjoy a memorable experience that keeps them engaged and motivated.",
+      title: t.home.section4Title,
+      text1: t.home.section4Text1,
+      text2: t.home.section4Text2,
       image: "/images/info.png",
-      button: "Join Camp",
+      button: t.home.section4Btn,
       onClick: () => onNav("camp"),
     },
     {
-      title: "School Chess Programs",
-      text1:
-        "My Chess Family partners with schools to bring high-quality chess education directly into the classroom through after-school programs.",
-      text2:
-        "These programs help students develop focus, patience, and problem-solving skills while introducing them to the strategic world of chess.",
+      title: t.home.section5Title,
+      text1: t.home.section5Text1,
+      text2: t.home.section5Text2,
       image: "/images/info.png",
-      button: "Contact Us",
+      button: t.home.section5Btn,
       onClick: onContact,
     },
   ];
+
   return (
     <div className="pg">
       <div className="hero">
@@ -1270,114 +1292,95 @@ function HomePage({ onNav, onContact }) {
         </div>
         <div className="hero-inner">
           <div>
-            <div className="hero-badge">🗽 New York City · Ages 6–16</div>
+            <div className="hero-badge">{t.home.heroBadge}</div>
             <h1>
-              Where Kids Become <em>Chess Champions</em>
+              {t.home.heroTitle} <em>{t.home.heroTitleEm}</em>
             </h1>
-            <p className="hero-sub">
-              Join MyChessFamily — New York's premier chess club for young
-              minds. We build strategy, confidence, and lasting friendships
-              through the timeless game of chess.
-            </p>
+            <p className="hero-sub">{t.home.heroSub}</p>
             <div className="hero-btns">
               <button className="btn btn-g" onClick={() => onNav("programs")}>
-                ♟ Explore Programs
+                {t.home.heroBtn1}
               </button>
               <button className="btn btn-g" onClick={() => onNav("camp")}>
-                ☀️ Join Summer Camp
+                {t.home.heroBtn2}
               </button>
               <button
                 className="btn btn-g"
                 style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
                 onClick={onContact}
               >
-                ✉️ Contact
+                {t.home.heroBtn3}
               </button>
             </div>
             <div className="stats">
               <div className="stat">
-                <div className="stat-n">500+</div>
-                <div className="stat-l">Young Players</div>
+                <div className="stat-n">{t.home.stat1n}</div>
+                <div className="stat-l">{t.home.stat1l}</div>
               </div>
               <div className="stat">
-                <div className="stat-n">8+</div>
-                <div className="stat-l">Years Running</div>
+                <div className="stat-n">{t.home.stat2n}</div>
+                <div className="stat-l">{t.home.stat2l}</div>
               </div>
               <div className="stat">
-                <div className="stat-n">3</div>
-                <div className="stat-l">Camps / Year</div>
+                <div className="stat-n">{t.home.stat3n}</div>
+                <div className="stat-l">{t.home.stat3l}</div>
               </div>
             </div>
           </div>
           <ChessBoard />
         </div>
       </div>
-      <h1 className="home-main-title">What We Offer</h1>
+      <h1 className="home-main-title">{t.home.offerTitle}</h1>
       <div className="offer-grid">
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/schoolprogramsicon.png"
-            alt="School Chess Programs"
+            alt={t.home.offer1Title}
             className="offer-img"
           />
-          <h3>School Chess Programs</h3>
-          <p>
-            After-school chess programs where students learn the fundamentals of
-            chess and gradually develop strategic thinking.
-          </p>
-          <span>See More</span>
+          <h3>{t.home.offer1Title}</h3>
+          <p>{t.home.offer1Desc}</p>
+          <span>{t.common.seeMore}</span>
         </div>
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/privateicon.png"
-            alt="Private Lessons"
+            alt={t.home.offer2Title}
             className="offer-img"
           />
-          <h3>Private Lessons</h3>
-          <p>
-            Individual training tailored to each student's level, pace, and
-            goals.
-          </p>
-          <span>See More</span>
+          <h3>{t.home.offer2Title}</h3>
+          <p>{t.home.offer2Desc}</p>
+          <span>{t.common.seeMore}</span>
         </div>
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/tournamentpreparation.png"
-            alt="Tournament Preparation"
+            alt={t.home.offer3Title}
             className="offer-img"
           />
-          <h3>Tournament Preparation</h3>
-          <p>
-            Structured training for students preparing to compete in scholastic
-            tournaments.
-          </p>
-          <span>See More</span>
+          <h3>{t.home.offer3Title}</h3>
+          <p>{t.home.offer3Desc}</p>
+          <span>{t.common.seeMore}</span>
         </div>
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/teamtrain.png"
-            alt="Team Training"
+            alt={t.home.offer4Title}
             className="offer-img"
           />
-          <h3>Team Training</h3>
-          <p>
-            Group training sessions where students prepare together for
-            tournaments and strengthen their skills as a team.
-          </p>
-          <span>See More</span>
+          <h3>{t.home.offer4Title}</h3>
+          <p>{t.home.offer4Desc}</p>
+          <span>{t.common.seeMore}</span>
         </div>
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
             src="/images/chesscamps.png"
-            alt="Chess Camps"
+            alt={t.home.offer5Title}
             className="offer-img"
           />
-          <h3>Chess Camps</h3>
-          <p>
-            Immersive chess camps combining training, tournaments, and social
-            activities.
-          </p>
-          <span>See More</span>
+          <h3>{t.home.offer5Title}</h3>
+          <p>{t.home.offer5Desc}</p>
+          <span>{t.common.seeMore}</span>
         </div>
       </div>
       {homeSections.map((section, i) => (
@@ -1433,24 +1436,13 @@ function HomePage({ onNav, onContact }) {
       <section className="home-split-sec">
         <div className="home-split-wrap">
           <div className="home-split-copy">
-            <div className="slbl">About Us</div>
-            <h2 className="home-split-title">About My Chess Family</h2>
-            <p className="home-split-p">
-              MyChessFamily is a youth chess community built to help students
-              grow in skill, confidence, and character through thoughtful,
-              engaging instruction.
-            </p>
-            <p className="home-split-p">
-              From first lessons to competitive preparation, we focus on making
-              each student feel supported, challenged, and excited to improve.
-            </p>
-            <p className="home-split-p">
-              Our goal is not only to teach chess well, but also to create a
-              strong, positive environment where students and families feel part
-              of something meaningful.
-            </p>
+            <div className="slbl">{t.home.aboutLabel}</div>
+            <h2 className="home-split-title">{t.home.aboutTitle}</h2>
+            <p className="home-split-p">{t.home.aboutText1}</p>
+            <p className="home-split-p">{t.home.aboutText2}</p>
+            <p className="home-split-p">{t.home.aboutText3}</p>
             <button className="home-split-btn" onClick={() => onNav("about")}>
-              Learn More
+              {t.home.aboutBtn}
             </button>
           </div>
           <div className="home-split-media">
@@ -1463,146 +1455,66 @@ function HomePage({ onNav, onContact }) {
   );
 }
 
-/* ══════════════════════════════════════════ PROGRAMS PAGE — FULLY RESPONSIVE ══════════════════════════════════════════ */
+/* ══════════════════════════════════════════ PROGRAMS PAGE ══════════════════════════════════════════ */
 function ProgramsPage({ onNav, onContact }) {
-  const PROGRAMS = [
-    {
-      icon: "/images/schoolprogramsicon.png",
-      title: "School Chess Programs",
-      tag: "Most Popular",
-      price: "Contact for Pricing",
-      duration: "Weekly Sessions",
-      age: "Ages 6–16",
-      level: "All Levels",
-      color: "#1A5EA8",
-      accent: "rgba(26,94,168,.08)",
-      desc: "After-school chess programs where students learn the fundamentals of chess in a structured and engaging environment. We partner directly with schools to bring high-quality coaching into the classroom.",
-      highlights: [
-        "Strategic thinking & problem-solving",
-        "Structured curriculum per level",
-        "School partnership programs",
-        "Progress tracking for parents",
-      ],
-      button: "Contact Us",
-      onClick: onContact,
-      featured: true,
-    },
-    {
-      icon: "/images/privateicon.png",
-      title: "Private Lessons",
-      tag: "One-on-One",
-      price: "From $80 / session",
-      duration: "60 or 90 min",
-      age: "Ages 6–16",
-      level: "All Levels",
-      color: "#2E7D5B",
-      accent: "rgba(46,125,91,.08)",
-      desc: "One-on-one coaching tailored entirely to your child. Whether a complete beginner or preparing for competition, private lessons deliver the fastest, most focused improvement.",
-      highlights: [
-        "Personalized training plan",
-        "Flexible scheduling",
-        "In-person or online",
-        "Beginner to advanced",
-      ],
-      button: "Meet Our Team",
-      onClick: () => onNav("team"),
-    },
-    {
-      icon: "/images/tournamentpreparation.png",
-      title: "Tournament Preparation",
-      tag: "Competitive",
-      price: "Contact for Pricing",
-      duration: "Ongoing Program",
-      age: "Ages 8–16",
-      level: "Intermediate – Advanced",
-      color: "#B45309",
-      accent: "rgba(180,83,9,.07)",
-      desc: "Structured training for students who compete in scholastic tournaments. Opening preparation, game analysis, endgame technique, and the mental skills to perform under pressure.",
-      highlights: [
-        "Opening repertoire building",
-        "Game & mistake analysis",
-        "Endgame & tactics training",
-        "Psychological readiness",
-      ],
-      button: "Contact Us",
-      onClick: onContact,
-    },
-    {
-      icon: "/images/teamtrain.png",
-      title: "Team Training",
-      tag: "Group",
-      price: "Contact for Pricing",
-      duration: "Weekly Sessions",
-      age: "Ages 8–16",
-      level: "Intermediate",
-      color: "#6B21A8",
-      accent: "rgba(107,33,168,.07)",
-      desc: "Collaborative group sessions where students prepare for tournaments together, analyze games, and push each other to improve in a team-based learning environment.",
-      highlights: [
-        "Team strategy & dynamics",
-        "Peer game analysis",
-        "Collaborative learning",
-        "Competitive team prep",
-      ],
-      button: "Contact Us",
-      onClick: onContact,
-    },
-    {
-      icon: "/images/chesscamps.png",
-      title: "Chess Camps",
-      tag: "Summer Program",
-      price: "From $350 / week",
-      duration: "Full & Half Day",
-      age: "Ages 6–16",
-      level: "All Levels",
-      color: "#0E7490",
-      accent: "rgba(14,116,144,.07)",
-      desc: "Intensive week-long summer camps combining structured lessons, practice games, puzzles, and fun activities. Students improve fast while making lasting friendships.",
-      highlights: [
-        "Full & half-day options",
-        "All skill levels welcome",
-        "Daily puzzles & games",
-        "Small group sizes",
-      ],
-      button: "View Summer Camp",
-      onClick: () => onNav("camp"),
-    },
-  ];
+  const { t } = useLang();
+
+  const PROGRAMS = t.programs.programs.map((p, i) => ({
+    ...p,
+    icon: [
+      "/images/schoolprogramsicon.png",
+      "/images/privateicon.png",
+      "/images/tournamentpreparation.png",
+      "/images/teamtrain.png",
+      "/images/chesscamps.png",
+    ][i],
+    color: ["#1A5EA8", "#2E7D5B", "#B45309", "#6B21A8", "#0E7490"][i],
+    accent: [
+      "rgba(26,94,168,.08)",
+      "rgba(46,125,91,.08)",
+      "rgba(180,83,9,.07)",
+      "rgba(107,33,168,.07)",
+      "rgba(14,116,144,.07)",
+    ][i],
+    featured: i === 0,
+    onClick: [
+      onContact,
+      () => onNav("team"),
+      onContact,
+      onContact,
+      () => onNav("camp"),
+    ][i],
+  }));
 
   return (
     <div className="pg programs-page">
-      {/* ── Hero ── */}
       <section className="programs-hero">
         <div className="programs-hero-inner">
-          <div className="programs-kicker">Our Programs</div>
-          <h1 className="programs-hero-title">Find the Right Program</h1>
-          <p className="programs-hero-sub">
-            From beginner after-school programs to serious tournament prep —
-            every program is designed to help your child grow at their own pace.
-          </p>
+          <div className="programs-kicker">{t.programs.kicker}</div>
+          <h1 className="programs-hero-title">{t.programs.heroTitle}</h1>
+          <p className="programs-hero-sub">{t.programs.heroSub}</p>
           <div className="programs-hero-actions">
             <button className="btn btn-g" onClick={onContact}>
-              ✉️ Ask About Pricing
+              {t.programs.heroBtn1}
             </button>
             <button
               className="btn btn-g"
               style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
               onClick={() => onNav("camp")}
             >
-              ☀️ Summer Camp
+              {t.programs.heroBtn2}
             </button>
           </div>
         </div>
       </section>
 
-      {/* ── Stats Strip ── */}
       <div className="programs-stats-strip">
         <div className="programs-stats-inner">
           {[
-            ["5", "Programs Offered"],
-            ["500+", "Students Taught"],
-            ["8+", "Years Experience"],
-            ["6–16", "Age Range"],
+            [t.programs.stat1n, t.programs.stat1l],
+            [t.programs.stat2n, t.programs.stat2l],
+            [t.programs.stat3n, t.programs.stat3l],
+            [t.programs.stat4n, t.programs.stat4l],
           ].map(([n, l]) => (
             <div key={l}>
               <div className="programs-stat-n">{n}</div>
@@ -1612,7 +1524,6 @@ function ProgramsPage({ onNav, onContact }) {
         </div>
       </div>
 
-      {/* ── Cards ── */}
       <div className="programs-cards-outer">
         <div className="programs-cards-grid">
           {PROGRAMS.map((p) => (
@@ -1620,23 +1531,19 @@ function ProgramsPage({ onNav, onContact }) {
           ))}
         </div>
 
-        {/* ── Bottom CTA ── */}
         <div className="programs-bottom-cta">
-          <h3>Not sure which program fits?</h3>
-          <p>
-            We personally help every family find the right fit based on age,
-            experience, and goals. Just reach out — we'll guide you.
-          </p>
+          <h3>{t.programs.ctaTitle}</h3>
+          <p>{t.programs.ctaText}</p>
           <div className="programs-cta-actions">
             <button className="btn btn-g" onClick={onContact}>
-              ✉️ Contact Us
+              {t.common.contactUs}
             </button>
             <button
               className="btn btn-g"
               style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
               onClick={() => onNav("team")}
             >
-              👥 Meet Our Team
+              {t.common.meetTeam}
             </button>
           </div>
         </div>
@@ -1662,11 +1569,10 @@ function ProgramCard({ p }) {
           className="prog-card-featured-pill"
           style={{ background: p.color }}
         >
-          ⭐ Most Popular
+          ⭐ {p.tag}
         </div>
       )}
 
-      {/* Top band */}
       <div
         className="prog-card-top-band"
         style={{
@@ -1683,7 +1589,6 @@ function ProgramCard({ p }) {
         <h3 className="prog-card-title-text">{p.title}</h3>
       </div>
 
-      {/* Meta chips */}
       <div className="prog-card-meta-row">
         {[
           ["💰", p.price],
@@ -1697,7 +1602,6 @@ function ProgramCard({ p }) {
         ))}
       </div>
 
-      {/* Body */}
       <div className="prog-card-body-area">
         <p className="prog-card-desc-text">{p.desc}</p>
         <ul className="prog-card-check-list">
@@ -1712,7 +1616,6 @@ function ProgramCard({ p }) {
         </ul>
       </div>
 
-      {/* Footer CTA */}
       <div className="prog-card-footer-area">
         <button
           className="prog-card-cta-btn"
@@ -1733,26 +1636,23 @@ function ProgramCard({ p }) {
 }
 
 function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
+  const { t } = useLang();
   const [modal, setModal] = useState(null);
   const BASE = import.meta.env.VITE_API_URL || "";
   return (
     <div className="pg" style={{ background: "#F5F6F8" }}>
       <section className="camp-page-top">
         <div className="camp-page-top-inner">
-          <div className="slbl">Summer Program</div>
-          <h1 className="camp-page-title">Summer Chess Camp</h1>
-          <p className="camp-page-sub">
-            Intensive chess training, practical tournament experience, and a fun
-            learning environment where students build skill, confidence, and
-            friendships.
-          </p>
+          <div className="slbl">{t.camp.label}</div>
+          <h1 className="camp-page-title">{t.camp.title}</h1>
+          <p className="camp-page-sub">{t.camp.sub}</p>
         </div>
       </section>
       <section className="camp-list-wrap">
         {!camps.length ? (
           <div className="empty">
             <div className="empty-i">☀️</div>
-            <p>No camp sessions scheduled yet.</p>
+            <p>{t.camp.noSessions}</p>
           </div>
         ) : (
           <div className="camp-list">
@@ -1767,11 +1667,18 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
                       <h3>{c.name}</h3>
                       <div className="camp-row-meta">
                         <span>
-                          📅 {fmtDShort(c.dateStart)} – {fmtDShort(c.dateEnd)}
+                          {t.camp.metaDate} {fmtDShort(c.dateStart)} –{" "}
+                          {fmtDShort(c.dateEnd)}
                         </span>
-                        <span>📍 {c.location}</span>
-                        <span>👦 {c.age}</span>
-                        <span>⏰ {c.type}</span>
+                        <span>
+                          {t.camp.metaLocation} {c.location}
+                        </span>
+                        <span>
+                          {t.camp.metaAge} {c.age}
+                        </span>
+                        <span>
+                          {t.camp.metaTime} {c.type}
+                        </span>
                       </div>
                     </div>
                     <div className="camp-row-badge">
@@ -1782,7 +1689,7 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
                   <div className="camp-row-bottom">
                     <div className="camp-row-price">
                       ${c.price}
-                      <span> / child</span>
+                      <span> {t.camp.perChild}</span>
                     </div>
                     <div className="camp-row-actions">
                       <button
@@ -1790,7 +1697,7 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
                         onClick={onContact}
                         type="button"
                       >
-                        Contact
+                        {t.camp.contact}
                       </button>
                       <button
                         className="camp-row-btn primary"
@@ -1799,10 +1706,10 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
                         type="button"
                       >
                         {c.status === "full"
-                          ? "Registration Closed"
+                          ? t.camp.closed
                           : c.status === "upcoming"
-                            ? "Pre-Register"
-                            : "Sign Up Now"}
+                            ? t.camp.preRegister
+                            : t.camp.signUp}
                       </button>
                     </div>
                   </div>
@@ -1826,42 +1733,15 @@ function CampPage({ camps, onNav, showToast, onRegistered, onContact }) {
 }
 
 function AboutFaqSection() {
-  const faqs = [
-    {
-      q: "What age groups do you teach?",
-      a: "My Chess Family works with children ages 6–16 through school programs, private lessons, camps, and tournament training.",
-    },
-    {
-      q: "Does my child need chess experience before joining?",
-      a: "No. We welcome complete beginners as well as experienced tournament players, and we guide each child based on their level and pace.",
-    },
-    {
-      q: "Do you offer private lessons?",
-      a: "Yes. We offer private coaching for students who want more personalized attention, faster improvement, or targeted tournament preparation.",
-    },
-    {
-      q: "What happens during summer camp?",
-      a: "Our summer camps combine structured lessons, practice games, puzzle solving, fun activities, and a supportive environment that keeps students engaged.",
-    },
-    {
-      q: "Do you work with schools and organizations?",
-      a: "Yes. We partner with schools to provide after-school chess programs and can help create the right setup for students and communities.",
-    },
-    {
-      q: "How do I choose the right program for my child?",
-      a: "We help families choose the best fit based on age, current level, goals, and learning style. You can contact us and we'll guide you personally.",
-    },
-  ];
+  const { t } = useLang();
+  const faqs = t.about.faqs;
   const [openIndex, setOpenIndex] = useState(0);
   return (
     <section className="about-faq-section">
       <div className="about-inner-light">
         <div className="about-section-head" style={{ marginTop: 0 }}>
-          <h2>Frequently Asked Questions</h2>
-          <p>
-            A few common questions parents ask before getting started with My
-            Chess Family.
-          </p>
+          <h2>{t.about.faqTitle}</h2>
+          <p>{t.about.faqSub}</p>
         </div>
         <div className="about-faq-grid">
           {faqs.map((item, i) => {
@@ -1892,29 +1772,24 @@ function AboutFaqSection() {
 }
 
 function AboutPage({ onNav, onContact }) {
+  const { t } = useLang();
   return (
     <div className="pg" style={{ background: "#09131E" }}>
       <section className="about-hero">
         <div className="about-hero-inner">
-          <div className="about-kicker">About My Chess Family</div>
-          <h1 className="about-title">
-            More Than a Chess School — A Community for Growth
-          </h1>
-          <p className="about-sub">
-            My Chess Family helps children develop strategic thinking,
-            confidence, resilience, and character through high-quality chess
-            education in a supportive and inspiring environment.
-          </p>
+          <div className="about-kicker">{t.about.kicker}</div>
+          <h1 className="about-title">{t.about.heroTitle}</h1>
+          <p className="about-sub">{t.about.heroSub}</p>
           <div className="about-hero-actions">
             <button className="btn btn-g" onClick={() => onNav("programs")}>
-              ♟ View Programs
+              {t.common.viewPrograms}
             </button>
             <button
               className="btn btn-g"
               style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
               onClick={onContact}
             >
-              ✉️ Contact
+              {t.common.contact}
             </button>
           </div>
         </div>
@@ -1923,125 +1798,71 @@ function AboutPage({ onNav, onContact }) {
         <div className="about-inner-light">
           <div className="about-story">
             <div className="about-story-card">
-              <h2>Our Story</h2>
-              <p>
-                My Chess Family is a chess education program dedicated to
-                helping children grow not only as players, but also as people.
-                Through structured training, tournament experience, and
-                supportive mentorship, students build skills that go far beyond
-                the chessboard.
-              </p>
-              <p>
-                The program brings together experienced coaches, master-level
-                players, and grandmasters to create a strong learning
-                environment for students of all levels — from complete beginners
-                to serious tournament competitors.
-              </p>
-              <p>
-                What makes My Chess Family special is the sense of connection.
-                Students, coaches, and families become part of a real community
-                built on encouragement, discipline, and long-term growth.
-              </p>
+              <h2>{t.about.storyTitle}</h2>
+              <p>{t.about.storyP1}</p>
+              <p>{t.about.storyP2}</p>
+              <p>{t.about.storyP3}</p>
             </div>
             <div className="about-visual-card">
               <img src="/pieces/logo.png" alt="My Chess Family" />
             </div>
           </div>
           <div className="about-section-head">
-            <h2>Founded With Purpose</h2>
-            <p>
-              The vision behind My Chess Family is rooted in strong teaching,
-              empathy, and the belief that every child can grow through the game
-              of chess.
-            </p>
+            <h2>{t.about.founderSectionTitle}</h2>
+            <p>{t.about.founderSectionSub}</p>
           </div>
           <div className="about-founder">
             <div className="about-founder-side">
               <div className="about-founder-mark">♔</div>
-              <div className="about-founder-name">Dmitri Shevelev</div>
-              <div className="about-founder-role">Founder & Head Coach</div>
+              <div className="about-founder-name">{t.about.founderName}</div>
+              <div className="about-founder-role">{t.about.founderRole}</div>
             </div>
             <div className="about-founder-copy">
-              <h3>Dmitri Shevelev</h3>
-              <p>
-                My Chess Family was founded by FIDE Master Dmitri Shevelev, an
-                experienced chess educator with more than two decades of
-                teaching experience. He began playing chess at age six and
-                teaching at eighteen, later continuing his work in the United
-                States.
-              </p>
-              <p>
-                Over the years, Dmitri has taught thousands of students through
-                school programs, private lessons, camps, and tournament
-                preparation. His work has included beginners learning the game
-                for the first time as well as advanced players preparing for
-                serious competition.
-              </p>
-              <p>
-                His philosophy is simple: every child is unique, and the best
-                teaching happens when coaches understand how a student thinks,
-                learns, and grows with confidence.
-              </p>
+              <h3>{t.about.founderName}</h3>
+              <p>{t.about.founderP1}</p>
+              <p>{t.about.founderP2}</p>
+              <p>{t.about.founderP3}</p>
             </div>
           </div>
           <div className="about-section-head">
-            <h2>What We Help Students Build</h2>
-            <p>
-              Chess is used as an educational tool to develop practical skills,
-              emotional strength, and long-term confidence.
-            </p>
+            <h2>{t.about.valuesTitle}</h2>
+            <p>{t.about.valuesSub}</p>
           </div>
           <div className="about-values">
             <div className="about-value">
               <div className="about-value-icon">♟</div>
-              <h4>Strategic Thinking</h4>
-              <p>
-                Students learn how to think ahead, evaluate options, and make
-                thoughtful decisions with greater clarity.
-              </p>
+              <h4>{t.about.value1Title}</h4>
+              <p>{t.about.value1Text}</p>
             </div>
             <div className="about-value">
               <div className="about-value-icon">🧠</div>
-              <h4>Focus & Discipline</h4>
-              <p>
-                Chess helps students improve concentration, patience, and the
-                ability to stay engaged with challenging problems.
-              </p>
+              <h4>{t.about.value2Title}</h4>
+              <p>{t.about.value2Text}</p>
             </div>
             <div className="about-value">
               <div className="about-value-icon">⭐</div>
-              <h4>Confidence & Resilience</h4>
-              <p>
-                Students learn how to handle mistakes, recover from losses, and
-                continue improving with maturity and self-belief.
-              </p>
+              <h4>{t.about.value3Title}</h4>
+              <p>{t.about.value3Text}</p>
             </div>
             <div className="about-value">
               <div className="about-value-icon">🤝</div>
-              <h4>Community & Character</h4>
-              <p>
-                Families become part of a supportive environment where students
-                encourage one another and grow through shared experience.
-              </p>
+              <h4>{t.about.value4Title}</h4>
+              <p>{t.about.value4Text}</p>
             </div>
           </div>
           <div className="about-cta">
-            <h3>Discover the right path for your child</h3>
-            <p>
-              Whether your child is just starting or already competing, My Chess
-              Family offers a supportive environment to learn, improve, and grow
-              with confidence.
-            </p>
+            <h3>{t.about.ctaTitle}</h3>
+            <p>{t.about.ctaText}</p>
             <div className="about-cta-actions">
               <button className="btn btn-g" onClick={() => onNav("programs")}>
-                ♟ Explore Programs
+                {t.common.explorePrograms}
               </button>
               <button
                 className="btn btn-g"
                 style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
                 onClick={() => onNav("team")}
               >
-                👥 Meet Our Team
+                {t.common.meetTeam}
               </button>
             </div>
           </div>
@@ -2054,30 +1875,57 @@ function AboutPage({ onNav, onContact }) {
 }
 
 function TeamPage({ onNav, onContact }) {
+  const { t } = useLang();
+
+  const TEAM = [
+    {
+      av: "♔",
+      name: "David Karpov",
+      role: t.team.cards[0].role,
+      bio: t.team.cards[0].bio,
+      tags: t.team.cards[0].tags,
+    },
+    {
+      av: "♕",
+      name: "Sophia Chen",
+      role: t.team.cards[1].role,
+      bio: t.team.cards[1].bio,
+      tags: t.team.cards[1].tags,
+    },
+    {
+      av: "♘",
+      name: "Aisha Patel",
+      role: t.team.cards[2].role,
+      bio: t.team.cards[2].bio,
+      tags: t.team.cards[2].tags,
+    },
+    {
+      av: "♖",
+      name: "Miguel Rivera",
+      role: t.team.cards[3].role,
+      bio: t.team.cards[3].bio,
+      tags: t.team.cards[3].tags,
+    },
+  ];
+
   return (
     <>
       <div className="pg" style={{ background: "#09131E" }}>
         <section className="team-hero">
           <div className="team-hero-inner">
-            <div className="team-hero-kicker">Meet Our Team</div>
-            <h1 className="team-hero-title">
-              Experienced Coaches. Personal Guidance. Real Growth.
-            </h1>
-            <p className="team-hero-sub">
-              My Chess Family brings together dedicated teachers, competitive
-              players, and experienced mentors who help students grow in skill,
-              confidence, and character through chess.
-            </p>
+            <div className="team-hero-kicker">{t.team.kicker}</div>
+            <h1 className="team-hero-title">{t.team.heroTitle}</h1>
+            <p className="team-hero-sub">{t.team.heroSub}</p>
             <div className="team-hero-actions">
               <button className="btn btn-g" onClick={onContact}>
-                ✉️ Contact Us
+                {t.common.contactUs}
               </button>
               <button
                 className="btn btn-g"
                 style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
                 onClick={() => onNav("programs")}
               >
-                ♟ View Programs
+                {t.common.viewPrograms}
               </button>
             </div>
           </div>
@@ -2089,36 +1937,21 @@ function TeamPage({ onNav, onContact }) {
                 <img src="/pieces/logo.png" alt="Dmitri Shevelev" />
               </div>
               <div className="founder-copy">
-                <div className="founder-role">Founder & Head Coach</div>
-                <h2>Dmitri Shevelev</h2>
-                <p>
-                  My Chess Family was founded by FIDE Master Dmitri Shevelev, an
-                  experienced chess educator who has spent decades teaching
-                  children how to think strategically, compete with confidence,
-                  and grow through the game.
-                </p>
-                <p>
-                  His teaching philosophy is built on empathy, discipline, and
-                  personal connection. Every student is different, and the goal
-                  is to match each child with the right support, the right pace,
-                  and the right environment for long-term growth.
-                </p>
-                <p>
-                  Under his leadership, My Chess Family has grown into a
-                  community where students receive strong chess instruction
-                  while also developing resilience, focus, and character.
-                </p>
+                <div className="founder-role">{t.team.founderRole}</div>
+                <h2>{t.team.founderName}</h2>
+                <p>{t.team.founderP1}</p>
+                <p>{t.team.founderP2}</p>
+                <p>{t.team.founderP3}</p>
               </div>
             </div>
+
             <div style={{ height: "3rem" }} />
+
             <div className="team-section-head">
-              <h2>Our Coaching Team</h2>
-              <p>
-                Our team includes friendly, professional coaches who know how to
-                make chess challenging, supportive, and engaging for students at
-                every level.
-              </p>
+              <h2>{t.team.coachTitle}</h2>
+              <p>{t.team.coachSub}</p>
             </div>
+
             <div className="team-grid-modern">
               {TEAM.map((c) => (
                 <div className="team-card-modern" key={c.name}>
@@ -2131,48 +1964,35 @@ function TeamPage({ onNav, onContact }) {
                   </div>
                   <div className="team-bio-modern">{c.bio}</div>
                   <div className="team-tags-modern">
-                    {c.tags.map((t) => (
-                      <span key={t}>{t}</span>
+                    {c.tags.map((tg) => (
+                      <span key={tg}>{tg}</span>
                     ))}
                   </div>
                 </div>
               ))}
             </div>
+
             <div className="team-features">
               <div className="team-feature">
-                <h3>Personalized Teaching</h3>
-                <p>
-                  Coaches focus on each student's personality, level, and
-                  learning style to create a more effective and encouraging
-                  experience.
-                </p>
+                <h3>{t.team.feat1Title}</h3>
+                <p>{t.team.feat1Text}</p>
               </div>
               <div className="team-feature">
-                <h3>Competitive Experience</h3>
-                <p>
-                  Students learn from coaches who understand tournament play and
-                  can help them prepare with strategy, discipline, and practical
-                  guidance.
-                </p>
+                <h3>{t.team.feat2Title}</h3>
+                <p>{t.team.feat2Text}</p>
               </div>
               <div className="team-feature">
-                <h3>Supportive Community</h3>
-                <p>
-                  Beyond instruction, our team helps create a welcoming
-                  environment where students feel motivated, respected, and
-                  excited to improve.
-                </p>
+                <h3>{t.team.feat3Title}</h3>
+                <p>{t.team.feat3Text}</p>
               </div>
             </div>
+
             <div className="team-cta">
-              <h3>Want help choosing the right coach?</h3>
-              <p>
-                We can help you choose the best fit based on your child's age,
-                level, goals, and learning style.
-              </p>
+              <h3>{t.team.ctaTitle}</h3>
+              <p>{t.team.ctaText}</p>
               <div className="team-cta-actions">
                 <button className="btn btn-g" onClick={onContact}>
-                  ✉️ Contact Us
+                  {t.common.contactUs}
                 </button>
                 <button
                   className="btn btn-g"
@@ -2182,7 +2002,7 @@ function TeamPage({ onNav, onContact }) {
                   }}
                   onClick={() => onNav("camp")}
                 >
-                  ☀️ View Camps
+                  {t.common.viewSummerCamp}
                 </button>
               </div>
             </div>
@@ -2205,40 +2025,37 @@ function Stars({ rating = 0 }) {
 }
 
 function ReviewsPage({ reviews, openModal, onNav, onContact }) {
+  const { t } = useLang();
   const approved = (reviews || []).filter((r) => r.approved === true);
   const count = approved.length;
   const avg = count
     ? approved.reduce((s, r) => s + (Number(r.rating) || 0), 0) / count
     : 0;
+  const ratingMetaStr = `${t.reviews.ratingMeta} ${count} ${count === 1 ? t.reviews.ratingMetaEnd : t.reviews.ratingMetaEndPlural}`;
   return (
     <div className="pg reviews-page">
       <section className="reviews-hero">
         <div className="reviews-hero-inner">
-          <div className="reviews-kicker">Parents & Students</div>
-          <h1 className="reviews-title">What Families Say About Us</h1>
-          <p className="reviews-sub">
-            Feedback from students and families who have experienced My Chess
-            Family through lessons, camps, tournaments, and long-term coaching.
-          </p>
+          <div className="reviews-kicker">{t.reviews.kicker}</div>
+          <h1 className="reviews-title">{t.reviews.heroTitle}</h1>
+          <p className="reviews-sub">{t.reviews.heroSub}</p>
           <div className="reviews-rating-big">
             <div className="reviews-rating-score">{avg.toFixed(1)}/5.0</div>
             <div className="reviews-rating-stars">
               <Stars rating={Math.round(avg)} />
             </div>
-            <div className="reviews-rating-meta">
-              Based on {count} review{count !== 1 ? "s" : ""}
-            </div>
+            <div className="reviews-rating-meta">{ratingMetaStr}</div>
           </div>
           <div className="reviews-hero-actions">
             <button className="btn btn-g" onClick={openModal}>
-              ✍️ Write a Review
+              {t.common.writeReview}
             </button>
             <button
               className="btn btn-g"
               style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
               onClick={onContact}
             >
-              ✉️ Contact
+              {t.common.contact}
             </button>
           </div>
         </div>
@@ -2247,24 +2064,24 @@ function ReviewsPage({ reviews, openModal, onNav, onContact }) {
         <div className="reviews-stats">
           <div className="reviews-stat">
             <div className="reviews-stat-number">{avg.toFixed(1)}</div>
-            <div className="reviews-stat-label">Average Rating</div>
+            <div className="reviews-stat-label">{t.reviews.stat1Label}</div>
           </div>
           <div className="reviews-stat">
             <div className="reviews-stat-number">{count}</div>
-            <div className="reviews-stat-label">Published Reviews</div>
+            <div className="reviews-stat-label">{t.reviews.stat2Label}</div>
           </div>
           <div className="reviews-stat">
-            <div className="reviews-stat-number">100%</div>
-            <div className="reviews-stat-label">Focused On Student Growth</div>
+            <div className="reviews-stat-number">{t.reviews.stat3n}</div>
+            <div className="reviews-stat-label">{t.reviews.stat3Label}</div>
           </div>
         </div>
         {!count ? (
           <div className="reviews-empty-modern">
             <div className="icon">📝</div>
             <h3 style={{ color: "#1F2B3A", marginBottom: ".45rem" }}>
-              No approved reviews yet
+              {t.reviews.noReviews}
             </h3>
-            <p>Be the first family to share your experience.</p>
+            <p>{t.reviews.noReviewsSub}</p>
           </div>
         ) : (
           <div className="reviews-grid-modern">
@@ -2287,21 +2104,18 @@ function ReviewsPage({ reviews, openModal, onNav, onContact }) {
           </div>
         )}
         <div className="reviews-cta">
-          <h3>Share your experience with My Chess Family</h3>
-          <p>
-            Your review helps other families understand what it feels like to
-            learn, grow, and compete as part of our chess community.
-          </p>
+          <h3>{t.reviews.ctaTitle}</h3>
+          <p>{t.reviews.ctaText}</p>
           <div className="reviews-cta-actions">
             <button className="btn btn-g" onClick={openModal}>
-              ✍️ Leave a Review
+              {t.common.leaveReview}
             </button>
             <button
               className="btn btn-g"
               style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
               onClick={() => onNav("programs")}
             >
-              ♟ View Programs
+              {t.common.viewPrograms}
             </button>
           </div>
         </div>
@@ -2312,13 +2126,15 @@ function ReviewsPage({ reviews, openModal, onNav, onContact }) {
 }
 
 function ReviewModal({ onClose, showToast, reload }) {
+  const { t } = useLang();
+  const rm = t.reviews.modal;
   const [childName, setChildName] = useState("");
   const [rating, setRating] = useState(5);
   const [text, setText] = useState("");
   const [done, setDone] = useState(false);
   const submit = async () => {
     if (!text.trim() || text.trim().length < 10) {
-      showToast("Write at least 10 characters.", "e");
+      showToast(rm.tooShort, "e");
       return;
     }
     try {
@@ -2331,7 +2147,7 @@ function ReviewModal({ onClose, showToast, reload }) {
         }),
       });
       setDone(true);
-      showToast("✅ Review submitted! Waiting for admin approval.", "s");
+      showToast(t.toast.reviewSubmitted, "s");
       await reload?.();
     } catch (e) {
       showToast(e.message || "Could not submit review.", "e");
@@ -2344,22 +2160,22 @@ function ReviewModal({ onClose, showToast, reload }) {
     >
       <div className="modal">
         <button className="mcls" onClick={onClose}>
-          ×
+          {t.common.close}
         </button>
-        <h3>Write a Review</h3>
+        <h3>{rm.title}</h3>
         {!done ? (
           <>
             <div className="fg">
-              <label className="lbl">Child Name (optional)</label>
+              <label className="lbl">{rm.childName}</label>
               <input
                 className="inp"
                 value={childName}
                 onChange={(e) => setChildName(e.target.value)}
-                placeholder="Optional"
+                placeholder={rm.childNamePh}
               />
             </div>
             <div className="fg">
-              <label className="lbl">Rating</label>
+              <label className="lbl">{rm.rating}</label>
               <select
                 className="inp"
                 value={rating}
@@ -2373,22 +2189,22 @@ function ReviewModal({ onClose, showToast, reload }) {
               </select>
             </div>
             <div className="fg">
-              <label className="lbl">Review *</label>
+              <label className="lbl">{rm.review} *</label>
               <textarea
                 className="inp"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="Share your experience..."
+                placeholder={rm.reviewPh}
               />
             </div>
             <button className="sbtn" onClick={submit}>
-              Submit Review →
+              {rm.submitBtn}
             </button>
           </>
         ) : (
           <div className="ok-box">
             <div style={{ fontSize: "2rem" }}>✅</div>
-            <strong style={{ marginTop: ".5rem" }}>Submitted!</strong>
+            <strong style={{ marginTop: ".5rem" }}>{rm.successTitle}</strong>
             <p
               style={{
                 fontSize: ".86rem",
@@ -2396,7 +2212,7 @@ function ReviewModal({ onClose, showToast, reload }) {
                 marginTop: ".4rem",
               }}
             >
-              Your review will appear after admin approval.
+              {rm.successSub}
             </p>
           </div>
         )}
@@ -2406,6 +2222,8 @@ function ReviewModal({ onClose, showToast, reload }) {
 }
 
 function LoginPage({ onLogin, showToast }) {
+  const { t } = useLang();
+  const lg = t.login;
   const [u, setU] = useState("");
   const [p, setP] = useState("");
   const [err, setErr] = useState("");
@@ -2418,9 +2236,9 @@ function LoginPage({ onLogin, showToast }) {
       });
       localStorage.setItem(AUTH_KEY, data.token);
       onLogin();
-      showToast("✅ Welcome back, Admin!", "s");
+      showToast(t.toast.loggedIn, "s");
     } catch {
-      setErr("❌ Wrong credentials. Use: admin / chess123");
+      setErr(lg.wrongCreds);
     }
   };
   return (
@@ -2434,7 +2252,7 @@ function LoginPage({ onLogin, showToast }) {
             marginBottom: ".4rem",
           }}
         >
-          Admin Login
+          {lg.title}
         </h2>
         <p
           style={{
@@ -2443,10 +2261,10 @@ function LoginPage({ onLogin, showToast }) {
             fontSize: ".88rem",
           }}
         >
-          Sign in to manage camps and view registrations.
+          {lg.sub}
         </p>
         <div className="fg" style={{ textAlign: "left" }}>
-          <label className="lbl">Username</label>
+          <label className="lbl">{lg.username}</label>
           <input
             className="inp"
             placeholder="admin"
@@ -2456,7 +2274,7 @@ function LoginPage({ onLogin, showToast }) {
           />
         </div>
         <div className="fg" style={{ textAlign: "left", marginTop: ".7rem" }}>
-          <label className="lbl">Password</label>
+          <label className="lbl">{lg.password}</label>
           <input
             className="inp"
             type="password"
@@ -2474,12 +2292,11 @@ function LoginPage({ onLogin, showToast }) {
             textAlign: "left",
           }}
         >
-          Demo credentials:{" "}
-          <strong style={{ color: "var(--green2)" }}>admin</strong> /{" "}
+          {lg.demo} <strong style={{ color: "var(--green2)" }}>admin</strong> /{" "}
           <strong style={{ color: "var(--green2)" }}>chess123</strong>
         </p>
         <button className="sbtn" onClick={submit}>
-          Sign In →
+          {t.common.signIn}
         </button>
         {err && <div className="err-box">{err}</div>}
       </div>
@@ -2498,6 +2315,8 @@ function AdminPage({
   onLogout,
   showToast,
 }) {
+  const { t } = useLang();
+  const adm = t.admin;
   const [tab, setTab] = useState("camps");
   const [editingCampId, setEditingCampId] = useState(null);
   const [cf, setCf] = useState({
@@ -2505,8 +2324,8 @@ function AdminPage({
     dateStart: "",
     dateEnd: "",
     loc: "",
-    age: "All Ages (6–16)",
-    type: "Half Day (9AM–1PM)",
+    age: adm.ageOpts[0],
+    type: adm.typeOpts[0],
     price: "",
     spots: "",
     status: "open",
@@ -2523,8 +2342,8 @@ function AdminPage({
       dateStart: camp.dateStart || "",
       dateEnd: camp.dateEnd || "",
       loc: camp.location || "",
-      age: camp.age || "All Ages (6–16)",
-      type: camp.type || "Half Day (9AM–1PM)",
+      age: camp.age || adm.ageOpts[0],
+      type: camp.type || adm.typeOpts[0],
       price: String(camp.price ?? ""),
       spots: String(camp.spots ?? ""),
       status: camp.status || "open",
@@ -2541,8 +2360,8 @@ function AdminPage({
       dateStart: "",
       dateEnd: "",
       loc: "",
-      age: "All Ages (6–16)",
-      type: "Half Day (9AM–1PM)",
+      age: adm.ageOpts[0],
+      type: adm.typeOpts[0],
       price: "",
       spots: "",
       status: "open",
@@ -2603,10 +2422,7 @@ function AdminPage({
       setCDone(true);
       setTimeout(() => setCDone(false), 3000);
       resetCampForm();
-      showToast(
-        editingCampId ? "✅ Camp updated!" : "✅ Camp session published!",
-        "s",
-      );
+      showToast(editingCampId ? adm.updated : adm.published, "s");
     } catch (error) {
       showToast(error.message || "Could not save camp session.", "e");
     }
@@ -2619,28 +2435,28 @@ function AdminPage({
         body: JSON.stringify({ status }),
       });
       setCamps(data.camps);
-      showToast("Status updated!", "s");
+      showToast(adm.statusUpdated, "s");
     } catch (error) {
       showToast(error.message || "Could not update status.", "e");
     }
   };
 
   const delC = async (id) => {
-    if (!confirm("Delete this camp session?")) return;
+    if (!confirm(adm.deleteConfirmCamp)) return;
     try {
       const data = await api(`/admin/camps/${id}`, { method: "DELETE" });
       setCamps(data.camps);
-      showToast("Deleted.", "i");
+      showToast(adm.deleted, "i");
     } catch (error) {
       showToast(error.message || "Could not delete camp session.", "e");
     }
   };
 
   const deleteCampReg = async (id) => {
-    if (!confirm("Delete this camp sign-up?")) return;
+    if (!confirm(adm.deleteConfirmSignup)) return;
     try {
       await api(`/admin/registrations/camp/${id}`, { method: "DELETE" });
-      showToast("Sign-up deleted.", "i");
+      showToast(adm.signupDeleted, "i");
       await reloadRegs?.();
     } catch (error) {
       showToast(error.message || "Could not delete sign-up.", "e");
@@ -2662,14 +2478,14 @@ function AdminPage({
           }}
         >
           <div>
-            <div className="slbl">Admin Dashboard</div>
+            <div className="slbl">{adm.label}</div>
             <h2
               style={{
                 fontFamily: "'Playfair Display',serif",
                 fontSize: "clamp(1.4rem, 4vw, 2rem)",
               }}
             >
-              Welcome, Admin! 👋
+              {adm.welcome}
             </h2>
           </div>
           <button
@@ -2677,15 +2493,15 @@ function AdminPage({
             style={{ fontSize: ".88rem", padding: ".45rem 1rem" }}
             onClick={onLogout}
           >
-            🚪 Log Out
+            {t.common.logOut}
           </button>
         </div>
 
         <div className="adm-stats">
           {[
-            { n: camps.length, l: "Camp Sessions" },
-            { n: campRegs.length, l: "Camp Sign-Ups" },
-            { n: "$" + revenue.toLocaleString(), l: "Est. Camp Revenue" },
+            { n: camps.length, l: adm.stats.sessions },
+            { n: campRegs.length, l: adm.stats.signups },
+            { n: "$" + revenue.toLocaleString(), l: adm.stats.revenue },
           ].map((s) => (
             <div className="stat" key={s.l}>
               <div className="stat-n">{s.n}</div>
@@ -2696,10 +2512,10 @@ function AdminPage({
 
         <div className="atabs">
           {[
-            ["camps", "☀️ Manage Camps"],
-            ["campregs", "🏕 Camp Sign-Ups"],
-            ["reviews", "⭐ Reviews"],
-            ["gallery", "📸 Gallery"],
+            ["camps", adm.tabs.camps],
+            ["campregs", adm.tabs.campregs],
+            ["reviews", adm.tabs.reviews],
+            ["gallery", adm.tabs.gallery],
           ].map(([id, lbl]) => (
             <button
               key={id}
@@ -2721,22 +2537,20 @@ function AdminPage({
                   marginBottom: "1.3rem",
                 }}
               >
-                {editingCampId
-                  ? "✏️ Edit Camp Session"
-                  : "➕ Add New Camp Session"}
+                {editingCampId ? adm.editCamp : adm.addCamp}
               </h3>
               <div className="fgrid">
                 <div className="fg full">
-                  <label className="lbl">Camp Session Name *</label>
+                  <label className="lbl">{adm.fields.name} *</label>
                   <input
                     className="inp"
-                    placeholder="e.g. Summer Chess Camp – Session 3"
+                    placeholder={adm.fields.namePh}
                     value={cf.name}
                     onChange={setC("name")}
                   />
                 </div>
                 <div className="fg">
-                  <label className="lbl">Start Date *</label>
+                  <label className="lbl">{adm.fields.startDate} *</label>
                   <input
                     className="inp"
                     type="date"
@@ -2745,7 +2559,7 @@ function AdminPage({
                   />
                 </div>
                 <div className="fg">
-                  <label className="lbl">End Date *</label>
+                  <label className="lbl">{adm.fields.endDate} *</label>
                   <input
                     className="inp"
                     type="date"
@@ -2754,68 +2568,68 @@ function AdminPage({
                   />
                 </div>
                 <div className="fg">
-                  <label className="lbl">Location *</label>
+                  <label className="lbl">{adm.fields.location} *</label>
                   <input
                     className="inp"
-                    placeholder="e.g. Chess Club HQ"
+                    placeholder={adm.fields.locationPh}
                     value={cf.loc}
                     onChange={setC("loc")}
                   />
                 </div>
                 <div className="fg">
-                  <label className="lbl">Session Type</label>
+                  <label className="lbl">{adm.fields.type}</label>
                   <select
                     className="inp"
                     value={cf.type}
                     onChange={setC("type")}
                   >
-                    <option>Half Day (9AM–1PM)</option>
-                    <option>Full Day (9AM–5PM)</option>
+                    {adm.typeOpts.map((o) => (
+                      <option key={o}>{o}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="fg">
-                  <label className="lbl">Age Group</label>
+                  <label className="lbl">{adm.fields.age}</label>
                   <select className="inp" value={cf.age} onChange={setC("age")}>
-                    <option>All Ages (6–16)</option>
-                    <option>Juniors (6–10)</option>
-                    <option>Intermediates (11–13)</option>
-                    <option>Seniors (14–16)</option>
+                    {adm.ageOpts.map((o) => (
+                      <option key={o}>{o}</option>
+                    ))}
                   </select>
                 </div>
                 <div className="fg">
-                  <label className="lbl">Price per Child ($)</label>
+                  <label className="lbl">{adm.fields.price}</label>
                   <input
                     className="inp"
                     type="number"
-                    placeholder="e.g. 350"
+                    placeholder={adm.fields.pricePh}
                     value={cf.price}
                     onChange={setC("price")}
                   />
                 </div>
                 <div className="fg">
-                  <label className="lbl">Max Spots</label>
+                  <label className="lbl">{adm.fields.spots}</label>
                   <input
                     className="inp"
                     type="number"
-                    placeholder="e.g. 20"
+                    placeholder={adm.fields.spotsPh}
                     value={cf.spots}
                     onChange={setC("spots")}
                   />
                 </div>
                 <div className="fg">
-                  <label className="lbl">Status</label>
+                  <label className="lbl">{adm.fields.status}</label>
                   <select
                     className="inp"
                     value={cf.status}
                     onChange={setC("status")}
                   >
-                    <option value="open">Open</option>
-                    <option value="upcoming">Upcoming</option>
-                    <option value="full">Full</option>
+                    <option value="open">{adm.statusOpts.open}</option>
+                    <option value="upcoming">{adm.statusOpts.upcoming}</option>
+                    <option value="full">{adm.statusOpts.full}</option>
                   </select>
                 </div>
                 <div className="fg full">
-                  <label className="lbl">Camp Image</label>
+                  <label className="lbl">{adm.fields.image}</label>
                   <input
                     className="inp"
                     type="file"
@@ -2824,17 +2638,17 @@ function AdminPage({
                   />
                 </div>
                 <div className="fg full">
-                  <label className="lbl">Description</label>
+                  <label className="lbl">{adm.fields.desc}</label>
                   <textarea
                     className="inp"
-                    placeholder="What's included in this session..."
+                    placeholder={adm.fields.descPh}
                     value={cf.desc}
                     onChange={setC("desc")}
                   />
                 </div>
               </div>
               <button className="sbtn" onClick={addCamp}>
-                {editingCampId ? "Update Camp Session →" : "Add Camp Session →"}
+                {editingCampId ? adm.updateBtn : adm.addBtn}
               </button>
               {editingCampId && (
                 <button
@@ -2843,24 +2657,24 @@ function AdminPage({
                   onClick={resetCampForm}
                   type="button"
                 >
-                  Cancel Edit
+                  {t.common.cancel}
                 </button>
               )}
               {cDone && (
                 <div className="ok-box">
                   <div style={{ fontSize: "1.4rem" }}>✅</div>
-                  <strong>Camp session published!</strong>
+                  <strong>{adm.published}</strong>
                 </div>
               )}
             </div>
 
             <h3 className="adm-section-title">
-              All Camp Sessions ({camps.length})
+              {adm.allSessions} ({camps.length})
             </h3>
             {!camps.length ? (
               <div className="empty">
                 <div className="empty-i">☀️</div>
-                <p>No camp sessions yet.</p>
+                <p>{adm.noSessions}</p>
               </div>
             ) : (
               camps.map((c) => {
@@ -2907,16 +2721,18 @@ function AdminPage({
                         onClick={() => startEditCamp(c)}
                         type="button"
                       >
-                        ✏️ Edit
+                        {t.common.edit}
                       </button>
                       <select
                         className="ssel"
                         value={c.status}
                         onChange={(e) => changeStatusC(c.id, e.target.value)}
                       >
-                        <option value="open">Open</option>
-                        <option value="upcoming">Upcoming</option>
-                        <option value="full">Full</option>
+                        <option value="open">{adm.statusOpts.open}</option>
+                        <option value="upcoming">
+                          {adm.statusOpts.upcoming}
+                        </option>
+                        <option value="full">{adm.statusOpts.full}</option>
                       </select>
                       <button className="delbtn" onClick={() => delC(c.id)}>
                         🗑
@@ -2932,12 +2748,12 @@ function AdminPage({
         {tab === "campregs" && (
           <>
             <h3 className="adm-section-title">
-              Camp Sign-Ups ({campRegs.length})
+              {adm.signupsTitle} ({campRegs.length})
             </h3>
             {!campRegs.length ? (
               <div className="empty">
                 <div className="empty-i">🏕</div>
-                <p>No camp sign-ups yet.</p>
+                <p>{adm.noSignups}</p>
               </div>
             ) : (
               <>
@@ -3113,12 +2929,12 @@ function AdminPage({
         {tab === "reviews" && (
           <>
             <h3 className="adm-section-title">
-              Reviews ({adminReviews.length})
+              {adm.reviewsTitle} ({adminReviews.length})
             </h3>
             {!adminReviews.length ? (
               <div className="empty">
                 <div className="empty-i">⭐</div>
-                <p>No reviews yet.</p>
+                <p>{adm.noReviews}</p>
               </div>
             ) : (
               adminReviews
@@ -3169,25 +2985,25 @@ function AdminPage({
                               await api(`/admin/reviews/${r.id}/approve`, {
                                 method: "PATCH",
                               });
-                              showToast("✅ Approved!", "s");
+                              showToast(adm.approved, "s");
                               await reloadRegs?.();
                             } catch (e) {
                               showToast(e.message || "Could not approve.", "e");
                             }
                           }}
                         >
-                          Approve
+                          {t.common.approve}
                         </button>
                       )}
                       <button
                         className="delbtn"
                         onClick={async () => {
-                          if (!confirm("Delete this review?")) return;
+                          if (!confirm(adm.deleteConfirmReview)) return;
                           try {
                             await api(`/admin/reviews/${r.id}`, {
                               method: "DELETE",
                             });
-                            showToast("Deleted.", "i");
+                            showToast(adm.deleted, "i");
                             await reloadRegs?.();
                           } catch (e) {
                             showToast(e.message || "Could not delete.", "e");
@@ -3216,6 +3032,8 @@ function AdminPage({
 }
 
 function GalleryAdminTab({ photos, reload, showToast }) {
+  const { t } = useLang();
+  const adm = t.admin;
   const [caption, setCaption] = useState("");
   const [category, setCategory] = useState("camps");
   const [tag, setTag] = useState("");
@@ -3268,7 +3086,7 @@ function GalleryAdminTab({ photos, reload, showToast }) {
         }),
       });
 
-      showToast("📸 Photo uploaded!", "s");
+      showToast(t.toast.photoUploaded, "s");
       setCaption("");
       setCategory("camps");
       setTag("");
@@ -3283,10 +3101,10 @@ function GalleryAdminTab({ photos, reload, showToast }) {
   };
 
   const deletePhoto = async (id) => {
-    if (!confirm("Delete this photo?")) return;
+    if (!confirm(adm.deleteConfirmPhoto)) return;
     try {
       await api(`/admin/gallery/${id}`, { method: "DELETE" });
-      showToast("Deleted.", "i");
+      showToast(adm.deleted, "i");
       await reload?.();
     } catch (err) {
       showToast(err.message || "Could not delete.", "e");
@@ -3303,11 +3121,11 @@ function GalleryAdminTab({ photos, reload, showToast }) {
             marginBottom: "1.3rem",
           }}
         >
-          📸 Upload New Photo
+          {adm.uploadTitle}
         </h3>
         <div className="fgrid">
           <div className="fg full">
-            <label className="lbl">Photo *</label>
+            <label className="lbl">{adm.galleryFields.photo} *</label>
             <input
               className="inp"
               type="file"
@@ -3331,31 +3149,33 @@ function GalleryAdminTab({ photos, reload, showToast }) {
             )}
           </div>
           <div className="fg full">
-            <label className="lbl">Caption *</label>
+            <label className="lbl">{adm.galleryFields.caption} *</label>
             <input
               className="inp"
-              placeholder="e.g. Students at summer camp 2024"
+              placeholder={adm.galleryFields.captionPh}
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
             />
           </div>
           <div className="fg">
-            <label className="lbl">Category</label>
+            <label className="lbl">{adm.galleryFields.category}</label>
             <select
               className="inp"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option value="camps">Summer Camps</option>
-              <option value="lessons">Lessons</option>
-              <option value="community">Community</option>
+              {adm.categoryOpts.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
             </select>
           </div>
           <div className="fg">
-            <label className="lbl">Tag (optional)</label>
+            <label className="lbl">{adm.galleryFields.tag}</label>
             <input
               className="inp"
-              placeholder="e.g. Summer Camp 2024"
+              placeholder={adm.galleryFields.tagPh}
               value={tag}
               onChange={(e) => setTag(e.target.value)}
             />
@@ -3367,15 +3187,17 @@ function GalleryAdminTab({ photos, reload, showToast }) {
           disabled={uploading}
           style={{ opacity: uploading ? 0.6 : 1 }}
         >
-          {uploading ? "⏳ Uploading..." : "Upload Photo →"}
+          {uploading ? t.common.uploading : t.common.upload}
         </button>
       </div>
 
-      <h3 className="adm-section-title">Gallery Photos ({photos.length})</h3>
+      <h3 className="adm-section-title">
+        {adm.galleryTitle} ({photos.length})
+      </h3>
       {!photos.length ? (
         <div className="empty">
           <div className="empty-i">📸</div>
-          <p>No photos uploaded yet.</p>
+          <p>{adm.noPhotos}</p>
         </div>
       ) : (
         <div
@@ -3433,7 +3255,7 @@ function GalleryAdminTab({ photos, reload, showToast }) {
                   style={{ width: "100%", textAlign: "center" }}
                   onClick={() => deletePhoto(p.id)}
                 >
-                  🗑 Delete
+                  🗑 {t.common.delete}
                 </button>
               </div>
             </div>
@@ -3447,228 +3269,67 @@ function GalleryAdminTab({ photos, reload, showToast }) {
 /* ══════════════════════════════════════════ GALLERY & 404 CSS ══════════════════════════════════════════ */
 const GALLERY_CSS = `
 /* ── GALLERY PAGE ── */
-.gallery-hero{
-  background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);
-  padding:5rem 0 4rem;position:relative;overflow:hidden;
-}
-.gallery-hero::before{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(circle at 20% 30%,rgba(74,171,232,.16),transparent 32%),
-             radial-gradient(circle at 80% 20%,rgba(31,168,94,.14),transparent 28%);
-  pointer-events:none;
-}
-.gallery-hero-inner{
-  width:100%;max-width:1200px;margin:0 auto;
-  padding:0 2.5rem;position:relative;z-index:1;text-align:center;
-}
-.gallery-kicker{
-  display:inline-block;font-size:.75rem;letter-spacing:2px;
-  text-transform:uppercase;color:var(--green2);font-weight:700;margin-bottom:1rem;
-}
-.gallery-title{
-  font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4.5vw,4rem);
-  line-height:1.08;color:#F4F8FC;margin-bottom:1rem;
-}
-.gallery-sub{
-  max-width:700px;margin:0 auto;color:rgba(220,233,245,.78);line-height:1.8;font-size:1rem;
-}
+.gallery-hero{background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);padding:5rem 0 4rem;position:relative;overflow:hidden;}
+.gallery-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(74,171,232,.16),transparent 32%),radial-gradient(circle at 80% 20%,rgba(31,168,94,.14),transparent 28%);pointer-events:none;}
+.gallery-hero-inner{width:100%;max-width:1200px;margin:0 auto;padding:0 2.5rem;position:relative;z-index:1;text-align:center;}
+.gallery-kicker{display:inline-block;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--green2);font-weight:700;margin-bottom:1rem;}
+.gallery-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4.5vw,4rem);line-height:1.08;color:#F4F8FC;margin-bottom:1rem;}
+.gallery-sub{max-width:700px;margin:0 auto;color:rgba(220,233,245,.78);line-height:1.8;font-size:1rem;}
 .gallery-hero-actions{margin-top:1.8rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
-
 .gallery-wrap{background:#F5F6F8;padding:3rem 0 4rem;}
 .gallery-inner{width:100%;max-width:1200px;margin:0 auto;padding:0 2.5rem;}
-.gallery-filters{
-  display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin-bottom:2.5rem;
-}
-.gf-btn{
-  background:#fff;border:1.5px solid #E2E8F0;border-radius:999px;
-  padding:.5rem 1.2rem;font-family:'DM Sans',sans-serif;font-size:.85rem;
-  font-weight:700;color:#3A4A5B;cursor:pointer;transition:.2s;
-}
+.gallery-filters{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin-bottom:2.5rem;}
+.gf-btn{background:#fff;border:1.5px solid #E2E8F0;border-radius:999px;padding:.5rem 1.2rem;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:700;color:#3A4A5B;cursor:pointer;transition:.2s;}
 .gf-btn:hover{border-color:#2E7D5B;color:#2E7D5B;}
 .gf-btn.on{background:#2E7D5B;border-color:#2E7D5B;color:#fff;}
-
-.gallery-grid{
-  columns:3;column-gap:1.1rem;
-}
+.gallery-grid{columns:3;column-gap:1.1rem;}
 @media(max-width:900px){.gallery-grid{columns:2;}}
 @media(max-width:550px){.gallery-grid{columns:1;}}
-
-.gallery-item{
-  break-inside:avoid;margin-bottom:1.1rem;
-  border-radius:18px;overflow:hidden;
-  position:relative;cursor:pointer;
-  background:linear-gradient(135deg,#13263B,#0F3A28);
-  border:1px solid #E2E8F0;
-  box-shadow:0 8px 24px rgba(15,23,42,.07);
-  transition:.28s;
-}
+.gallery-item{break-inside:avoid;margin-bottom:1.1rem;border-radius:18px;overflow:hidden;position:relative;cursor:pointer;background:linear-gradient(135deg,#13263B,#0F3A28);border:1px solid #E2E8F0;box-shadow:0 8px 24px rgba(15,23,42,.07);transition:.28s;}
 .gallery-item:hover{transform:translateY(-5px);box-shadow:0 20px 44px rgba(15,23,42,.14);}
 .gallery-item:hover .gallery-overlay{opacity:1;}
 .gallery-item:hover .gallery-img{transform:scale(1.04);}
-
 .gallery-img-wrap{overflow:hidden;width:100%;}
-.gallery-img{
-  width:100%;display:block;object-fit:cover;
-  transition:transform .45s ease;
-}
-
-.gallery-placeholder{
-  width:100%;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:2.5rem 1rem;text-align:center;
-  min-height:180px;
-  background:linear-gradient(135deg,#13263B,#0F3A28);
-}
+.gallery-img{width:100%;display:block;object-fit:cover;transition:transform .45s ease;}
+.gallery-placeholder{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 1rem;text-align:center;min-height:180px;background:linear-gradient(135deg,#13263B,#0F3A28);}
 .gallery-placeholder-icon{font-size:3rem;margin-bottom:.6rem;}
-.gallery-placeholder-label{
-  font-size:.8rem;font-weight:700;color:rgba(220,233,245,.5);
-  letter-spacing:1px;text-transform:uppercase;
-}
-
-.gallery-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 40%,rgba(9,19,30,.88) 100%);
-  opacity:0;transition:.3s;
-  display:flex;flex-direction:column;justify-content:flex-end;padding:1.2rem;
-}
-.gallery-overlay-tag{
-  font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-  color:var(--green2);margin-bottom:.3rem;
-}
-.gallery-overlay-caption{
-  font-size:.92rem;font-weight:700;color:#EEF5FF;line-height:1.4;
-}
-
-
-.lightbox-inner{
-  position:relative;max-width:900px;width:100%;
-  display:flex;flex-direction:column;align-items:center;
-}
-.lightbox-img{
-  width:100%;max-height:75vh;object-fit:contain;
-  border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.8);
-}
-.lightbox-placeholder{
-  width:100%;min-height:300px;border-radius:14px;
-  background:linear-gradient(135deg,#13263B,#0F3A28);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  font-size:5rem;
-}
-.lightbox-caption{
-  margin-top:1.1rem;text-align:center;color:rgba(220,233,245,.85);font-size:.95rem;line-height:1.6;
-}
-.lightbox-tag{
-  display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:1px;
-  text-transform:uppercase;color:var(--green2);
-  background:rgba(31,168,94,.12);border:1px solid rgba(45,204,116,.25);
-  padding:.25rem .7rem;border-radius:999px;margin-bottom:.5rem;
-}
-.lightbox-close{
-  position:fixed;top:1.5rem;right:1.5rem;
-  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);
-color:#EEF5FF;font-size:1.2rem;width:40px;height:40px;border-radius:50%;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s;
-  z-index:2001;box-shadow:0 4px 16px rgba(0,0,0,.4);
-}
+.gallery-placeholder-label{font-size:.8rem;font-weight:700;color:rgba(220,233,245,.5);letter-spacing:1px;text-transform:uppercase;}
+.gallery-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(9,19,30,.88) 100%);opacity:0;transition:.3s;display:flex;flex-direction:column;justify-content:flex-end;padding:1.2rem;}
+.gallery-overlay-tag{font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green2);margin-bottom:.3rem;}
+.gallery-overlay-caption{font-size:.92rem;font-weight:700;color:#EEF5FF;line-height:1.4;}
+.lightbox-inner{position:relative;max-width:900px;width:100%;display:flex;flex-direction:column;align-items:center;}
+.lightbox-img{width:100%;max-height:75vh;object-fit:contain;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.8);}
+.lightbox-placeholder{width:100%;min-height:300px;border-radius:14px;background:linear-gradient(135deg,#13263B,#0F3A28);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:5rem;}
+.lightbox-caption{margin-top:1.1rem;text-align:center;color:rgba(220,233,245,.85);font-size:.95rem;line-height:1.6;}
+.lightbox-tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green2);background:rgba(31,168,94,.12);border:1px solid rgba(45,204,116,.25);padding:.25rem .7rem;border-radius:999px;margin-bottom:.5rem;}
+.lightbox-close{position:fixed;top:1.5rem;right:1.5rem;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);color:#EEF5FF;font-size:1.2rem;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s;z-index:2001;box-shadow:0 4px 16px rgba(0,0,0,.4);}
 .lightbox-close:hover{background:rgba(255,255,255,.25);}
-.lightbox-nav{
-  display:flex;gap:1rem;margin-top:1.2rem;
-}
-.lightbox-nav-btn{
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
-  color:#EEF5FF;font-size:1.2rem;width:48px;height:48px;border-radius:50%;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s;
-}
+.lightbox-nav{display:flex;gap:1rem;margin-top:1.2rem;}
+.lightbox-nav-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#EEF5FF;font-size:1.2rem;width:48px;height:48px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.18s;}
 .lightbox-nav-btn:hover{background:rgba(255,255,255,.18);}
-.lightbox-counter{
-  color:rgba(220,233,245,.5);font-size:.85rem;
-  display:flex;align-items:center;padding:0 .5rem;
-}
-  .lightbox-ovl{
-  position:fixed;inset:0;z-index:2000;
-  background:rgba(0,0,0,.95);backdrop-filter:blur(18px);
-  display:flex;align-items:center;justify-content:center;
-  padding:1.5rem;animation:fu .2s ease;
-  overflow:visible;
-}
-
-.gallery-cta{
-  margin-top:3rem;background:linear-gradient(135deg,#12253B,#143524);
-  border-radius:26px;padding:2rem;text-align:center;color:#EEF5FF;
-}
+.lightbox-counter{color:rgba(220,233,245,.5);font-size:.85rem;display:flex;align-items:center;padding:0 .5rem;}
+.lightbox-ovl{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.95);backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:center;padding:1.5rem;animation:fu .2s ease;overflow:visible;}
+.gallery-cta{margin-top:3rem;background:linear-gradient(135deg,#12253B,#143524);border-radius:26px;padding:2rem;text-align:center;color:#EEF5FF;}
 .gallery-cta h3{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:.65rem;}
 .gallery-cta p{color:rgba(220,233,245,.78);line-height:1.8;max-width:700px;margin:0 auto;}
 .gallery-cta-actions{margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
-
-@media(max-width:850px){
-  .gallery-hero-inner,.gallery-inner{padding-left:1.2rem;padding-right:1.2rem;}
-}
+@media(max-width:850px){.gallery-hero-inner,.gallery-inner{padding-left:1.2rem;padding-right:1.2rem;}}
 
 /* ── 404 PAGE ── */
-.notfound-pg{
-  width:100%;min-height:100vh;
-  display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,#09131E 0%,#0D1E2C 55%,#091A10 100%);
-  position:relative;overflow:hidden;padding:8rem 2rem 4rem;
-}
-.notfound-pg::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 68% 50%,rgba(21,122,69,.08) 0%,transparent 55%),
-             radial-gradient(ellipse at 20% 75%,rgba(26,94,168,.1) 0%,transparent 50%);
-}
-.notfound-inner{
-  position:relative;z-index:2;text-align:center;max-width:640px;margin:0 auto;
-}
-.notfound-board{
-  display:grid;grid-template-columns:repeat(8,1fr);
-  width:min(300px,75vw);margin:0 auto 2.5rem;
-  border-radius:12px;overflow:hidden;
-  box-shadow:0 24px 60px rgba(0,0,0,.7);
-  opacity:.55;
-}
+.notfound-pg{width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#09131E 0%,#0D1E2C 55%,#091A10 100%);position:relative;overflow:hidden;padding:8rem 2rem 4rem;}
+.notfound-pg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 68% 50%,rgba(21,122,69,.08) 0%,transparent 55%),radial-gradient(ellipse at 20% 75%,rgba(26,94,168,.1) 0%,transparent 50%);}
+.notfound-inner{position:relative;z-index:2;text-align:center;max-width:640px;margin:0 auto;}
+.notfound-board{display:grid;grid-template-columns:repeat(8,1fr);width:min(300px,75vw);margin:0 auto 2.5rem;border-radius:12px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.7);opacity:.55;}
 .notfound-sq{aspect-ratio:1;}
 .notfound-sq-l{background:#C8E6C0;}
 .notfound-sq-d{background:#2D6A4F;}
-.notfound-code{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(5rem,18vw,9rem);
-  font-weight:900;
-  line-height:1;
-  color:transparent;
-  background:linear-gradient(135deg,var(--green2),var(--blue3));
-  -webkit-background-clip:text;
-  background-clip:text;
-  margin-bottom:.5rem;
-  animation:fu .6s ease both;
-}
-.notfound-title{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(1.5rem,4vw,2.2rem);
-  color:#EEF5FF;margin-bottom:1rem;
-  animation:fu .6s ease .1s both;
-}
-.notfound-sub{
-  color:rgba(180,210,240,.65);line-height:1.8;font-size:.97rem;
-  margin-bottom:2rem;animation:fu .6s ease .2s both;
-}
-.notfound-piece{
-  font-size:3.5rem;margin-bottom:1rem;
-  display:block;animation:float 3s ease-in-out infinite;
-}
-.notfound-actions{
-  display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;
-  animation:fu .6s ease .3s both;
-}
-.notfound-links{
-  margin-top:2.5rem;display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;
-  animation:fu .6s ease .4s both;
-}
-.notfound-link{
-  background:rgba(26,94,168,.09);border:1px solid var(--border);
-  color:rgba(220,233,245,.7);font-family:'DM Sans',sans-serif;
-  font-size:.82rem;font-weight:600;padding:.45rem 1rem;border-radius:999px;
-  cursor:pointer;transition:.18s;
-}
+.notfound-code{font-family:'Playfair Display',serif;font-size:clamp(5rem,18vw,9rem);font-weight:900;line-height:1;color:transparent;background:linear-gradient(135deg,var(--green2),var(--blue3));-webkit-background-clip:text;background-clip:text;margin-bottom:.5rem;animation:fu .6s ease both;}
+.notfound-title{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,4vw,2.2rem);color:#EEF5FF;margin-bottom:1rem;animation:fu .6s ease .1s both;}
+.notfound-sub{color:rgba(180,210,240,.65);line-height:1.8;font-size:.97rem;margin-bottom:2rem;animation:fu .6s ease .2s both;}
+.notfound-piece{font-size:3.5rem;margin-bottom:1rem;display:block;animation:float 3s ease-in-out infinite;}
+.notfound-actions{display:flex;gap:.9rem;flex-wrap:wrap;justify-content:center;animation:fu .6s ease .3s both;}
+.notfound-links{margin-top:2.5rem;display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;animation:fu .6s ease .4s both;}
+.notfound-link{background:rgba(26,94,168,.09);border:1px solid var(--border);color:rgba(220,233,245,.7);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;padding:.45rem 1rem;border-radius:999px;cursor:pointer;transition:.18s;}
 .notfound-link:hover{color:var(--green2);border-color:rgba(45,204,116,.3);background:rgba(21,122,69,.1);}
 @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
 `;
@@ -3681,14 +3342,15 @@ const injectGalleryStyles = () => {
   document.head.appendChild(el);
 };
 
-const GALLERY_CATS = [
-  { id: "all", label: "All Photos" },
-  { id: "camps", label: "Summer Camps" },
-  { id: "lessons", label: "Lessons" },
-  { id: "community", label: "Community" },
-];
-
 function GalleryPage({ onNav, onContact }) {
+  const { t } = useLang();
+  const GALLERY_CATS = [
+    { id: "all", label: t.gallery.filterAll },
+    { id: "camps", label: t.gallery.filterCamps },
+    { id: "lessons", label: t.gallery.filterLessons },
+    { id: "community", label: t.gallery.filterCommunity },
+  ];
+
   const [filter, setFilter] = useState("all");
   const [lightbox, setLightbox] = useState(null);
   const [items, setItems] = useState([]);
@@ -3739,23 +3401,19 @@ function GalleryPage({ onNav, onContact }) {
     <div className="pg" style={{ background: "#09131E" }}>
       <section className="gallery-hero">
         <div className="gallery-hero-inner">
-          <div className="gallery-kicker">Photo Gallery</div>
-          <h1 className="gallery-title">Life at MyChessFamily</h1>
-          <p className="gallery-sub">
-            A look inside our lessons, summer camps, and the moments that make
-            our chess community special. Real students. Real growth. Real
-            memories.
-          </p>
+          <div className="gallery-kicker">{t.gallery.kicker}</div>
+          <h1 className="gallery-title">{t.gallery.heroTitle}</h1>
+          <p className="gallery-sub">{t.gallery.heroSub}</p>
           <div className="gallery-hero-actions">
             <button className="btn btn-g" onClick={() => onNav("camp")}>
-              ☀️ Join Summer Camp
+              {t.common.joinSummerCamp}
             </button>
             <button
               className="btn btn-g"
               style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
               onClick={onContact}
             >
-              ✉️ Contact Us
+              {t.common.contactUs}
             </button>
           </div>
         </div>
@@ -3772,9 +3430,9 @@ function GalleryPage({ onNav, onContact }) {
             }}
           >
             {[
-              ["500+", "Students Taught"],
-              ["8+", "Years of Memories"],
-              ["3", "Camps Per Year"],
+              [t.gallery.stat1n, t.gallery.stat1l],
+              [t.gallery.stat2n, t.gallery.stat2l],
+              [t.gallery.stat3n, t.gallery.stat3l],
             ].map(([n, l]) => (
               <div
                 key={l}
@@ -3834,7 +3492,7 @@ function GalleryPage({ onNav, onContact }) {
               }}
             >
               <div style={{ fontSize: "2rem", marginBottom: ".8rem" }}>⏳</div>
-              <p>Loading gallery...</p>
+              <p>{t.gallery.loading}</p>
             </div>
           ) : !filtered.length ? (
             <div
@@ -3848,11 +3506,9 @@ function GalleryPage({ onNav, onContact }) {
             >
               <div style={{ fontSize: "3rem", marginBottom: ".8rem" }}>📸</div>
               <h3 style={{ color: "#1F2B3A", marginBottom: ".5rem" }}>
-                No photos yet
+                {t.gallery.noPhotos}
               </h3>
-              <p style={{ color: "#5C6B7C" }}>
-                Photos will appear here once the admin uploads them.
-              </p>
+              <p style={{ color: "#5C6B7C" }}>{t.gallery.noPhotosSub}</p>
             </div>
           ) : (
             <div className="gallery-grid">
@@ -3884,21 +3540,18 @@ function GalleryPage({ onNav, onContact }) {
           )}
 
           <div className="gallery-cta">
-            <h3>Be part of the MyChessFamily story</h3>
-            <p>
-              Every photo here represents a student who chose to learn, compete,
-              and grow. Join us and create your own memories on the board.
-            </p>
+            <h3>{t.gallery.ctaTitle}</h3>
+            <p>{t.gallery.ctaText}</p>
             <div className="gallery-cta-actions">
               <button className="btn btn-g" onClick={() => onNav("programs")}>
-                ♟ View Programs
+                {t.common.viewPrograms}
               </button>
               <button
                 className="btn btn-g"
                 style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
                 onClick={() => onNav("camp")}
               >
-                ☀️ Summer Camp
+                {t.common.summerCamp}
               </button>
             </div>
           </div>
@@ -3946,18 +3599,19 @@ function GalleryPage({ onNav, onContact }) {
 }
 
 function NotFoundPage({ onNav }) {
+  const { t } = useLang();
   useEffect(() => {
     injectGalleryStyles();
   }, []);
 
   const quickLinks = [
-    ["home", "🏠 Home"],
-    ["programs", "♟ Programs"],
-    ["camp", "☀️ Summer Camp"],
-    ["team", "👥 Our Team"],
-    ["gallery", "📸 Gallery"],
-    ["reviews", "⭐ Reviews"],
-    ["about", "ℹ️ About"],
+    ["home", `🏠 ${t.nav.home}`],
+    ["programs", `♟ ${t.nav.programs}`],
+    ["camp", `☀️ ${t.nav.camp}`],
+    ["team", `👥 ${t.nav.team}`],
+    ["gallery", `📸 ${t.nav.gallery}`],
+    ["reviews", `⭐ ${t.nav.reviews}`],
+    ["about", `ℹ️ ${t.nav.about}`],
   ];
 
   return (
@@ -3977,26 +3631,20 @@ function NotFoundPage({ onNav }) {
         </div>
 
         <span className="notfound-piece">♟</span>
-        <div className="notfound-code">404</div>
-        <h1 className="notfound-title">
-          Looks like this page made an illegal move
-        </h1>
-        <p className="notfound-sub">
-          The page you're looking for doesn't exist or has been moved. Don't
-          worry — even grandmasters blunder sometimes. Let's get you back on the
-          board.
-        </p>
+        <div className="notfound-code">{t.notFound.code}</div>
+        <h1 className="notfound-title">{t.notFound.title}</h1>
+        <p className="notfound-sub">{t.notFound.sub}</p>
 
         <div className="notfound-actions">
           <button className="btn btn-g" onClick={() => onNav("home")}>
-            ♔ Back to Home
+            {t.notFound.btn1}
           </button>
           <button
             className="btn btn-g"
             style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
             onClick={() => onNav("programs")}
           >
-            ♟ View Programs
+            {t.notFound.btn2}
           </button>
         </div>
 
@@ -4014,167 +3662,54 @@ function NotFoundPage({ onNav }) {
 
 /* ══════════════════════════════════════════ CONTACT PAGE CSS ══════════════════════════════════════════ */
 const CONTACT_CSS = `
-.contact-hero{
-  background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);
-  padding:5rem 0 4rem;position:relative;overflow:hidden;
-}
-.contact-hero::before{
-  content:"";position:absolute;inset:0;
-  background:
-    radial-gradient(circle at 20% 30%,rgba(74,171,232,.16),transparent 32%),
-    radial-gradient(circle at 80% 20%,rgba(31,168,94,.14),transparent 28%);
-  pointer-events:none;
-}
-.contact-hero-inner{
-  width:100%;max-width:1100px;margin:0 auto;
-  padding:0 2.5rem;position:relative;z-index:1;text-align:center;
-}
-.contact-kicker{
-  display:inline-block;font-size:.75rem;letter-spacing:2px;
-  text-transform:uppercase;color:var(--green2);font-weight:700;margin-bottom:1rem;
-}
-.contact-hero-title{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(2.4rem,4.5vw,4rem);
-  line-height:1.08;color:#F4F8FC;margin-bottom:1rem;
-}
-.contact-hero-sub{
-  max-width:640px;margin:0 auto;
-  color:rgba(220,233,245,.78);line-height:1.8;font-size:1rem;
-}
-.contact-body{
-  background:#F5F6F8;padding:4rem 0 5rem;
-}
-.contact-inner{
-  width:100%;max-width:1100px;margin:0 auto;padding:0 2.5rem;
-}
-.contact-grid{
-  display:grid;
-  grid-template-columns:1fr 1.5fr;
-  gap:2rem;
-  align-items:start;
-}
+.contact-hero{background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);padding:5rem 0 4rem;position:relative;overflow:hidden;}
+.contact-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(74,171,232,.16),transparent 32%),radial-gradient(circle at 80% 20%,rgba(31,168,94,.14),transparent 28%);pointer-events:none;}
+.contact-hero-inner{width:100%;max-width:1100px;margin:0 auto;padding:0 2.5rem;position:relative;z-index:1;text-align:center;}
+.contact-kicker{display:inline-block;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--green2);font-weight:700;margin-bottom:1rem;}
+.contact-hero-title{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,4.5vw,4rem);line-height:1.08;color:#F4F8FC;margin-bottom:1rem;}
+.contact-hero-sub{max-width:640px;margin:0 auto;color:rgba(220,233,245,.78);line-height:1.8;font-size:1rem;}
+.contact-body{background:#F5F6F8;padding:4rem 0 5rem;}
+.contact-inner{width:100%;max-width:1100px;margin:0 auto;padding:0 2.5rem;}
+.contact-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:2rem;align-items:start;}
 .contact-info{display:flex;flex-direction:column;gap:1.2rem;}
-.contact-info-card{
-  background:#fff;border:1px solid #E2E8F0;border-radius:20px;
-  padding:1.5rem;box-shadow:0 10px 28px rgba(15,23,42,.05);
-  display:flex;gap:1rem;align-items:flex-start;
-}
-.contact-info-icon{
-  width:52px;height:52px;border-radius:16px;flex-shrink:0;
-  background:linear-gradient(135deg,#16314D,#215E46);
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.35rem;
-}
-.contact-info-label{
-  font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;
-  color:#5C6B7C;font-weight:700;margin-bottom:.3rem;
-}
-.contact-info-value{
-  font-size:1rem;font-weight:700;color:#1F2B3A;margin-bottom:.2rem;
-  word-break:break-word;
-}
+.contact-info-card{background:#fff;border:1px solid #E2E8F0;border-radius:20px;padding:1.5rem;box-shadow:0 10px 28px rgba(15,23,42,.05);display:flex;gap:1rem;align-items:flex-start;}
+.contact-info-icon{width:52px;height:52px;border-radius:16px;flex-shrink:0;background:linear-gradient(135deg,#16314D,#215E46);display:flex;align-items:center;justify-content:center;font-size:1.35rem;}
+.contact-info-label{font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:#5C6B7C;font-weight:700;margin-bottom:.3rem;}
+.contact-info-value{font-size:1rem;font-weight:700;color:#1F2B3A;margin-bottom:.2rem;word-break:break-word;}
 .contact-info-note{font-size:.83rem;color:#5C6B7C;line-height:1.5;}
-.contact-social-card{
-  background:#fff;border:1px solid #E2E8F0;border-radius:20px;
-  padding:1.5rem;box-shadow:0 10px 28px rgba(15,23,42,.05);
-}
-.contact-social-title{
-  font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;
-  color:#5C6B7C;font-weight:700;margin-bottom:1rem;
-}
+.contact-social-card{background:#fff;border:1px solid #E2E8F0;border-radius:20px;padding:1.5rem;box-shadow:0 10px 28px rgba(15,23,42,.05);}
+.contact-social-title{font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:#5C6B7C;font-weight:700;margin-bottom:1rem;}
 .contact-social-row{display:flex;gap:.75rem;flex-wrap:wrap;}
-.contact-social-btn{
-  display:flex;align-items:center;gap:.55rem;
-  padding:.65rem 1.1rem;border-radius:12px;
-  border:1.5px solid #E2E8F0;background:#F8FAFC;
-  color:#1F2B3A;font-family:'DM Sans',sans-serif;
-  font-size:.85rem;font-weight:700;cursor:pointer;
-  text-decoration:none;transition:.2s;
-}
+.contact-social-btn{display:flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem;border-radius:12px;border:1.5px solid #E2E8F0;background:#F8FAFC;color:#1F2B3A;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;text-decoration:none;transition:.2s;}
 .contact-social-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,.1);}
 .contact-social-btn.ig:hover{background:#E1306C;border-color:#E1306C;color:#fff;}
 .contact-social-btn.fb:hover{background:#1877F2;border-color:#1877F2;color:#fff;}
 .contact-social-btn.li:hover{background:#0A66C2;border-color:#0A66C2;color:#fff;}
-.contact-form-card{
-  background:#fff;border:1px solid #E2E8F0;border-radius:24px;
-  padding:2rem;box-shadow:0 14px 40px rgba(15,23,42,.06);
-}
-.contact-form-title{
-  font-family:'Playfair Display',serif;font-size:1.7rem;
-  color:#1F2B3A;margin-bottom:.4rem;
-}
+.contact-form-card{background:#fff;border:1px solid #E2E8F0;border-radius:24px;padding:2rem;box-shadow:0 14px 40px rgba(15,23,42,.06);}
+.contact-form-title{font-family:'Playfair Display',serif;font-size:1.7rem;color:#1F2B3A;margin-bottom:.4rem;}
 .contact-form-sub{color:#5C6B7C;font-size:.92rem;margin-bottom:1.6rem;line-height:1.6;}
-.inp-light{
-  width:100%;padding:.78rem 1rem;
-  background:#F8FAFC;border:1.5px solid #E2E8F0;
-  border-radius:10px;color:#1F2B3A;
-  font-family:'DM Sans',sans-serif;font-size:.92rem;
-  transition:.2s;outline:none;
-}
-.inp-light:focus{
-  border-color:#2E7D5B;background:#fff;
-  box-shadow:0 0 0 3px rgba(46,125,91,.1);
-}
+.inp-light{width:100%;padding:.78rem 1rem;background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;color:#1F2B3A;font-family:'DM Sans',sans-serif;font-size:.92rem;transition:.2s;outline:none;}
+.inp-light:focus{border-color:#2E7D5B;background:#fff;box-shadow:0 0 0 3px rgba(46,125,91,.1);}
 .inp-light::placeholder{color:#A0AEC0;}
 select.inp-light option{background:#fff;color:#1F2B3A;}
 textarea.inp-light{min-height:110px;resize:vertical;}
 .fg-light{margin-bottom:1rem;}
-.lbl-light{
-  display:block;font-size:.8rem;font-weight:700;
-  color:#3A4A5B;margin-bottom:.35rem;letter-spacing:.3px;
-}
+.lbl-light{display:block;font-size:.8rem;font-weight:700;color:#3A4A5B;margin-bottom:.35rem;letter-spacing:.3px;}
 .fgrid-light{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
 @media(max-width:600px){.fgrid-light{grid-template-columns:1fr;}}
-.contact-submit-btn{
-  width:100%;padding:.82rem 1.75rem;margin-top:.3rem;
-  background:var(--green2);color:#fff;
-  font-weight:700;font-family:'DM Sans',sans-serif;
-  font-size:.93rem;border:none;border-radius:9px;
-  cursor:pointer;transition:transform .22s ease,box-shadow .28s ease;
-  position:relative;overflow:hidden;
-}
-.contact-submit-btn:hover{
-  background:var(--green2);transform:translateY(-3px);
-  box-shadow:0 12px 30px rgba(21,122,69,.38),0 0 14px rgba(31,168,94,.28);
-}
-.contact-submit-btn:disabled{
-  background:#CBD5E1;color:#64748B;
-  cursor:not-allowed;transform:none;box-shadow:none;
-}
-.contact-ok{
-  display:flex;flex-direction:column;align-items:center;
-  background:#ECFDF5;border:1px solid #6EE7B7;
-  border-radius:14px;padding:2rem;text-align:center;
-  animation:fu .4s ease;
-}
+.contact-submit-btn{width:100%;padding:.82rem 1.75rem;margin-top:.3rem;background:var(--green2);color:#fff;font-weight:700;font-family:'DM Sans',sans-serif;font-size:.93rem;border:none;border-radius:9px;cursor:pointer;transition:transform .22s ease,box-shadow .28s ease;position:relative;overflow:hidden;}
+.contact-submit-btn:hover{background:var(--green2);transform:translateY(-3px);box-shadow:0 12px 30px rgba(21,122,69,.38),0 0 14px rgba(31,168,94,.28);}
+.contact-submit-btn:disabled{background:#CBD5E1;color:#64748B;cursor:not-allowed;transform:none;box-shadow:none;}
+.contact-ok{display:flex;flex-direction:column;align-items:center;background:#ECFDF5;border:1px solid #6EE7B7;border-radius:14px;padding:2rem;text-align:center;animation:fu .4s ease;}
 .contact-ok-icon{font-size:2.8rem;margin-bottom:.7rem;}
-.contact-ok-title{
-  font-family:'Playfair Display',serif;font-size:1.5rem;
-  color:#065F46;margin-bottom:.5rem;
-}
+.contact-ok-title{font-family:'Playfair Display',serif;font-size:1.5rem;color:#065F46;margin-bottom:.5rem;}
 .contact-ok-sub{color:#047857;font-size:.92rem;line-height:1.6;}
-.contact-cta{
-  margin-top:2.5rem;
-  background:linear-gradient(135deg,#12253B,#143524);
-  border-radius:26px;padding:2.2rem;text-align:center;color:#EEF5FF;
-}
-.contact-cta h3{
-  font-family:'Playfair Display',serif;font-size:1.9rem;margin-bottom:.6rem;
-}
-.contact-cta p{
-  color:rgba(220,233,245,.78);line-height:1.8;
-  max-width:650px;margin:0 auto;font-size:.95rem;
-}
-.contact-cta-actions{
-  margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;
-}
-@media(max-width:900px){
-  .contact-grid{grid-template-columns:1fr;}
-}
-@media(max-width:850px){
-  .contact-hero-inner,.contact-inner{padding-left:1.2rem;padding-right:1.2rem;}
-}
+.contact-cta{margin-top:2.5rem;background:linear-gradient(135deg,#12253B,#143524);border-radius:26px;padding:2.2rem;text-align:center;color:#EEF5FF;}
+.contact-cta h3{font-family:'Playfair Display',serif;font-size:1.9rem;margin-bottom:.6rem;}
+.contact-cta p{color:rgba(220,233,245,.78);line-height:1.8;max-width:650px;margin:0 auto;font-size:.95rem;}
+.contact-cta-actions{margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
+@media(max-width:900px){.contact-grid{grid-template-columns:1fr;}}
+@media(max-width:850px){.contact-hero-inner,.contact-inner{padding-left:1.2rem;padding-right:1.2rem;}}
 `;
 
 const injectContactStyles = () => {
@@ -4186,6 +3721,7 @@ const injectContactStyles = () => {
 };
 
 function ContactPage({ onNav, showToast }) {
+  const { t } = useLang();
   useEffect(() => {
     injectContactStyles();
   }, []);
@@ -4208,11 +3744,11 @@ function ContactPage({ onNav, showToast }) {
   const submit = async () => {
     setErr("");
     if (!f.fname || !f.lname || !f.email || !f.message) {
-      setErr("Please fill in all required fields.");
+      setErr(t.contact.errRequired);
       return;
     }
     if (!/\S+@\S+\.\S+/.test(f.email)) {
-      setErr("Please enter a valid email address.");
+      setErr(t.contact.errEmail);
       return;
     }
     setSending(true);
@@ -4229,59 +3765,37 @@ function ContactPage({ onNav, showToast }) {
         }),
       });
       setDone(true);
-      showToast("✅ Message sent!", "s");
+      showToast(t.toast.messageSent, "s");
     } catch {
       setDone(true);
-      showToast("✅ Message sent!", "s");
+      showToast(t.toast.messageSent, "s");
     } finally {
       setSending(false);
     }
   };
 
-  const infoCards = [
-    {
-      icon: "📍",
-      label: "Location",
-      value: "New York City",
-      note: "Serving all NYC boroughs and surrounding areas",
-    },
-    {
-      icon: "✉️",
-      label: "Email",
-      value: "mychessfamily@gmail.com",
-      note: "We reply within 24 hours",
-      action: () => {
-        navigator.clipboard
-          ?.writeText("mychessfamily@gmail.com")
-          .catch(() => {});
-        showToast("📋 Email copied!", "s");
-      },
-      actionLabel: "Click to copy",
-    },
-    {
-      icon: "⏰",
-      label: "Hours",
-      value: "Mon – Sat · 9AM – 7PM",
-      note: "Eastern Time · Closed Sundays",
-    },
-    {
-      icon: "📅",
-      label: "Response Time",
-      value: "Within 24 Hours",
-      note: "Usually much faster during business hours",
-    },
-  ];
+  const infoCards = t.contact.info.map((c, i) => ({
+    ...c,
+    icon: ["📍", "✉️", "⏰", "📅"][i],
+    ...(i === 1
+      ? {
+          action: () => {
+            navigator.clipboard
+              ?.writeText("mychessfamily@gmail.com")
+              .catch(() => {});
+            showToast(t.toast.emailCopied, "s");
+          },
+        }
+      : {}),
+  }));
 
   return (
     <div className="pg" style={{ background: "#09131E" }}>
       <section className="contact-hero">
         <div className="contact-hero-inner">
-          <div className="contact-kicker">Get In Touch</div>
-          <h1 className="contact-hero-title">We'd Love to Hear From You</h1>
-          <p className="contact-hero-sub">
-            Have a question about our programs, camps, or private lessons? Fill
-            out the form and we'll get back to you within 24 hours.
-          </p>
+          <div className="contact-kicker">{t.contact.kicker}</div>
+          <h1 className="contact-hero-title">{t.contact.heroTitle}</h1>
+          <p className="contact-hero-sub">{t.contact.heroSub}</p>
         </div>
       </section>
 
@@ -4315,7 +3829,9 @@ function ContactPage({ onNav, showToast }) {
               ))}
 
               <div className="contact-social-card">
-                <div className="contact-social-title">Follow Us</div>
+                <div className="contact-social-title">
+                  {t.contact.socialTitle}
+                </div>
                 <div className="contact-social-row">
                   <a
                     href="https://www.instagram.com/mychessfamily/"
@@ -4353,7 +3869,9 @@ function ContactPage({ onNav, showToast }) {
                   boxShadow: "0 10px 28px rgba(15,23,42,.05)",
                 }}
               >
-                <div className="contact-social-title">Quick Links</div>
+                <div className="contact-social-title">
+                  {t.contact.quickLinksTitle}
+                </div>
                 <div
                   style={{
                     display: "flex",
@@ -4361,12 +3879,7 @@ function ContactPage({ onNav, showToast }) {
                     gap: ".55rem",
                   }}
                 >
-                  {[
-                    ["programs", "♟ View Programs"],
-                    ["camp", "☀️ Summer Camp"],
-                    ["team", "👥 Meet Our Team"],
-                    ["reviews", "⭐ Read Reviews"],
-                  ].map(([p, l]) => (
+                  {t.contact.quickLinks.map(([p, l]) => (
                     <button
                       key={p}
                       onClick={() => onNav(p)}
@@ -4402,28 +3915,28 @@ function ContactPage({ onNav, showToast }) {
             <div className="contact-form-card">
               {!done ? (
                 <>
-                  <h2 className="contact-form-title">Send Us a Message</h2>
-                  <p className="contact-form-sub">
-                    Tell us about your child, what you're looking for, and any
-                    questions you have. We'll personally get back to you with
-                    the best options.
-                  </p>
+                  <h2 className="contact-form-title">{t.contact.formTitle}</h2>
+                  <p className="contact-form-sub">{t.contact.formSub}</p>
 
                   <div className="fgrid-light">
                     <div className="fg-light">
-                      <label className="lbl-light">First Name *</label>
+                      <label className="lbl-light">
+                        {t.contact.firstName} *
+                      </label>
                       <input
                         className="inp-light"
-                        placeholder="e.g. Alex"
+                        placeholder={t.contact.firstNamePh}
                         value={f.fname}
                         onChange={set("fname")}
                       />
                     </div>
                     <div className="fg-light">
-                      <label className="lbl-light">Last Name *</label>
+                      <label className="lbl-light">
+                        {t.contact.lastName} *
+                      </label>
                       <input
                         className="inp-light"
-                        placeholder="e.g. Johnson"
+                        placeholder={t.contact.lastNamePh}
                         value={f.lname}
                         onChange={set("lname")}
                       />
@@ -4432,21 +3945,21 @@ function ContactPage({ onNav, showToast }) {
 
                   <div className="fgrid-light">
                     <div className="fg-light">
-                      <label className="lbl-light">Email *</label>
+                      <label className="lbl-light">{t.contact.email} *</label>
                       <input
                         className="inp-light"
                         type="email"
-                        placeholder="parent@email.com"
+                        placeholder={t.contact.emailPh}
                         value={f.email}
                         onChange={set("email")}
                       />
                     </div>
                     <div className="fg-light">
-                      <label className="lbl-light">Phone</label>
+                      <label className="lbl-light">{t.contact.phone}</label>
                       <input
                         className="inp-light"
                         type="tel"
-                        placeholder="(212) 555-0000"
+                        placeholder={t.contact.phonePh}
                         value={f.phone}
                         onChange={set("phone")}
                       />
@@ -4454,37 +3967,36 @@ function ContactPage({ onNav, showToast }) {
                   </div>
 
                   <div className="fg-light">
-                    <label className="lbl-light">I'm Interested In</label>
+                    <label className="lbl-light">
+                      {t.contact.interestedIn}
+                    </label>
                     <select
                       className="inp-light"
                       value={f.program}
                       onChange={set("program")}
                     >
-                      <option value="">Select a program (optional)</option>
-                      <option>Private Lessons</option>
-                      <option>School Chess Program</option>
-                      <option>Summer Camp</option>
-                      <option>Tournament Preparation</option>
-                      <option>Team Training</option>
-                      <option>General Inquiry</option>
+                      <option value="">{t.contact.interestedPh}</option>
+                      {t.contact.interestedOpts.map((o) => (
+                        <option key={o}>{o}</option>
+                      ))}
                     </select>
                   </div>
 
                   <div className="fg-light">
-                    <label className="lbl-light">Subject</label>
+                    <label className="lbl-light">{t.contact.subject}</label>
                     <input
                       className="inp-light"
-                      placeholder="e.g. Question about summer camp pricing"
+                      placeholder={t.contact.subjectPh}
                       value={f.subject}
                       onChange={set("subject")}
                     />
                   </div>
 
                   <div className="fg-light">
-                    <label className="lbl-light">Message *</label>
+                    <label className="lbl-light">{t.contact.message} *</label>
                     <textarea
                       className="inp-light"
-                      placeholder="Tell us about your child's age, experience level, and what you're hoping to achieve..."
+                      placeholder={t.contact.messagePh}
                       value={f.message}
                       onChange={set("message")}
                       style={{ minHeight: 130 }}
@@ -4512,7 +4024,7 @@ function ContactPage({ onNav, showToast }) {
                     onClick={submit}
                     disabled={sending}
                   >
-                    {sending ? "⏳ Sending..." : "Send Message →"}
+                    {sending ? t.common.sending : t.common.sendMessage}
                   </button>
 
                   <p
@@ -4524,21 +4036,20 @@ function ContactPage({ onNav, showToast }) {
                       lineHeight: 1.6,
                     }}
                   >
-                    By submitting this form you agree to be contacted about
-                    MyChessFamily programs. We never share your information.
+                    {t.contact.privacy}
                   </p>
                 </>
               ) : (
                 <div className="contact-ok">
                   <div className="contact-ok-icon">🎉</div>
-                  <div className="contact-ok-title">Message Received!</div>
+                  <div className="contact-ok-title">
+                    {t.contact.successTitle}
+                  </div>
                   <p className="contact-ok-sub">
-                    Thank you for reaching out. We'll get back to you within 24
-                    hours at <strong>{f.email}</strong>.
+                    {t.contact.successSub1} <strong>{f.email}</strong>.
                     <br />
                     <br />
-                    In the meantime, feel free to explore our programs or check
-                    out our summer camp.
+                    {t.contact.successSub2}
                   </p>
                   <div
                     style={{
@@ -4554,7 +4065,7 @@ function ContactPage({ onNav, showToast }) {
                       style={{ width: "auto", padding: ".7rem 1.4rem" }}
                       onClick={() => onNav("programs")}
                     >
-                      ♟ View Programs
+                      {t.common.viewPrograms}
                     </button>
                     <button
                       style={{
@@ -4580,7 +4091,7 @@ function ContactPage({ onNav, showToast }) {
                         });
                       }}
                     >
-                      Send Another
+                      {t.contact.sendAnother}
                     </button>
                   </div>
                 </div>
@@ -4589,22 +4100,18 @@ function ContactPage({ onNav, showToast }) {
           </div>
 
           <div className="contact-cta">
-            <h3>Ready to get started?</h3>
-            <p>
-              Join hundreds of NYC students who have grown in skill, confidence,
-              and character through MyChessFamily. The first step is just a
-              message away.
-            </p>
+            <h3>{t.contact.ctaTitle}</h3>
+            <p>{t.contact.ctaText}</p>
             <div className="contact-cta-actions">
               <button className="btn btn-g" onClick={() => onNav("programs")}>
-                ♟ Explore Programs
+                {t.common.explorePrograms}
               </button>
               <button
                 className="btn btn-g"
                 style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
                 onClick={() => onNav("camp")}
               >
-                ☀️ Summer Camp
+                {t.common.summerCamp}
               </button>
             </div>
           </div>
@@ -4620,6 +4127,8 @@ function ContactPage({ onNav, showToast }) {
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { lang, toggle, t } = useLang();
+
   const pathToPage = {
     "/": "home",
     "/programs": "programs",
@@ -4647,6 +4156,11 @@ export default function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const toggleMobile = useCallback(() => setMobileOpen((v) => !v), []);
   const closeMobile = useCallback(() => setMobileOpen(false), []);
+
+  // Update HTML lang attribute when language changes
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -4689,12 +4203,9 @@ export default function App() {
       const data = await api("/bootstrap");
       setCamps(data.camps || []);
     } catch {
-      showToast(
-        "Using fallback local data. Start backend server for sync.",
-        "e",
-      );
+      showToast(t.toast.fallbackData, "e");
     }
-  }, [showToast]);
+  }, [showToast, t]);
 
   const loadAdminData = useCallback(async () => {
     if (!localStorage.getItem(AUTH_KEY)) return;
@@ -4802,8 +4313,19 @@ export default function App() {
     setIsAdmin(false);
     setCampRegs([]);
     navigate("/");
-    showToast("👋 Logged out.", "i");
+    showToast(t.toast.loggedOut, "i");
   };
+
+  const navLinks = [
+    ["home", t.nav.home],
+    ["programs", t.nav.programs],
+    ["camp", t.nav.camp],
+    ["team", t.nav.team],
+    ["gallery", t.nav.gallery],
+    ["reviews", t.nav.reviews],
+    ["about", t.nav.about],
+    ["contact", t.nav.contact],
+  ];
 
   return (
     <div style={{ width: "100%", minHeight: "100vh", background: "#09131E" }}>
@@ -4817,16 +4339,7 @@ export default function App() {
           />
         </div>
         <div className="nav-links">
-          {[
-            ["home", "Home"],
-            ["programs", "Programs"],
-            ["camp", "Summer Camp"],
-            ["team", "Our Team"],
-            ["gallery", "Gallery"],
-            ["reviews", "Reviews"],
-            ["about", "About"],
-            ["contact", "Contact"],
-          ].map(([p, l]) => (
+          {navLinks.map(([p, l]) => (
             <button
               key={p}
               className={`nb${page === p ? " on" : ""}`}
@@ -4839,12 +4352,24 @@ export default function App() {
         </div>
         <div className="nav-right">
           {isAdmin && <span className="adm-dot">● Admin</span>}
+          {/* Language toggle button */}
+          <button
+            className="nb"
+            onClick={toggle}
+            type="button"
+            title={
+              lang === "en" ? "Switch to Russian" : "Переключить на английский"
+            }
+            style={{ fontWeight: 700, letterSpacing: ".5px" }}
+          >
+            {lang === "en" ? "🇷🇺 RU" : "🇺🇸 EN"}
+          </button>
           <button
             className={`nb cta${isAdmin ? " adm" : ""}`}
             onClick={() => (isAdmin ? go("admin") : go("login"))}
             type="button"
           >
-            {isAdmin ? "Dashboard" : "Admin Login"}
+            {isAdmin ? t.nav.dashboard : t.nav.adminLogin}
           </button>
           <button
             className={`burger${mobileOpen ? " on" : ""}`}
@@ -4884,16 +4409,7 @@ export default function App() {
           </button>
         </div>
         <div className="mnav-links">
-          {[
-            ["home", "Home"],
-            ["programs", "Programs"],
-            ["camp", "Summer Camp"],
-            ["team", "Our Team"],
-            ["gallery", "Gallery"],
-            ["reviews", "Reviews"],
-            ["about", "About"],
-            ["contact", "Contact"],
-          ].map(([p, l]) => (
+          {navLinks.map(([p, l]) => (
             <button
               key={p}
               className={`mnav-btn${page === p ? " on" : ""}`}
@@ -4907,6 +4423,18 @@ export default function App() {
               <span style={{ color: "var(--muted)", fontWeight: 600 }}>›</span>
             </button>
           ))}
+          {/* Language toggle in mobile drawer */}
+          <button
+            className="mnav-btn"
+            onClick={() => {
+              closeMobile();
+              toggle();
+            }}
+            type="button"
+          >
+            <span>{lang === "en" ? "🇷🇺 Русский" : "🇺🇸 English"}</span>
+            <span style={{ color: "var(--muted)", fontWeight: 600 }}>›</span>
+          </button>
         </div>
         <div className="mnav-cta">
           <button
@@ -4917,7 +4445,7 @@ export default function App() {
             }}
             type="button"
           >
-            {isAdmin ? "Open Dashboard" : "Admin Login"}
+            {isAdmin ? t.nav.dashboard : t.nav.adminLogin}
           </button>
         </div>
       </div>
