@@ -18,8 +18,28 @@ const api = async (path, options = {}) => {
 
 const CHAT_CSS = `
 .cb-wrap{position:fixed;bottom:1.8rem;right:1.8rem;z-index:1500;display:flex;flex-direction:column;align-items:flex-end;gap:.75rem;}
-.cb-box{width:340px;max-width:calc(100vw - 24px);border-radius:18px;overflow:hidden;border:1px solid rgba(74,171,232,0.18);background:#0C1C2E;box-shadow:0 20px 60px rgba(0,0,0,.55);animation:fu .3s ease;}
-.cb-head{background:linear-gradient(135deg,#09131E,#143524);padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;}
+.cb-box{
+  width:340px;
+  max-width:calc(100vw - 24px);
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(74,171,232,0.18);
+  background:#0C1C2E;
+  box-shadow:0 20px 60px rgba(0,0,0,.55);
+  animation:chatPop .28s ease;
+  transform-origin:bottom right;
+}
+
+@keyframes chatPop{
+  from{
+    opacity:0;
+    transform:translateY(10px) scale(.96);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}.cb-head{background:linear-gradient(135deg,#09131E,#143524);padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;}
 .cb-head-left{display:flex;align-items:center;gap:.65rem;}
 .cb-head-dot{width:8px;height:8px;border-radius:50%;background:#1FA85E;box-shadow:0 0 6px rgba(31,168,94,.6);}
 .cb-head-title{font-size:1rem;font-weight:700;color:#EEF5FF;}
@@ -40,8 +60,43 @@ const CHAT_CSS = `
 .cb-input:focus{border-color:#1FA85E;background:rgba(21,122,69,.09);}
 .cb-send{padding:.68rem 1rem;background:#1FA85E;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:.9rem;flex-shrink:0;}
 .cb-send:disabled{background:rgba(255,255,255,.08);cursor:not-allowed;}
-.cb-bubble{width:56px;height:56px;border-radius:50%;background:#1FA85E;border:none;cursor:pointer;font-size:1.35rem;color:#fff;box-shadow:0 6px 22px rgba(21,122,69,.45);display:flex;align-items:center;justify-content:center;}
-.cb-suggestions{display:flex;flex-wrap:wrap;gap:.4rem;padding:.6rem .9rem 0;}
+.cb-bubble{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  background:#1FA85E;
+  border:none;
+  cursor:pointer;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 6px 22px rgba(21,122,69,.45);
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    background .25s ease;
+}
+
+.cb-bubble:hover{
+  transform:translateY(-3px) scale(1.04);
+  box-shadow:0 12px 30px rgba(21,122,69,.55);
+}
+
+.cb-bubble-icon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+  font-size:1.5rem;
+  transition:
+    transform .28s ease,
+    opacity .2s ease;
+}
+
+.cb-bubble.open .cb-bubble-icon{
+  transform:rotate(90deg) scale(1.08);
+}.cb-suggestions{display:flex;flex-wrap:wrap;gap:.4rem;padding:.6rem .9rem 0;}
 .cb-sug{background:rgba(26,94,168,.09);border:1px solid rgba(74,171,232,.18);color:rgba(180,210,240,.8);font-size:.73rem;font-weight:600;padding:.3rem .7rem;border-radius:999px;cursor:pointer;}
 .cb-sug:hover{border-color:#1FA85E;color:#1FA85E;}
 @media (max-width: 520px){
@@ -201,8 +256,11 @@ export default function ChatBot() {
         </div>
       )}
 
-      <button className="cb-bubble" onClick={() => setOpen((v) => !v)}>
-        💬
+      <button
+        className={`cb-bubble${open ? " open" : ""}`}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <span className="cb-bubble-icon">{open ? "✕" : "💬"}</span>
       </button>
     </div>
   );
