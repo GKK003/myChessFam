@@ -454,6 +454,15 @@ tr:hover td{background:rgba(26,94,168,.07);}
 .flnk{color:var(--muted);text-decoration:none;cursor:pointer;transition:.18s;background:none;border:none;font-family:'DM Sans',sans-serif;font-size:.86rem;padding:0;}
 .flnk:hover{color:var(--green2);}
 
+
+.lang-flag{
+  width:18px;
+  height:18px;
+  object-fit:contain;
+  display:inline-block;
+  flex-shrink:0;
+}
+
 /* ── MISC ── */
 .chip{display:inline-block;background:rgba(21,122,69,.12);border:1px solid var(--borderg);color:var(--green2);font-size:.7rem;font-weight:600;padding:.18rem .62rem;border-radius:100px;margin:.18rem;}
 .toast{position:fixed;bottom:1.8rem;right:1.8rem;z-index:2000;background:#0C1C2E;border-radius:11px;padding:.95rem 1.4rem;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:.65rem;box-shadow:0 10px 38px rgba(0,0,0,.55);animation:toastIn .4s cubic-bezier(.34,1.56,.64,1);max-width:310px;}
@@ -4362,7 +4371,20 @@ export default function App() {
             }
             style={{ fontWeight: 700, letterSpacing: ".5px" }}
           >
-            {lang === "en" ? "🇷🇺 RU" : "🇺🇸 EN"}
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: ".35rem",
+              }}
+            >
+              <img
+                src={lang === "en" ? "/flags/ru.svg" : "/flags/us.svg"}
+                alt=""
+                className="lang-flag"
+              />
+              {lang === "en" ? "RU" : "EN"}
+            </span>{" "}
           </button>
           <button
             className={`nb cta${isAdmin ? " adm" : ""}`}
@@ -4432,7 +4454,20 @@ export default function App() {
             }}
             type="button"
           >
-            <span>{lang === "en" ? "🇷🇺 Русский" : "🇺🇸 English"}</span>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: ".35rem",
+              }}
+            >
+              <img
+                src={lang === "en" ? "/flags/ru.svg" : "/flags/us.svg"}
+                alt=""
+                className="lang-flag"
+              />
+              {lang === "en" ? "RU" : "EN"}
+            </span>{" "}
             <span style={{ color: "var(--muted)", fontWeight: 600 }}>›</span>
           </button>
         </div>

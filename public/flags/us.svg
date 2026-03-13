@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 7410 3900">
+  <rect width="7410" height="3900" fill="#b22234"></rect>
+  <g fill="#ffffff">
+    <rect y="300" width="7410" height="300"></rect>
+    <rect y="900" width="7410" height="300"></rect>
+    <rect y="1500" width="7410" height="300"></rect>
+    <rect y="2100" width="7410" height="300"></rect>
+    <rect y="2700" width="7410" height="300"></rect>
+    <rect y="3300" width="7410" height="300"></rect>
+  </g>
+  <rect width="2964" height="2100" fill="#3c3b6e"></rect>
+
+  <g fill="#ffffff">
+    <g id="s18">
+      <g id="s6">
+        <g id="s">
+          <polygon points="247,90 275,176 365,176 292,229 320,315 247,262 174,315 202,229 129,176 219,176"></polygon>
+        </g>
+        <use href="#s" x="494"></use>
+        <use href="#s" x="988"></use>
+        <use href="#s" x="1482"></use>
+        <use href="#s" x="1976"></use>
+        <use href="#s" x="2470"></use>
+      </g>
+      <use href="#s6" y="420"></use>
+      <use href="#s6" y="840"></use>
+    </g>
+
+    <g id="s15" transform="translate(247,210)">
+      <use href="#s" x="0"></use>
+      <use href="#s" x="494"></use>
+      <use href="#s" x="988"></use>
+      <use href="#s" x="1482"></use>
+      <use href="#s" x="1976"></use>
+    </g>
+    <use href="#s15" y="420"></use>
+    <use href="#s15" y="840"></use>
+    <use href="#s15" y="1260"></use>
+  </g>
+</svg>
