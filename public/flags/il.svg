@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600">
+  <!-- White background -->
+  <rect width="900" height="600" fill="#fff"/>
+  <!-- Top blue stripe -->
+  <rect width="900" height="100" y="100" fill="#0038b8"/>
+  <!-- Bottom blue stripe -->
+  <rect width="900" height="100" y="400" fill="#0038b8"/>
+  <!-- Star of David (two overlapping triangles) -->
+  <polygon points="450,180 360,330 540,330" fill="none" stroke="#0038b8" stroke-width="22"/>
+  <polygon points="450,420 360,270 540,270" fill="none" stroke="#0038b8" stroke-width="22"/>
+</svg>

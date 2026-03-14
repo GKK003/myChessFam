@@ -24,14 +24,10 @@ export function LangProvider({ children }) {
     } catch {}
   }, []);
 
-  const toggle = useCallback(() => {
-    switchLang(lang === "en" ? "ru" : "en");
-  }, [lang, switchLang]);
-
   const t = translations[lang];
 
   return (
-    <LangCtx.Provider value={{ lang, setLang: switchLang, toggle, t }}>
+    <LangCtx.Provider value={{ lang, setLang: switchLang, t }}>
       {children}
     </LangCtx.Provider>
   );

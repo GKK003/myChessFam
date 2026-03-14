@@ -137,11 +137,11 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 }
 
 /* ── NAV ── */
-.nav{position:fixed;top:0;left:0;width:100%;z-index:999;height:100px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(9,19,30,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);transform:translateY(0);transition:transform .35s ease;}
+.nav{position:fixed;top:0;left:0;width:100%;z-index:999;height:100px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(9,19,30,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);transform:translateY(0);transition:transform .35s ease;overflow:visible;}
 .nav-hide{transform:translateY(-100%);}
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--green2);cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;}
 .nav-links{display:flex;gap:2px;flex-wrap:wrap;}
-.nav-right{display:flex;align-items:center;gap:5px;}
+.nav-right{display:flex;align-items:center;gap:5px;overflow:visible;position:relative;}
 .nb{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:500;padding:.4rem .85rem;border-radius:7px;cursor:pointer;transition:.18s;white-space:nowrap;}
 .nb:hover,.nb.on{color:var(--blue3);background:rgba(74,171,232,0.1);}
 .nb.cta{background:var(--green2);color:#fff;font-weight:700;padding:.4rem 1.1rem;}
@@ -268,8 +268,11 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .mnav-cta{margin-top:auto;padding:1rem 1.2rem 1.2rem;border-top:1px solid rgba(74,171,232,.12);}
 .mnav-cta .btn{width:100%;justify-content:center;}
 
-@media (min-width: 1091px){.burger{display:none !important;}.mnav,.mnav-ovl{display:none !important;}   }
-@media(max-width:1090px){.nav-links{display:none !important;}.burger{display:flex !important;} .nb{display:none}}
+@media (min-width: 1231px){.burger{display:none !important;}.mnav,.mnav-ovl{display:none !important;}   }
+@media(max-width:1230px){.nav-links{display:none !important;}.burger{display:flex !important;} .nb{display:none} .lang-drop{display:none !important;}}
+
+
+
 
 /* ── STATUS BADGE ── */
 .bdg{position:absolute;top:.9rem;right:.9rem;padding:.22rem .7rem;border-radius:100px;font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
@@ -456,11 +459,153 @@ tr:hover td{background:rgba(26,94,168,.07);}
 
 
 .lang-flag{
-  width:18px;
-  height:18px;
-  object-fit:contain;
+  width:20px;
+  height:14px;
+  object-fit:cover;
   display:inline-block;
   flex-shrink:0;
+  border-radius:2px;
+  box-shadow:0 1px 3px rgba(0,0,0,.35);
+}
+
+/* ── CUSTOM LANG DROPDOWN ── */
+.lang-drop{
+  position:relative;
+  display:flex;
+  align-items:center;
+  z-index:600;
+}
+.lang-drop-trigger{
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.38rem .55rem .38rem .65rem;
+  background:rgba(13,30,48,.8);
+  border:1px solid rgba(74,171,232,0.22);
+  border-radius:9px;
+  cursor:pointer;
+  transition:background .18s,border-color .18s,border-radius .15s;
+  font-family:'DM Sans',sans-serif;
+  font-weight:700;
+  font-size:.82rem;
+  color:#DCE9F5;
+  letter-spacing:.4px;
+  white-space:nowrap;
+  user-select:none;
+  min-width:80px;
+}
+.lang-drop-trigger:hover{
+  background:rgba(26,94,168,.22);
+  border-color:rgba(74,171,232,0.4);
+}
+.lang-drop-trigger.open{
+  background:rgba(26,94,168,.25);
+  border-color:rgba(74,171,232,0.42);
+  border-bottom-left-radius:0;
+  border-bottom-right-radius:0;
+  border-bottom-color:rgba(13,30,48,.8);
+}
+.lang-chevron{
+  width:13px;
+  height:13px;
+  margin-left:auto;
+  opacity:.5;
+  transition:transform .2s ease,opacity .2s;
+  flex-shrink:0;
+}
+.lang-drop-trigger.open .lang-chevron{
+  transform:rotate(180deg);
+  opacity:.85;
+}
+.lang-drop-menu{
+  position:absolute;
+  top:100%;
+  left:0;
+  right:0;
+  background:#0C1C2E;
+  border:1px solid rgba(74,171,232,0.42);
+  border-top:none;
+  border-radius:0 0 9px 9px;
+  overflow:hidden;
+  box-shadow:0 16px 40px rgba(0,0,0,.6);
+  z-index:601;
+  animation:langIn .14s ease;
+  min-width:120px;
+}
+@keyframes langIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.lang-drop-item{
+  display:flex;
+  align-items:center;
+  gap:.55rem;
+  padding:.58rem .7rem;
+  cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  font-weight:600;
+  font-size:.82rem;
+  color:rgba(180,210,240,.7);
+  transition:background .13s,color .13s;
+  letter-spacing:.3px;
+}
+.lang-drop-item:not(:last-child){
+  border-bottom:1px solid rgba(74,171,232,.08);
+}
+.lang-drop-item:hover{
+  background:rgba(74,171,232,.1);
+  color:#EEF5FF;
+}
+.lang-drop-item.selected{
+  color:var(--green2);
+  background:rgba(21,122,69,.1);
+}
+.lang-drop-item.selected .lang-tick{
+  margin-left:auto;
+  font-size:.72rem;
+  color:var(--green2);
+}
+
+
+/* ── MOBILE LANG SWITCHER ── */
+.mnav-lang-wrap{
+  border-radius:12px;
+  border:1px solid rgba(74,171,232,.14);
+  background:rgba(26,94,168,.06);
+  overflow:hidden;
+}
+.mnav-lang-label{
+  padding:.6rem 1rem .42rem;
+  font-size:.64rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:rgba(180,210,240,.38);
+  font-weight:700;
+}
+.mnav-lang-row{
+  display:flex;
+  border-top:1px solid rgba(74,171,232,.08);
+}
+.mnav-lang-item{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.42rem;
+  padding:.72rem .4rem;
+  background:transparent;
+  border:none;
+  border-right:1px solid rgba(74,171,232,.08);
+  color:rgba(180,210,240,.55);
+  font-family:'DM Sans',sans-serif;
+  font-weight:700;
+  font-size:.8rem;
+  cursor:pointer;
+  transition:.18s;
+  letter-spacing:.3px;
+}
+.mnav-lang-item:last-child{border-right:none;}
+.mnav-lang-item:hover{background:rgba(74,171,232,.07);color:rgba(220,233,245,.9);}
+.mnav-lang-item.active{
+  color:var(--green2);
+  background:rgba(21,122,69,.1);
 }
 
 /* ── MISC ── */
@@ -4136,7 +4281,7 @@ function ContactPage({ onNav, showToast }) {
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { lang, toggle, t } = useLang();
+  const { lang, setLang, t } = useLang();
 
   const pathToPage = {
     "/": "home",
@@ -4161,6 +4306,7 @@ export default function App() {
   const [toasts, setToasts] = useState([]);
   const [camps, setCamps] = useState(DEF_CAMPS);
   const [campRegs, setCampRegs] = useState([]);
+  const [langOpen, setLangOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const toggleMobile = useCallback(() => setMobileOpen((v) => !v), []);
@@ -4336,6 +4482,12 @@ export default function App() {
     ["contact", t.nav.contact],
   ];
 
+  const LANG_OPTIONS = [
+    { code: "en", label: "English", short: "EN", flag: "/flags/us.svg" },
+    { code: "ru", label: "Русский", short: "RU", flag: "/flags/ru.svg" },
+    { code: "he", label: "עברית", short: "HE", flag: "/flags/il.svg" },
+  ];
+
   return (
     <div style={{ width: "100%", minHeight: "100vh", background: "#09131E" }}>
       <nav className={`nav ${hideHeader ? "nav-hide" : ""}`}>
@@ -4361,31 +4513,59 @@ export default function App() {
         </div>
         <div className="nav-right">
           {isAdmin && <span className="adm-dot">● Admin</span>}
-          {/* Language toggle button */}
-          <button
-            className="nb"
-            onClick={toggle}
-            type="button"
-            title={
-              lang === "en" ? "Switch to Russian" : "Переключить на английский"
-            }
-            style={{ fontWeight: 700, letterSpacing: ".5px" }}
+          {/* Custom lang dropdown — desktop only, hidden on mobile via CSS */}
+          <div
+            className="lang-drop"
+            onBlur={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget))
+                setLangOpen(false);
+            }}
+            tabIndex={-1}
           >
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: ".35rem",
-              }}
+            <div
+              className={`lang-drop-trigger${langOpen ? " open" : ""}`}
+              onClick={() => setLangOpen((v) => !v)}
             >
               <img
-                src={lang === "en" ? "/flags/ru.svg" : "/flags/us.svg"}
+                src={LANG_OPTIONS.find((l) => l.code === lang)?.flag}
                 alt=""
                 className="lang-flag"
               />
-              {lang === "en" ? "RU" : "EN"}
-            </span>{" "}
-          </button>
+              {LANG_OPTIONS.find((l) => l.code === lang)?.short}
+              <svg
+                className="lang-chevron"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+            {langOpen && (
+              <div className="lang-drop-menu">
+                {LANG_OPTIONS.map((option) => (
+                  <div
+                    key={option.code}
+                    className={`lang-drop-item${lang === option.code ? " selected" : ""}`}
+                    onMouseDown={() => {
+                      setLang(option.code);
+                      setLangOpen(false);
+                    }}
+                  >
+                    <img src={option.flag} alt="" className="lang-flag" />
+                    {option.label}
+                    {lang === option.code && (
+                      <span className="lang-tick">✓</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           <button
             className={`nb cta${isAdmin ? " adm" : ""}`}
             onClick={() => (isAdmin ? go("admin") : go("login"))}
@@ -4445,31 +4625,26 @@ export default function App() {
               <span style={{ color: "var(--muted)", fontWeight: 600 }}>›</span>
             </button>
           ))}
-          {/* Language toggle in mobile drawer */}
-          <button
-            className="mnav-btn"
-            onClick={() => {
-              closeMobile();
-              toggle();
-            }}
-            type="button"
-          >
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: ".35rem",
-              }}
-            >
-              <img
-                src={lang === "en" ? "/flags/ru.svg" : "/flags/us.svg"}
-                alt=""
-                className="lang-flag"
-              />
-              {lang === "en" ? "RU" : "EN"}
-            </span>{" "}
-            <span style={{ color: "var(--muted)", fontWeight: 600 }}>›</span>
-          </button>
+          {/* Language switcher — mobile drawer only */}
+          <div className="mnav-lang-wrap">
+            <div className="mnav-lang-label">Language</div>
+            <div className="mnav-lang-row">
+              {LANG_OPTIONS.map((option) => (
+                <button
+                  key={option.code}
+                  type="button"
+                  className={`mnav-lang-item${lang === option.code ? " active" : ""}`}
+                  onClick={() => {
+                    setLang(option.code);
+                    closeMobile();
+                  }}
+                >
+                  <img src={option.flag} alt="" className="lang-flag" />
+                  {option.short}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
         <div className="mnav-cta">
           <button
