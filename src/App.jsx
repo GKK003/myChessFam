@@ -113,6 +113,13 @@ const fmtDShort = (d) =>
     day: "numeric",
     year: "numeric",
   });
+
+const getGalleryImageSrc = (image, base) => {
+  if (!image) return "";
+  if (image.startsWith("http")) return image;
+  return `${base}${image.startsWith("/") ? image : `/${image}`}`;
+};
+
 const getImageSrc = (image, base) => {
   if (!image) return "/images/camp-default.jpg";
   if (image.startsWith("http")) return image;
@@ -658,8 +665,37 @@ tr:hover td{background:rgba(26,94,168,.07);}
 .camp-list{display:flex;flex-direction:column;gap:1.4rem;}
 .camp-row-card{display:grid;grid-template-columns:340px 1fr;gap:1.4rem;background:#fff;border:1px solid #E2E8F0;border-radius:20px;padding:1.2rem;box-shadow:0 8px 24px rgba(15,23,42,.05);transition:.22s;}
 .camp-row-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(15,23,42,.08);}
-.camp-row-media{border-radius:16px;min-height:210px;display:flex;align-items:center;justify-content:center;padding:1rem;}
-.camp-row-media img{width:112%;height:111%;object-fit:cover;border-radius:12px;}
+.camp-row-media{
+  border-radius:16px;
+  min-height:210px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  overflow:hidden;
+  background:linear-gradient(135deg,#13263B,#0F3A28);
+}
+
+.camp-row-media img{
+  width:100%;
+  height:100%;
+  min-height:210px;
+  object-fit:cover;
+  border-radius:0;
+  display:block;
+}
+
+@media(max-width:850px){
+  .camp-page-top-inner,.camp-list-wrap{padding-left:1.2rem;padding-right:1.2rem;}
+  .camp-row-card{grid-template-columns:1fr;}
+  .camp-row-media{min-height:170px;}
+  .camp-row-media img{min-height:170px;}
+  .camp-row-head{flex-direction:column;}
+  .camp-row-bottom{flex-direction:column;align-items:flex-start;}
+  .camp-row-actions{width:100%;}
+  .camp-row-btn{flex:1;}
+}
+
 .camp-row-main{display:flex;flex-direction:column;justify-content:space-between;min-width:0;}
 .camp-row-head{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;}
 .camp-row-head h3{font-family:'Playfair Display',serif;font-size:1.45rem;color:#1F2B3A;margin-bottom:.55rem;}
@@ -677,15 +713,7 @@ tr:hover td{background:rgba(26,94,168,.07);}
 .camp-row-btn.primary:disabled{background:#CBD5E1;color:#64748B;cursor:not-allowed;transform:none;}
 .camp-row-btn.ghost{background:#EEF2F6;color:#1F2B3A;}
 .camp-row-btn.ghost:hover{background:#E2E8F0;}
-@media(max-width:850px){
-  .camp-page-top-inner,.camp-list-wrap{padding-left:1.2rem;padding-right:1.2rem;}
-  .camp-row-card{grid-template-columns:1fr;}
-  .camp-row-media{min-height:170px;}
-  .camp-row-head{flex-direction:column;}
-  .camp-row-bottom{flex-direction:column;align-items:flex-start;}
-  .camp-row-actions{width:100%;}
-  .camp-row-btn{flex:1;}
-}
+
 .bdg-open{background:#DCFCE7;color:#166534;}
 .bdg-up{background:#DBEAFE;color:#1D4ED8;border:1px solid #BFDBFE;}
 .bdg-full{background:#FEE2E2;color:#B91C1C;border:1px solid #FECACA;}
@@ -753,6 +781,13 @@ tr:hover td{background:rgba(26,94,168,.07);}
   white-space:normal;
   word-break:break-word;
   max-width:100%;
+}
+
+.lightbox-img-wrap{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
   .team-bio-modern{color:#5C6B7C;line-height:1.72;font-size:.92rem;margin-bottom:1rem;}
@@ -3375,7 +3410,10 @@ function GalleryAdminTab({ photos, reload, showToast }) {
               }}
             >
               <img
-                src={p.imageUrl}
+                src={getGalleryImageSrc(
+                  p.imageUrl,
+                  import.meta.env.VITE_API_URL || "",
+                )}
                 alt={p.caption}
                 style={{
                   width: "100%",
@@ -3446,16 +3484,59 @@ const GALLERY_CSS = `
 .gallery-item:hover{transform:translateY(-5px);box-shadow:0 20px 44px rgba(15,23,42,.14);}
 .gallery-item:hover .gallery-overlay{opacity:1;}
 .gallery-item:hover .gallery-img{transform:scale(1.04);}
-.gallery-img-wrap{overflow:hidden;width:100%;}
-.gallery-img{width:100%;display:block;object-fit:cover;transition:transform .45s ease;}
-.gallery-placeholder{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 1rem;text-align:center;min-height:180px;background:linear-gradient(135deg,#13263B,#0F3A28);}
+.gallery-img-wrap{
+  overflow:hidden;
+  width:100%;
+  position:relative;
+  background:linear-gradient(135deg,#13263B,#0F3A28);
+}
+
+.gallery-img{
+  width:100%;
+  display:block;
+  object-fit:cover;
+  transition:transform .45s ease, opacity .25s ease;
+  will-change:transform, opacity;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+.gallery-img.is-hidden{
+  opacity:0;
+  position:absolute;
+  inset:0;
+}
+
+.gallery-img.is-loaded{
+  opacity:1;
+  position:relative;
+}
+.gallery-placeholder{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:2.5rem 1rem;
+  text-align:center;
+  min-height:220px;
+  background:linear-gradient(135deg,#13263B,#0F3A28);
+}
+.lightbox-img{
+  width:100%;
+  max-height:75vh;
+  object-fit:contain;
+  border-radius:14px;
+  box-shadow:0 30px 80px rgba(0,0,0,.8);
+  display:block;
+}  
+
 .gallery-placeholder-icon{font-size:3rem;margin-bottom:.6rem;}
 .gallery-placeholder-label{font-size:.8rem;font-weight:700;color:rgba(220,233,245,.5);letter-spacing:1px;text-transform:uppercase;}
 .gallery-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(9,19,30,.88) 100%);opacity:0;transition:.3s;display:flex;flex-direction:column;justify-content:flex-end;padding:1.2rem;}
 .gallery-overlay-tag{font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green2);margin-bottom:.3rem;}
 .gallery-overlay-caption{font-size:.92rem;font-weight:700;color:#EEF5FF;line-height:1.4;}
 .lightbox-inner{position:relative;max-width:900px;width:100%;display:flex;flex-direction:column;align-items:center;}
-.lightbox-img{width:100%;max-height:75vh;object-fit:contain;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.8);}
 .lightbox-placeholder{width:100%;min-height:300px;border-radius:14px;background:linear-gradient(135deg,#13263B,#0F3A28);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:5rem;}
 .lightbox-caption{margin-top:1.1rem;text-align:center;color:rgba(220,233,245,.85);font-size:.95rem;line-height:1.6;}
 .lightbox-tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green2);background:rgba(31,168,94,.12);border:1px solid rgba(45,204,116,.25);padding:.25rem .7rem;border-radius:999px;margin-bottom:.5rem;}
@@ -3499,6 +3580,51 @@ const injectGalleryStyles = () => {
   document.head.appendChild(el);
 };
 
+function SmartGalleryImage({
+  src,
+  alt,
+  className = "",
+  wrapperClassName = "gallery-img-wrap",
+}) {
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    setLoaded(false);
+    setFailed(false);
+  }, [src]);
+
+  return (
+    <div className={wrapperClassName}>
+      {!loaded && !failed && (
+        <div className="gallery-placeholder">
+          <div className="gallery-placeholder-icon">♟</div>
+          <div className="gallery-placeholder-label">Loading photo</div>
+        </div>
+      )}
+
+      {!failed && (
+        <img
+          src={src}
+          alt={alt}
+          className={`${className} ${loaded ? "is-loaded" : "is-hidden"}`}
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          onError={() => setFailed(true)}
+        />
+      )}
+
+      {failed && (
+        <div className="gallery-placeholder">
+          <div className="gallery-placeholder-icon">📷</div>
+          <div className="gallery-placeholder-label">Image unavailable</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function GalleryPage({ onNav, onContact }) {
   const { t } = useLang();
   const GALLERY_CATS = [
@@ -3507,6 +3633,8 @@ function GalleryPage({ onNav, onContact }) {
     { id: "lessons", label: t.gallery.filterLessons },
     { id: "community", label: t.gallery.filterCommunity },
   ];
+
+  const BASE = import.meta.env.VITE_API_URL || "";
 
   const [filter, setFilter] = useState("all");
   const [lightbox, setLightbox] = useState(null);
@@ -3675,14 +3803,11 @@ function GalleryPage({ onNav, onContact }) {
                   className="gallery-item"
                   onClick={() => setLightbox(idx)}
                 >
-                  <div className="gallery-img-wrap">
-                    <img
-                      src={item.imageUrl}
-                      alt={item.caption}
-                      className="gallery-img"
-                      loading="lazy"
-                    />
-                  </div>
+                  <SmartGalleryImage
+                    src={getGalleryImageSrc(item.imageUrl, BASE)}
+                    alt={item.caption}
+                    className="gallery-img"
+                  />
                   <div className="gallery-overlay">
                     <div className="gallery-overlay-tag">
                       {item.tag || item.category}
@@ -3724,10 +3849,11 @@ function GalleryPage({ onNav, onContact }) {
             <button className="lightbox-close" onClick={closeLightbox}>
               ×
             </button>
-            <img
-              src={current.imageUrl}
+            <SmartGalleryImage
+              src={getGalleryImageSrc(current.imageUrl, BASE)}
               alt={current.caption}
               className="lightbox-img"
+              wrapperClassName="lightbox-img-wrap"
             />
             <div className="lightbox-caption">
               <div className="lightbox-tag">
