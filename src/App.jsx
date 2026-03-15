@@ -274,6 +274,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 
 
 
+
 /* ── STATUS BADGE ── */
 .bdg{position:absolute;top:.9rem;right:.9rem;padding:.22rem .7rem;border-radius:100px;font-size:.66rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
 .bdg-open{background:var(--green2);color:#fff;}
@@ -332,7 +333,7 @@ input[type="date"]::-webkit-date-and-time-value{
 /* ══════════════════════════════════════════
    ADMIN — FULLY RESPONSIVE FIXES
 ══════════════════════════════════════════ */
-.login-box{max-width:430px;margin:0 auto;background:rgba(13,30,48,.85);border:1px solid var(--border);border-radius:18px;padding:2.3rem;text-align:center;}
+.login-box{max-width:430px;margin:0 auto;background:rgba(13,30,48,.85);border:1px solid var(--border);border-radius:18px;padding:2.3rem;text-align:center; min-width: 400px}
 
 .adm-wrap{width:100%;max-width:1200px;margin:0 auto;padding:2rem 1.5rem 4rem;}
 @media(max-width:600px){.adm-wrap{padding:1.2rem .85rem 3rem;}}
@@ -395,6 +396,8 @@ input[type="date"]::-webkit-date-and-time-value{
 .ei-text{min-width:0;}
 .ei-name{font-weight:600;margin-bottom:.22rem;color:#EEF5FF;word-break:break-word;}
 .ei-meta{font-size:.8rem;color:var(--muted);word-break:break-word;}
+
+
 
 .ei-actions{
   display:flex;
