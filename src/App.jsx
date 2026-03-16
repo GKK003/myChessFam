@@ -1,5 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { FaInstagram, FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import ChatBot from "./ChatBot";
 import { useLang } from "./LangContext";
@@ -4927,6 +4933,8 @@ export default function App() {
   const location = useLocation();
   const { lang, setLang, t } = useLang();
 
+  const cleanPath =
+    location.pathname.replace(/^\/(en|ru|he)(?=\/|$)/, "") || "/";
   const pathToPage = {
     "/": "home",
     "/programs": "programs",
@@ -4939,7 +4947,7 @@ export default function App() {
     "/login": "login",
     "/admin": "admin",
   };
-  const page = pathToPage[location.pathname] || "home";
+  const page = pathToPage[cleanPath] || "home";
 
   const [reviews, setReviews] = useState([]);
   const [adminReviews, setAdminReviews] = useState([]);
@@ -5061,15 +5069,17 @@ export default function App() {
   const go = useCallback(
     (p) => {
       setMobileOpen(false);
+
       if (p === "admin" && !isAdmin) {
-        navigate("/login");
+        navigate(`/${lang}/login`);
         window.scrollTo(0, 0);
         return;
       }
-      navigate(p === "home" ? "/" : `/${p}`);
+
+      navigate(p === "home" ? `/${lang}` : `/${lang}/${p}`);
       window.scrollTo(0, 0);
     },
-    [isAdmin, navigate],
+    [isAdmin, navigate, lang],
   );
 
   const loadGallery = useCallback(async () => {
@@ -5111,7 +5121,7 @@ export default function App() {
     localStorage.removeItem(AUTH_KEY);
     setIsAdmin(false);
     setCampRegs([]);
-    navigate("/");
+    navigate(`/${lang}`);
     showToast(t.toast.loggedOut, "i");
   };
 
@@ -5305,16 +5315,18 @@ export default function App() {
       </div>
 
       <Routes>
+        <Route path="/" element={<Navigate to="/en" replace />} />
+
         <Route
-          path="/"
+          path="/:lang"
           element={<HomePage onNav={go} onContact={openContact} />}
         />
         <Route
-          path="/programs"
+          path="/:lang/programs"
           element={<ProgramsPage onNav={go} onContact={openContact} />}
         />
         <Route
-          path="/camp"
+          path="/:lang/camp"
           element={
             <CampPage
               camps={camps}
@@ -5326,11 +5338,11 @@ export default function App() {
           }
         />
         <Route
-          path="/team"
+          path="/:lang/team"
           element={<TeamPage onNav={go} onContact={openContact} />}
         />
         <Route
-          path="/reviews"
+          path="/:lang/reviews"
           element={
             <ReviewsPage
               reviews={reviews}
@@ -5341,23 +5353,23 @@ export default function App() {
           }
         />
         <Route
-          path="/about"
+          path="/:lang/about"
           element={<AboutPage onNav={go} onContact={openContact} />}
         />
         <Route
-          path="/gallery"
+          path="/:lang/gallery"
           element={<GalleryPage onNav={go} onContact={openContact} />}
         />
         <Route
-          path="/contact"
+          path="/:lang/contact"
           element={<ContactPage onNav={go} showToast={showToast} />}
         />
         <Route
-          path="/login"
+          path="/:lang/login"
           element={<LoginPage onLogin={handleLogin} showToast={showToast} />}
         />
         <Route
-          path="/admin"
+          path="/:lang/admin"
           element={
             isAdmin ? (
               <AdminPage
@@ -5376,7 +5388,8 @@ export default function App() {
             )
           }
         />
-        <Route path="*" element={<NotFoundPage onNav={go} />} />
+
+        <Route path="*" element={<Navigate to={`/${lang}`} replace />} />
       </Routes>
 
       {contactOpen && (
