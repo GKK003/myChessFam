@@ -3960,16 +3960,7 @@ const GALLERY_CSS = `
   -webkit-backface-visibility:hidden;
 }
 
-.gallery-img.is-hidden{
-  opacity:0;
-  position:absolute;
-  inset:0;
-}
 
-.gallery-img.is-loaded{
-  opacity:1;
-  position:relative;
-}
 .gallery-placeholder{
   width:100%;
   display:flex;
@@ -4117,23 +4108,28 @@ function SmartGalleryImage({
 
   return (
     <div className={wrapperClassName}>
+      {!failed && (
+        <img
+          src={src}
+          alt={alt}
+          className={className}
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          onError={() => setFailed(true)}
+          style={{
+            width: "100%",
+            display: loaded ? "block" : "none",
+            objectFit: "cover",
+          }}
+        />
+      )}
+
       {!loaded && !failed && (
         <div className="gallery-placeholder">
           <div className="gallery-placeholder-icon">♟</div>
           <div className="gallery-placeholder-label">Loading photo</div>
         </div>
-      )}
-
-      {!failed && (
-        <img
-          src={src}
-          alt={alt}
-          className={`${className} ${loaded ? "is-loaded" : "is-hidden"}`}
-          loading="lazy"
-          decoding="async"
-          onLoad={() => setLoaded(true)}
-          onError={() => setFailed(true)}
-        />
       )}
 
       {failed && (
