@@ -4107,7 +4107,30 @@ function SmartGalleryImage({
   }, [src]);
 
   return (
-    <div className={wrapperClassName}>
+    <div
+      className={wrapperClassName}
+      style={{ position: "relative", minHeight: 220 }}
+    >
+      {!loaded && !failed && (
+        <div
+          className="gallery-placeholder"
+          style={{ position: "absolute", inset: 0, minHeight: "unset" }}
+        >
+          <div className="gallery-placeholder-icon">♟</div>
+          <div className="gallery-placeholder-label">Loading photo</div>
+        </div>
+      )}
+
+      {failed && (
+        <div
+          className="gallery-placeholder"
+          style={{ position: "absolute", inset: 0, minHeight: "unset" }}
+        >
+          <div className="gallery-placeholder-icon">📷</div>
+          <div className="gallery-placeholder-label">Image unavailable</div>
+        </div>
+      )}
+
       {!failed && (
         <img
           src={src}
@@ -4119,24 +4142,15 @@ function SmartGalleryImage({
           onError={() => setFailed(true)}
           style={{
             width: "100%",
-            display: loaded ? "block" : "none",
+            display: "block",
             objectFit: "cover",
+            opacity: loaded ? 1 : 0,
+            transition: "opacity 0.35s ease",
+            position: loaded ? "relative" : "absolute",
+            top: 0,
+            left: 0,
           }}
         />
-      )}
-
-      {!loaded && !failed && (
-        <div className="gallery-placeholder">
-          <div className="gallery-placeholder-icon">♟</div>
-          <div className="gallery-placeholder-label">Loading photo</div>
-        </div>
-      )}
-
-      {failed && (
-        <div className="gallery-placeholder">
-          <div className="gallery-placeholder-icon">📷</div>
-          <div className="gallery-placeholder-label">Image unavailable</div>
-        </div>
       )}
     </div>
   );
