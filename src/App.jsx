@@ -2822,13 +2822,25 @@ function AdminPage({
                 </div>
                 <div className="fg full">
                   <label className="lbl">{adm.fields.image}</label>
-                  <input
-                    className="inp"
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setCampFile(e.target.files?.[0] || null)}
-                  />
+
+                  <div className="file-upload">
+                    <label className="file-upload-box">
+                      <input
+                        className="file-upload-input"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) =>
+                          setCampFile(e.target.files?.[0] || null)
+                        }
+                      />
+                      <span className="file-upload-btn">Choose file</span>
+                      <span className="file-upload-name">
+                        {campFile ? campFile.name : "No file chosen"}
+                      </span>
+                    </label>
+                  </div>
                 </div>
+                np
                 <div className="fg full">
                   <label className="lbl">{adm.fields.desc}</label>
                   <textarea
@@ -3318,12 +3330,22 @@ function GalleryAdminTab({ photos, reload, showToast }) {
         <div className="fgrid">
           <div className="fg full">
             <label className="lbl">{adm.galleryFields.photo} *</label>
-            <input
-              className="inp"
-              type="file"
-              accept="image/*"
-              onChange={onFileChange}
-            />
+
+            <div className="file-upload">
+              <label className="file-upload-box">
+                <input
+                  className="file-upload-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={onFileChange}
+                />
+                <span className="file-upload-btn">Choose file</span>
+                <span className="file-upload-name">
+                  {file ? file.name : "No file chosen"}
+                </span>
+              </label>
+            </div>
+
             {preview && (
               <div style={{ marginTop: ".8rem" }}>
                 <img
@@ -3552,6 +3574,68 @@ const GALLERY_CSS = `
 .gallery-cta p{color:rgba(220,233,245,.78);line-height:1.8;max-width:700px;margin:0 auto;}
 .gallery-cta-actions{margin-top:1.3rem;display:flex;justify-content:center;gap:.8rem;flex-wrap:wrap;}
 @media(max-width:850px){.gallery-hero-inner,.gallery-inner{padding-left:1.2rem;padding-right:1.2rem;}}
+
+
+/* ── CUSTOM FILE INPUT ── */
+.file-upload{
+  width:100%;
+}
+
+.file-upload-input{
+  display:none;
+}
+
+.file-upload-box{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+  padding:.78rem .95rem;
+  background:rgba(26,94,168,.09);
+  border:1.5px solid rgba(74,171,232,.18);
+  border-radius:8px;
+  color:var(--cream);
+  cursor:pointer;
+  transition:.2s;
+  min-height:48px;
+}
+
+.file-upload-box:hover{
+  border-color:rgba(74,171,232,.35);
+  background:rgba(26,94,168,.14);
+}
+
+.file-upload-box:focus-within{
+  border-color:var(--green2);
+  background:rgba(21,122,69,.09);
+  box-shadow:0 0 0 3px rgba(45,204,116,.12);
+}
+
+.file-upload-btn{
+  flex-shrink:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:.55rem .9rem;
+  border-radius:7px;
+  background:var(--green2);
+  color:#fff;
+  font-size:.82rem;
+  font-weight:700;
+  line-height:1;
+  white-space:nowrap;
+}
+
+.file-upload-name{
+  min-width:0;
+  flex:1;
+  color:rgba(220,233,245,.78);
+  font-size:.88rem;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
 
 /* ── 404 PAGE ── */
 .notfound-pg{width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#09131E 0%,#0D1E2C 55%,#091A10 100%);position:relative;overflow:hidden;padding:8rem 2rem 4rem;}
