@@ -2953,7 +2953,9 @@ function AdminPage({
                         }
                       />
                       <span className="file-upload-btn">Choose file</span>
-                      <span className="file-upload-name">
+                      <span
+                        className={`file-upload-name${campFile ? "" : " file-upload-empty"}`}
+                      >
                         {campFile ? campFile.name : "No file chosen"}
                       </span>
                     </label>
@@ -3458,7 +3460,9 @@ function GalleryAdminTab({ photos, reload, showToast }) {
                   onChange={onFileChange}
                 />
                 <span className="file-upload-btn">Choose file</span>
-                <span className="file-upload-name">
+                <span
+                  className={`file-upload-name${file ? "" : " file-upload-empty"}`}
+                >
                   {file ? file.name : "No file chosen"}
                 </span>
               </label>
