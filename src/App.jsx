@@ -208,6 +208,94 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 .g3{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.4rem;margin-top:2.2rem;}
 .g4{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.2rem;}
 
+
+
+.status-drop{
+  position:relative;
+  min-width:120px;
+}
+
+.status-drop-trigger{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.38rem .55rem .38rem .65rem;
+  background:rgba(13,30,48,.8);
+  border:1px solid rgba(74,171,232,0.22);
+  border-radius:9px;
+  cursor:pointer;
+  transition:background .18s,border-color .18s,border-radius .15s;
+  font-family:'DM Sans',sans-serif;
+  font-weight:700;
+  font-size:.82rem;
+  color:#DCE9F5;
+  letter-spacing:.4px;
+  white-space:nowrap;
+  user-select:none;
+  min-height:38px;
+  justify-content:space-between;
+}
+
+.status-drop:hover .status-drop-trigger{
+  background:rgba(26,94,168,.22);
+  border-color:rgba(74,171,232,0.4);
+  border-bottom-left-radius:0;
+  border-bottom-right-radius:0;
+}
+
+.status-chevron{
+  width:13px;
+  height:13px;
+  opacity:.5;
+  flex-shrink:0;
+}
+
+.status-drop-menu{
+  position:absolute;
+  top:100%;
+  left:0;
+  right:0;
+  background:#0C1C2E;
+  border:1px solid rgba(74,171,232,0.42);
+  border-top:none;
+  border-radius:0 0 9px 9px;
+  overflow:hidden;
+  box-shadow:0 16px 40px rgba(0,0,0,.6);
+  z-index:601;
+  display:none;
+}
+
+.status-drop:hover .status-drop-menu{
+  display:block;
+}
+
+.status-drop-item{
+  padding:.58rem .7rem;
+  cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  font-weight:600;
+  font-size:.82rem;
+  color:rgba(180,210,240,.7);
+  transition:background .13s,color .13s;
+  letter-spacing:.3px;
+}
+
+.status-drop-item:not(:last-child){
+  border-bottom:1px solid rgba(74,171,232,.08);
+}
+
+.status-drop-item:hover{
+  background:rgba(74,171,232,.1);
+  color:#EEF5FF;
+}
+
+.status-drop-item.selected{
+  color:var(--green2);
+  background:rgba(21,122,69,.1);
+}
+
+
 /* ── PROGRAM CARDS ── */
 .prog{background:rgba(26,94,168,.07);border:1px solid var(--border);border-radius:var(--r);padding:1.8rem;transition:.28s;position:relative;overflow:hidden;}
 .prog::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--green2);}
@@ -3036,17 +3124,47 @@ function AdminPage({
                       >
                         {t.common.edit}
                       </button>
-                      <select
-                        className="ssel"
-                        value={c.status}
-                        onChange={(e) => changeStatusC(c.id, e.target.value)}
-                      >
-                        <option value="open">{adm.statusOpts.open}</option>
-                        <option value="upcoming">
-                          {adm.statusOpts.upcoming}
-                        </option>
-                        <option value="full">{adm.statusOpts.full}</option>
-                      </select>
+                      <div className="status-drop">
+                        <button type="button" className="status-drop-trigger">
+                          {c.status === "open"
+                            ? adm.statusOpts.open
+                            : c.status === "upcoming"
+                              ? adm.statusOpts.upcoming
+                              : adm.statusOpts.full}
+                          <svg
+                            className="status-chevron"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </button>
+
+                        <div className="status-drop-menu">
+                          <div
+                            className={`status-drop-item${c.status === "open" ? " selected" : ""}`}
+                            onMouseDown={() => changeStatusC(c.id, "open")}
+                          >
+                            {adm.statusOpts.open}
+                          </div>
+                          <div
+                            className={`status-drop-item${c.status === "upcoming" ? " selected" : ""}`}
+                            onMouseDown={() => changeStatusC(c.id, "upcoming")}
+                          >
+                            {adm.statusOpts.upcoming}
+                          </div>
+                          <div
+                            className={`status-drop-item${c.status === "full" ? " selected" : ""}`}
+                            onMouseDown={() => changeStatusC(c.id, "full")}
+                          >
+                            {adm.statusOpts.full}
+                          </div>
+                        </div>
+                      </div>
                       <button className="delbtn" onClick={() => delC(c.id)}>
                         🗑
                       </button>
