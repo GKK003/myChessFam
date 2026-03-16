@@ -424,6 +424,28 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   .lang-drop{display:none !important;}
 }
 
+
+@media (max-width: 640px){
+  .status-drop{
+    position: relative;
+  }
+
+  .status-drop-menu{
+    top: auto !important;
+    bottom: calc(100% + 4px) !important;
+    left: 0;
+    right: 0;
+    border-top: 1px solid rgba(74,171,232,0.42);
+    border-bottom: none;
+    border-radius: 9px 9px 0 0;
+    box-shadow: 0 -16px 40px rgba(0,0,0,.6);
+  }
+
+  .status-drop-trigger.open{
+    border-radius: 0 0 9px 9px;
+  }
+}
+
 @media(max-width:480px){
   .pg-center{
     padding:100px .75rem 1.5rem;
