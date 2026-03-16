@@ -421,8 +421,60 @@ input[type="date"]::-webkit-date-and-time-value{
 
 .delbtn{background:rgba(220,53,69,.14);border:1px solid rgba(220,53,69,.28);color:#fc8181;border-radius:7px;padding:.38rem .75rem;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.8rem;transition:.18s;flex-shrink:0;}
 .delbtn:hover{background:rgba(220,53,69,.26);}
-.ssel{padding:.33rem .58rem;font-size:.76rem;border-radius:6px;background:rgba(26,94,168,.14);border:1px solid var(--border);color:var(--cream);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.ssel{
+  appearance:none;
+  -webkit-appearance:none;
+  -moz-appearance:none;
 
+  padding:.52rem 2.2rem .52rem .8rem;
+  font-size:.82rem;
+  font-weight:700;
+  line-height:1.2;
+  border-radius:9px;
+  background:
+    linear-gradient(45deg, transparent 50%, rgba(220,233,245,.75) 50%),
+    linear-gradient(135deg, rgba(220,233,245,.75) 50%, transparent 50%),
+    rgba(13,30,48,.8);
+  background-position:
+    calc(100% - 16px) calc(50% - 3px),
+    calc(100% - 10px) calc(50% - 3px),
+    0 0;
+  background-size:6px 6px, 6px 6px, 100% 100%;
+  background-repeat:no-repeat;
+
+  border:1px solid rgba(74,171,232,0.22);
+  color:#DCE9F5;
+  cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  letter-spacing:.3px;
+  min-width:120px;
+  transition:background .18s,border-color .18s,box-shadow .18s,color .18s;
+}
+
+.ssel:hover{
+  background:
+    linear-gradient(45deg, transparent 50%, rgba(220,233,245,.9) 50%),
+    linear-gradient(135deg, rgba(220,233,245,.9) 50%, transparent 50%),
+    rgba(26,94,168,.22);
+  background-position:
+    calc(100% - 16px) calc(50% - 3px),
+    calc(100% - 10px) calc(50% - 3px),
+    0 0;
+  background-size:6px 6px, 6px 6px, 100% 100%;
+  background-repeat:no-repeat;
+  border-color:rgba(74,171,232,0.4);
+}
+
+.ssel:focus{
+  outline:none;
+  border-color:var(--green2);
+  box-shadow:0 0 0 3px rgba(45,204,116,.12);
+}
+
+.ssel option{
+  background:#0C1C2E;
+  color:#DCE9F5;
+}
 .adm-section-title{font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:.9rem;}
 
 .twrap{overflow-x:auto;margin-top:.9rem;-webkit-overflow-scrolling:touch;}
