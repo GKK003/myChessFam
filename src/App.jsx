@@ -266,10 +266,9 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   display:none;
 }
 
-.status-drop:hover .status-drop-menu{
+.status-drop-menu.open{
   display:block;
 }
-
 .status-drop-item{
   padding:.58rem .7rem;
   cursor:pointer;
@@ -2707,6 +2706,7 @@ function AdminPage({
   const adm = t.admin;
   const [tab, setTab] = useState("camps");
   const [editingCampId, setEditingCampId] = useState(null);
+  const [statusOpenId, setStatusOpenId] = useState(null);
   const [cf, setCf] = useState({
     name: "",
     dateStart: "",
@@ -3006,15 +3006,69 @@ function AdminPage({
                 </div>
                 <div className="fg">
                   <label className="lbl">{adm.fields.status}</label>
-                  <select
-                    className="inp"
-                    value={cf.status}
-                    onChange={setC("status")}
-                  >
-                    <option value="open">{adm.statusOpts.open}</option>
-                    <option value="upcoming">{adm.statusOpts.upcoming}</option>
-                    <option value="full">{adm.statusOpts.full}</option>
-                  </select>
+
+                  <div className="status-drop">
+                    <button
+                      type="button"
+                      className={`status-drop-trigger${statusOpenId === "form" ? " open" : ""}`}
+                      onClick={() =>
+                        setStatusOpenId((prev) =>
+                          prev === "form" ? null : "form",
+                        )
+                      }
+                    >
+                      {cf.status === "open"
+                        ? adm.statusOpts.open
+                        : cf.status === "upcoming"
+                          ? adm.statusOpts.upcoming
+                          : adm.statusOpts.full}
+                      <svg
+                        className="status-chevron"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+
+                    <div
+                      className={`status-drop-menu${statusOpenId === "form" ? " open" : ""}`}
+                    >
+                      <div
+                        className={`status-drop-item${cf.status === "open" ? " selected" : ""}`}
+                        onMouseDown={() => {
+                          setCf((p) => ({ ...p, status: "open" }));
+                          setStatusOpenId(null);
+                        }}
+                      >
+                        {adm.statusOpts.open}
+                      </div>
+
+                      <div
+                        className={`status-drop-item${cf.status === "upcoming" ? " selected" : ""}`}
+                        onMouseDown={() => {
+                          setCf((p) => ({ ...p, status: "upcoming" }));
+                          setStatusOpenId(null);
+                        }}
+                      >
+                        {adm.statusOpts.upcoming}
+                      </div>
+
+                      <div
+                        className={`status-drop-item${cf.status === "full" ? " selected" : ""}`}
+                        onMouseDown={() => {
+                          setCf((p) => ({ ...p, status: "full" }));
+                          setStatusOpenId(null);
+                        }}
+                      >
+                        {adm.statusOpts.full}
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div className="fg full">
                   <label className="lbl">{adm.fields.image}</label>
@@ -3151,12 +3205,14 @@ function AdminPage({
                           >
                             {adm.statusOpts.open}
                           </div>
+
                           <div
                             className={`status-drop-item${c.status === "upcoming" ? " selected" : ""}`}
                             onMouseDown={() => changeStatusC(c.id, "upcoming")}
                           >
                             {adm.statusOpts.upcoming}
                           </div>
+
                           <div
                             className={`status-drop-item${c.status === "full" ? " selected" : ""}`}
                             onMouseDown={() => changeStatusC(c.id, "full")}
