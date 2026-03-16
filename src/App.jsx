@@ -475,6 +475,73 @@ input[type="date"]::-webkit-date-and-time-value{
   background:#0C1C2E;
   color:#DCE9F5;
 }
+
+/* ── CUSTOM FILE INPUT ── */
+.file-upload{
+  width:100%;
+}
+
+.file-upload-input{
+  display:none;
+}
+
+.file-upload-box{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:.85rem;
+  padding:.9rem 1rem;
+  background:linear-gradient(180deg, rgba(13,30,48,.95) 0%, rgba(9,25,42,.95) 100%);
+  border:1px solid rgba(74,171,232,.2);
+  border-radius:12px;
+  color:#DCE9F5;
+  cursor:pointer;
+  transition:border-color .18s, background .18s, box-shadow .18s, transform .18s;
+  min-height:56px;
+}
+
+.file-upload-box:hover{
+  border-color:rgba(74,171,232,.4);
+  background:linear-gradient(180deg, rgba(18,40,64,.98) 0%, rgba(12,32,52,.98) 100%);
+  box-shadow:0 10px 24px rgba(0,0,0,.22);
+}
+
+.file-upload-box:focus-within{
+  border-color:var(--green2);
+  box-shadow:0 0 0 3px rgba(45,204,116,.12);
+}
+
+.file-upload-btn{
+  flex-shrink:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:.68rem 1rem;
+  border-radius:10px;
+  background:linear-gradient(180deg, #1FA85E 0%, #157A45 100%);
+  color:#fff;
+  font-size:.82rem;
+  font-weight:800;
+  line-height:1;
+  white-space:nowrap;
+  box-shadow:0 8px 18px rgba(21,122,69,.28);
+}
+
+.file-upload-name{
+  min-width:0;
+  flex:1;
+  color:rgba(220,233,245,.82);
+  font-size:.9rem;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.file-upload-empty{
+  color:rgba(180,210,240,.5);
+}
+
+
 .adm-section-title{font-family:'Playfair Display',serif;font-size:1.15rem;margin-bottom:.9rem;}
 
 .twrap{overflow-x:auto;margin-top:.9rem;-webkit-overflow-scrolling:touch;}
@@ -2892,7 +2959,6 @@ function AdminPage({
                     </label>
                   </div>
                 </div>
-                np
                 <div className="fg full">
                   <label className="lbl">{adm.fields.desc}</label>
                   <textarea
