@@ -237,11 +237,9 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   justify-content:space-between;
 }
 
-.status-drop:hover .status-drop-trigger{
+.status-drop-trigger:hover{
   background:rgba(26,94,168,.22);
   border-color:rgba(74,171,232,0.4);
-  border-bottom-left-radius:0;
-  border-bottom-right-radius:0;
 }
 
 .status-chevron{
@@ -300,6 +298,32 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   color:var(--green2);
   background:rgba(21,122,69,.1);
 }
+
+
+.ei,
+.ei-actions,
+.status-drop{
+  overflow: visible;
+}
+
+.status-drop{
+  position: relative;
+  z-index: 50;
+}
+
+.status-drop-menu{
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  display: none;
+}
+
+.status-drop-menu.open{
+  display: block;
+}
+
 
 
 /* ── PROGRAM CARDS ── */
@@ -2730,6 +2754,12 @@ function AdminPage({
   const [campFile, setCampFile] = useState(null);
   const [cDone, setCDone] = useState(false);
 
+  useEffect(() => {
+    const close = () => setStatusOpenId(null);
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, []);
+
   const startEditCamp = (camp) => {
     setEditingCampId(camp.id);
     setCf({
@@ -3189,11 +3219,12 @@ function AdminPage({
                         <button
                           type="button"
                           className={`status-drop-trigger${statusOpenId === c.id ? " open" : ""}`}
-                          onClick={() =>
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setStatusOpenId((prev) =>
                               prev === c.id ? null : c.id,
-                            )
-                          }
+                            );
+                          }}
                         >
                           {c.status === "open"
                             ? adm.statusOpts.open
@@ -3218,7 +3249,8 @@ function AdminPage({
                         >
                           <div
                             className={`status-drop-item${c.status === "open" ? " selected" : ""}`}
-                            onMouseDown={() => {
+                            onMouseDown={(e) => {
+                              e.preventDefault();
                               changeStatusC(c.id, "open");
                               setStatusOpenId(null);
                             }}
@@ -3228,7 +3260,8 @@ function AdminPage({
 
                           <div
                             className={`status-drop-item${c.status === "upcoming" ? " selected" : ""}`}
-                            onMouseDown={() => {
+                            onMouseDown={(e) => {
+                              e.preventDefault();
                               changeStatusC(c.id, "upcoming");
                               setStatusOpenId(null);
                             }}
@@ -3238,7 +3271,8 @@ function AdminPage({
 
                           <div
                             className={`status-drop-item${c.status === "full" ? " selected" : ""}`}
-                            onMouseDown={() => {
+                            onMouseDown={(e) => {
+                              e.preventDefault();
                               changeStatusC(c.id, "full");
                               setStatusOpenId(null);
                             }}
