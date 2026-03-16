@@ -4100,6 +4100,18 @@ function SmartGalleryImage({
 }) {
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
+  const imgRef = useCallback(
+    (node) => {
+      if (!node) return;
+      // Image may already be cached — complete fires before onLoad is attached
+      if (node.complete && node.naturalWidth > 0) {
+        setLoaded(true);
+      } else if (node.complete && node.naturalWidth === 0) {
+        setFailed(true);
+      }
+    },
+    [src],
+  );
 
   useEffect(() => {
     setLoaded(false);
@@ -4133,11 +4145,12 @@ function SmartGalleryImage({
 
       {!failed && (
         <img
+          ref={imgRef}
           src={src}
           alt={alt}
           className={className}
           loading="eager"
-          decoding="async"
+          decoding="sync"
           onLoad={() => setLoaded(true)}
           onError={() => setFailed(true)}
           style={{
