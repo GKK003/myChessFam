@@ -4113,7 +4113,7 @@ function SmartGalleryImage({
           src={src}
           alt={alt}
           className={className}
-          loading="lazy"
+          loading="eager"
           decoding="async"
           onLoad={() => setLoaded(true)}
           onError={() => setFailed(true)}
