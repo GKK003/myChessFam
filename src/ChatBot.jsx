@@ -22,7 +22,7 @@ const CHAT_CSS = `
   position:fixed;
   right:1.8rem;
   bottom:1.8rem;
-  z-index:900;
+  z-index:999;
   display:flex;
   flex-direction:column;
   align-items:flex-end;
@@ -98,7 +98,6 @@ const CHAT_CSS = `
     right:.8rem;
     bottom:max(.8rem, env(safe-area-inset-bottom));
     align-items:stretch;
-    z-index:50;
   }
 
   .cb-box{
