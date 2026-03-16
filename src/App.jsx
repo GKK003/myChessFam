@@ -159,14 +159,14 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 
 /* ── PAGE BASE ── */
 .pg{
-  width:100%;
+  width:100vw;
   min-height:100vh;
   padding-top:100px;
   overflow-x:hidden;
 }
 
 .pg-center{
-  width:100%;
+  width:100vw;
   min-height:100vh;
   display:flex;
   align-items:center;
