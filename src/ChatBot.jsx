@@ -98,7 +98,7 @@ const CHAT_CSS = `
     right:.8rem;
     bottom:max(.8rem, env(safe-area-inset-bottom));
     align-items:stretch;
-    z-index:9999;
+    z-index:50;
   }
 
   .cb-box{
