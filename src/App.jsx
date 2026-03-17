@@ -436,6 +436,10 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
     position: relative;
   }
 
+  .nb.cta {
+  display: none;
+  }
+
   .status-drop-menu{
     top: auto !important;
     bottom: calc(100% + 4px) !important;
