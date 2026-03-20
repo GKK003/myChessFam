@@ -79,7 +79,7 @@ export default function AboutPage({ onNav, onContact }) {
               <p>{t.about.storyP3}</p>
             </div>
             <div className="about-visual-card">
-              <img src="/pieces/logo.png" alt="My Chess Family" />
+              <img src="/pieces/logo.webp" alt="My Chess Family" />
             </div>
           </div>
           <div className="about-section-head">

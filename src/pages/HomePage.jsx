@@ -262,7 +262,7 @@ export default function HomePage({ onNav, onContact }) {
             </button>
           </div>
           <div className="home-split-media">
-            <img src="/pieces/logo.png" alt="About My Chess Family" />
+            <img src="/pieces/logo.webp" alt="About My Chess Family" />
           </div>
         </div>
       </section>

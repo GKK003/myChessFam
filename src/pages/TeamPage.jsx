@@ -66,7 +66,7 @@ export default function TeamPage({ onNav, onContact }) {
           <div className="team-inner-light">
             <div className="founder-card">
               <div className="founder-visual">
-                <img src="/pieces/logo.png" alt="Dmitri Shevelev" />
+                <img src="/pieces/logo.webp" alt="Dmitri Shevelev" />
               </div>
               <div className="founder-copy">
                 <div className="founder-role">{t.team.founderRole}</div>

@@ -243,7 +243,7 @@ export default function App() {
       >
         <div className="nav-logo" onClick={() => go("home")}>
           <img
-            src="/pieces/logo.png"
+            src="/pieces/logo.webp"
             alt="company logo"
             className="nav-logo-img"
             style={{ width: "145px", height: "115px", marginBottom: "10px" }}
