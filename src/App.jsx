@@ -152,6 +152,34 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
 /* ── NAV ── */
 .nav{position:fixed;top:0;left:0;width:100%;z-index:999;height:100px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(9,19,30,0.97);border-bottom:1px solid var(--border);backdrop-filter:blur(18px);transform:translateY(0);transition:transform .35s ease;overflow:visible;}
 .nav-hide{transform:translateY(-100%);}
+/* ── NAV HOMEPAGE OVERRIDE ── */
+.nav-home{background:#ffffff;border-bottom:1px solid #E2E8F0;box-shadow:0 2px 12px rgba(0,0,0,.06);backdrop-filter:none;}
+.nav-home .lang-drop-trigger{background:#ffffff;border:1px solid #D4D8DD;color:#2D3748;}
+.nav-home .lang-drop-trigger:hover{background:#EAECEF;border-color:#C8CDD4;}
+.nav-home .lang-drop-trigger.open{background:#EAECEF;border-color:#C8CDD4;border-bottom-color:#EAECEF;}
+.nav-home .lang-chevron{opacity:.6;}
+.nav-home .lang-drop-menu{background:#ffffff;border:1px solid #D4D8DD;border-top:none;box-shadow:0 8px 24px rgba(0,0,0,.1);}
+.nav-home .lang-drop-item{color:#4A5568;}
+.nav-home .lang-drop-item:not(:last-child){border-bottom:1px solid #F0F2F4;}
+.nav-home .lang-drop-item:hover{background:#F5F6F8;color:#1F2B3A;}
+.nav-home .lang-drop-item.selected{color:var(--green2);background:rgba(31,168,94,.06);}
+.nav-home .burger{border:1px solid rgba(35,50,71,.2);background:rgba(35,50,71,.08);}
+.nav-home .burger:hover{background:rgba(35,50,71,.15);}
+.nav-home .burger-lines span{background:rgba(35,50,71,.85);}
+.mnav.mnav-home{background:#F5F6F8;border-left:1px solid #E2E8F0;}
+.mnav.mnav-home .mnav-h{border-bottom:1px solid #E2E8F0;}
+.mnav.mnav-home .mnav-btn{background:#ffffff;border:1px solid #E2E8F0;color:#2D3748;}
+.mnav.mnav-home .mnav-btn:hover{background:#EAECEF;border-color:#D4D8DD;}
+.mnav.mnav-home .mnav-btn.on{background:rgba(31,168,94,.1);border-color:rgba(31,168,94,.3);color:var(--green2);}
+.mnav.mnav-home .mnav-close{background:#ffffff;border:1px solid #E2E8F0;color:#2D3748;}
+.mnav.mnav-home .mnav-close:hover{background:#EAECEF;}
+.mnav.mnav-home .mnav-cta{border-top:1px solid #E2E8F0;}
+.mnav.mnav-home .mnav-lang-label{color:#7A8A9A;}
+.mnav.mnav-home .mnav-lang-item{background:#ffffff;border:1px solid #E2E8F0;color:#2D3748;}
+.mnav.mnav-home .mnav-lang-item.active{background:rgba(31,168,94,.1);border-color:rgba(31,168,94,.3);color:var(--green2);}
+.nav-home .nb{color:#4A5568;}
+.nav-home .nb:hover,.nav-home .nb.on{color:var(--green2);background:rgba(31,168,94,0.09);}
+
 .nav-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;color:var(--green2);cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;}
 .nav-links{display:flex;gap:2px;flex-wrap:wrap;}
 .nav-right{display:flex;align-items:center;gap:5px;overflow:visible;position:relative;}
@@ -169,6 +197,7 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   min-height:100vh;
   padding-top:100px;
   overflow-x:hidden;
+  background:#F5F6F8;
 }
 
 .pg-center{
@@ -191,21 +220,50 @@ body{font-family:'DM Sans',sans-serif;background:#09131E;color:#DCE9F5;}
   font-size:.86rem;
 }
 /* ── HERO ── */
-.hero{width:100%;min-height:calc(100vh - 66px);display:flex;align-items:center;background:linear-gradient(135deg,#09131E 0%,#0D1E2C 55%,#091A10 100%);position:relative;overflow:hidden;}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 68% 50%,rgba(21,122,69,.1) 0%,transparent 55%),radial-gradient(ellipse at 20% 75%,rgba(26,94,168,.12) 0%,transparent 50%);}
-.hero-bg{position:absolute;inset:0;opacity:.04;pointer-events:none;}
-.hero-bg div{background:var(--blue3);}
-.hero-bg div:nth-child(even){background:transparent;}
-.hero-inner{position:relative;z-index:2;width:100%;max-width:1320px;margin:0 auto;padding:3rem 2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(74,171,232,0.18);border:1px solid rgba(74,171,232,0.18);color:rgb(238,245,255);font-size:.73rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:.32rem .95rem;border-radius:100px;margin-bottom:1.35rem;animation:fu .6s ease both;}
-.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.3rem,4.8vw,4.2rem);font-weight:900;line-height:1.07;margin-bottom:1.3rem;animation:fu .6s ease .1s both;}
+.hero{width:100%;height:calc(100vh - 100px);max-height:780px;min-height:560px;display:flex;align-items:center;background:#F5F6F8;position:relative;overflow:hidden;border-bottom:1px solid #E8EDF2;}
+.hero::before{display:none;}
+.hero-bg{display:none;}
+/* ── HERO CIRCULAR COLLAGE ── */
+.hc-wrap{position:relative;width:100%;height:510px;align-self:center;animation:fu .6s ease .2s both;flex-shrink:0;}
+/* dashed accent ring behind main circle */
+.hc-ring{position:absolute;width:380px;height:380px;border-radius:50%;border:2px dashed rgba(31,168,94,0.2);top:50%;left:28%;transform:translate(-50%,-50%);z-index:1;pointer-events:none;}
+/* big circle — center left */
+.hc-main{position:absolute;width:350px;height:350px;border-radius:50%;overflow:hidden;top:50%;left:28%;transform:translate(-50%,-50%);box-shadow:0 20px 55px rgba(0,0,0,.15);border:5px solid #ffffff;z-index:2;}
+/* top-right small */
+.hc-tr{position:absolute;width:205px;height:205px;border-radius:50%;overflow:hidden;top:10px;right:0;box-shadow:0 10px 30px rgba(0,0,0,.12);border:4px solid #ffffff;z-index:3;}
+/* bottom-right medium */
+.hc-br{position:absolute;width:235px;height:235px;border-radius:50%;overflow:hidden;bottom:10px;right:10px;box-shadow:0 10px 30px rgba(0,0,0,.12);border:4px solid #ffffff;z-index:3;}
+/* bottom-left tiny */
+.hc-bl{position:absolute;width:155px;height:155px;border-radius:50%;overflow:hidden;bottom:30px;left:0;box-shadow:0 8px 24px rgba(0,0,0,.12);border:4px solid #ffffff;z-index:3;}
+.hc-main img,.hc-tr img,.hc-br img,.hc-bl img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
+/* decorative dots */
+.hc-dot{position:absolute;border-radius:50%;z-index:1;}
+.hc-dot-1{width:13px;height:13px;background:var(--green2);top:40%;left:55%;opacity:.6;}
+.hc-dot-2{width:8px;height:8px;background:#4AABE8;top:15%;left:42%;opacity:.5;}
+.hc-dot-3{width:10px;height:10px;background:var(--green2);bottom:22%;right:5%;opacity:.45;}
+/* chess piece floaters */
+.hc-piece{position:absolute;z-index:4;font-size:2rem;line-height:1;pointer-events:none;animation:hcFloat 4s ease-in-out infinite;}
+.hc-piece-2{animation-delay:.8s;animation-duration:5s;}
+.hc-piece-3{animation-delay:1.6s;animation-duration:3.5s;}
+.hc-piece-4{animation-delay:2.4s;animation-duration:4.5s;}
+@keyframes hcFloat{0%,100%{transform:translateY(0) rotate(-6deg);}50%{transform:translateY(-12px) rotate(6deg);}}
+/* star bursts */
+.hc-star{position:absolute;z-index:4;pointer-events:none;animation:hcSpin 8s linear infinite;}
+.hc-star-2{animation-duration:6s;animation-direction:reverse;}
+@keyframes hcSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+/* wavy bottom accent */
+.hc-wave{position:absolute;bottom:-2px;left:0;right:0;height:40px;z-index:5;pointer-events:none;}
+
+.hero-inner{position:relative;z-index:2;width:100%;max-width:1320px;margin:0 auto;padding:2rem 2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;height:100%;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(31,168,94,0.08);border:1px solid rgba(31,168,94,0.22);color:var(--green2);font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:.3rem .9rem;border-radius:100px;margin-bottom:1.1rem;animation:fu .6s ease both;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.8vw,3.4rem);font-weight:900;line-height:1.1;margin-bottom:1rem;animation:fu .6s ease .1s both;color:#1F2B3A;}
 .hero h1 em{color:var(--green2);font-style:normal;}
-.hero-sub{font-size:1.02rem;color:var(--muted);line-height:1.78;margin-bottom:2rem;animation:fu .6s ease .2s both;}
-.hero-btns{display:flex;gap:.9rem;flex-wrap:wrap;animation:fu .6s ease .3s both;}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:2rem;animation:fu .6s ease .45s both;}
-.stat{background:rgba(26,94,168,.1);border:1px solid var(--border);border-radius:11px;padding:1rem;text-align:center;}
-.stat-n{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:900;color:var(--green2);}
-.stat-l{font-size:.75rem;color:var(--muted);margin-top:1px;}
+.hero-sub{font-size:.96rem;color:#586273;line-height:1.75;margin-bottom:1.5rem;animation:fu .6s ease .2s both;max-width:480px;}
+.hero-btns{display:flex;gap:.75rem;flex-wrap:wrap;animation:fu .6s ease .3s both;}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:1.5rem;animation:fu .6s ease .45s both;}
+.stat{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:11px;padding:.85rem .75rem;text-align:center;}
+.stat-n{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;color:var(--green2);}
+.stat-l{font-size:.7rem;color:#7A8A9A;margin-top:1px;}
 
 /* ── BOARD ── */
 .board-wrap{animation:fu .6s ease .2s both;position:relative;}
@@ -1161,7 +1219,10 @@ tr:hover td{background:rgba(26,94,168,.07);}
 @media(max-width:900px){.founder-card{grid-template-columns:1fr;}.team-features{grid-template-columns:1fr;}}
 @media(max-width:850px){.team-hero-inner,.team-inner-light{padding:0 1.2rem;}}
 @media(max-width:950px){.home-split-wrap,.home-split-wrap.rev{grid-template-columns:1fr;gap:2rem;padding:0 1.2rem;}.home-split-wrap.rev .home-split-copy,.home-split-wrap.rev .home-split-media{order:initial;}.home-split-copy{max-width:100%;}.home-split-media{justify-content:flex-start;}.home-split-media img{max-width:100%;}}
-@media(max-width:1050px){.hero-inner{grid-template-columns:1fr;}.board-wrap{display:none;}.about-g{grid-template-columns:1fr;}.fgrid{grid-template-columns:1fr;}.fg.full{grid-column:1;}.nav{padding:0 1rem;}.nb{padding:.38rem .5rem;font-size:.8rem;}.wrap{padding:3rem 1.2rem;}.nav-logo{font-size:1.2rem;}}
+.hero-knight{position:absolute;bottom:-40px;left:50%;transform:translateX(-60%) scaleX(-1);font-size:580px;line-height:1;opacity:.07;color:#1F2B3A;pointer-events:none;user-select:none;z-index:0;font-family:serif;white-space:nowrap;}
+@media(max-width:1050px){.hero-knight{font-size:380px;transform:translateX(-50%) scaleX(-1);}}
+@media(max-width:480px){.hero-knight{font-size:280px;}}
+@media(max-width:1050px){.hero-inner{grid-template-columns:1fr;}.board-wrap{display:none;}.hero-img-wrap{display:none;}.about-g{grid-template-columns:1fr;}.fgrid{grid-template-columns:1fr;}.fg.full{grid-column:1;}.nav{padding:0 1rem;}.nb{padding:.38rem .5rem;font-size:.8rem;}.wrap{padding:3rem 1.2rem;}.nav-logo{font-size:1.2rem;}}
 
 .about-hero{background:linear-gradient(135deg,#0B1624 0%,#102033 55%,#0E1D17 100%);padding:5rem 0 4rem;position:relative;overflow:hidden;}
 .about-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(74,171,232,.16),transparent 32%),radial-gradient(circle at 80% 20%,rgba(31,168,94,.14),transparent 28%);pointer-events:none;}
@@ -1805,43 +1866,383 @@ function HomePage({ onNav, onContact }) {
           ))}
         </div>
         <div className="hero-inner">
-          <div>
-            <div className="hero-badge">{t.home.heroBadge}</div>
-            <h1>
-              {t.home.heroTitle} <em>{t.home.heroTitleEm}</em>
-            </h1>
-            <p className="hero-sub">{t.home.heroSub}</p>
-            <div className="hero-btns">
-              <button className="btn btn-g" onClick={() => onNav("programs")}>
-                {t.home.heroBtn1}
-              </button>
-              <button className="btn btn-g" onClick={() => onNav("camp")}>
-                {t.home.heroBtn2}
-              </button>
-              <button
-                className="btn btn-g"
-                style={{ background: "rgba(74,171,232,.18)", color: "#EEF5FF" }}
-                onClick={onContact}
-              >
-                {t.home.heroBtn3}
-              </button>
-            </div>
-            <div className="stats">
-              <div className="stat">
-                <div className="stat-n">{t.home.stat1n}</div>
-                <div className="stat-l">{t.home.stat1l}</div>
+          <div style={{ position: "relative" }}>
+            {/* background knight chess piece */}
+            <div className="hero-knight">♞</div>
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <div className="hero-badge">{t.home.heroBadge}</div>
+              <h1>
+                {t.home.heroTitle} <em>{t.home.heroTitleEm}</em>
+              </h1>
+              <p className="hero-sub">{t.home.heroSub}</p>
+              <div className="hero-btns">
+                <button className="btn btn-g" onClick={() => onNav("programs")}>
+                  {t.home.heroBtn1}
+                </button>
+                <button className="btn btn-g" onClick={() => onNav("camp")}>
+                  {t.home.heroBtn2}
+                </button>
+                <button
+                  className="btn btn-g"
+                  style={{
+                    background: "rgba(31,168,94,.12)",
+                    color: "var(--green2)",
+                    border: "1px solid rgba(31,168,94,.3)",
+                  }}
+                  onClick={onContact}
+                >
+                  {t.home.heroBtn3}
+                </button>
               </div>
-              <div className="stat">
-                <div className="stat-n">{t.home.stat2n}</div>
-                <div className="stat-l">{t.home.stat2l}</div>
-              </div>
-              <div className="stat">
-                <div className="stat-n">{t.home.stat3n}</div>
-                <div className="stat-l">{t.home.stat3l}</div>
+              <div className="stats">
+                <div className="stat">
+                  <div className="stat-n">{t.home.stat1n}</div>
+                  <div className="stat-l">{t.home.stat1l}</div>
+                </div>
+                <div className="stat">
+                  <div className="stat-n">{t.home.stat2n}</div>
+                  <div className="stat-l">{t.home.stat2l}</div>
+                </div>
+                <div className="stat">
+                  <div className="stat-n">{t.home.stat3n}</div>
+                  <div className="stat-l">{t.home.stat3l}</div>
+                </div>
               </div>
             </div>
           </div>
-          <ChessBoard />
+          <div className="hero-img-wrap hc-wrap">
+            {/* dashed ring behind main */}
+            <div className="hc-ring" />
+            {/* big circle — center left */}
+            <div className="hc-main">
+              <img
+                src="https://res.cloudinary.com/dlouyotx5/image/upload/v1773468259/mychessfamily/gallery/1773468258807-img_8432.jpg"
+                alt="Chess class"
+                loading="eager"
+              />
+            </div>
+            {/* top-right small */}
+            <div className="hc-tr">
+              <img
+                src="https://res.cloudinary.com/dlouyotx5/image/upload/v1773468229/mychessfamily/gallery/1773468228941-img_8235.jpg"
+                alt="Kids playing chess"
+                loading="lazy"
+              />
+            </div>
+            {/* bottom-right medium */}
+            <div className="hc-br">
+              <img
+                src="https://res.cloudinary.com/dlouyotx5/image/upload/v1773413197/mychessfamily/gallery/1773413197476-img_3158.jpg"
+                alt="Chess coaching"
+                loading="lazy"
+              />
+            </div>
+            {/* bottom-left tiny */}
+            <div className="hc-bl">
+              <img
+                src="https://res.cloudinary.com/dlouyotx5/image/upload/v1773468177/mychessfamily/gallery/1773468177011-img_8252.jpg"
+                alt="Chess class"
+                loading="lazy"
+              />
+            </div>
+            {/* decorative dots — in gaps between circles */}
+            <div
+              className="hc-dot hc-dot-1"
+              style={{
+                width: "10px",
+                height: "10px",
+                background: "var(--green2)",
+                top: "38%",
+                left: "57%",
+                opacity: 0.55,
+              }}
+            />
+            <div
+              className="hc-dot hc-dot-2"
+              style={{
+                width: "7px",
+                height: "7px",
+                background: "#4AABE8",
+                top: "20%",
+                left: "56%",
+                opacity: 0.5,
+              }}
+            />
+            <div
+              className="hc-dot hc-dot-3"
+              style={{
+                width: "9px",
+                height: "9px",
+                background: "#F9A825",
+                bottom: "24%",
+                right: "42%",
+                opacity: 0.5,
+              }}
+            />
+            <div
+              className="hc-dot"
+              style={{
+                width: "6px",
+                height: "6px",
+                background: "#E53E3E",
+                top: "52%",
+                right: "38%",
+                opacity: 0.45,
+              }}
+            />
+            <div
+              className="hc-dot"
+              style={{
+                width: "8px",
+                height: "8px",
+                background: "var(--green2)",
+                top: "72%",
+                left: "55%",
+                opacity: 0.4,
+              }}
+            />
+
+            {/* floating chess pieces — strictly in corners/edges away from circles */}
+            {/* top-left corner — far from all circles */}
+            <div
+              className="hc-piece"
+              style={{
+                top: "2%",
+                left: "0%",
+                color: "var(--green2)",
+                fontSize: "2.4rem",
+                opacity: 0.9,
+                zIndex: 6,
+              }}
+            >
+              ♟
+            </div>
+            {/* middle-right edge — between tr and br circles */}
+            <div
+              className="hc-piece hc-piece-2"
+              style={{
+                top: "44%",
+                right: "2%",
+                color: "#1A5EA8",
+                fontSize: "2rem",
+                opacity: 0.85,
+                zIndex: 6,
+              }}
+            >
+              ♞
+            </div>
+            {/* top-right corner — above tr circle */}
+            <div
+              className="hc-piece hc-piece-3"
+              style={{
+                top: "1%",
+                right: "1%",
+                color: "#F9A825",
+                fontSize: "1.8rem",
+                opacity: 0.8,
+                zIndex: 6,
+              }}
+            >
+              ♝
+            </div>
+            {/* bottom-left corner — left of bl circle */}
+            <div
+              className="hc-piece hc-piece-4"
+              style={{
+                bottom: "2%",
+                left: "0%",
+                color: "#E53E3E",
+                fontSize: "1.9rem",
+                opacity: 0.8,
+                zIndex: 6,
+              }}
+            >
+              ♜
+            </div>
+            {/* center-right gap between main and right circles */}
+            <div
+              className="hc-piece"
+              style={{
+                top: "28%",
+                right: "38%",
+                color: "var(--green2)",
+                fontSize: "1.5rem",
+                opacity: 0.7,
+                animation: "hcFloat 6s ease-in-out infinite",
+                animationDelay: "1.2s",
+                zIndex: 6,
+              }}
+            >
+              ♛
+            </div>
+            {/* top center gap */}
+            <div
+              className="hc-piece"
+              style={{
+                top: "3%",
+                left: "52%",
+                color: "#4AABE8",
+                fontSize: "1.4rem",
+                opacity: 0.7,
+                animation: "hcFloat 5.5s ease-in-out infinite",
+                animationDelay: "2s",
+                zIndex: 6,
+              }}
+            >
+              ♚
+            </div>
+
+            {/* star bursts — in empty corners */}
+            <svg
+              className="hc-star"
+              style={{
+                position: "absolute",
+                top: "1%",
+                left: "48%",
+                width: "26px",
+                height: "26px",
+              }}
+              viewBox="0 0 28 28"
+            >
+              <polygon
+                points="14,2 16.5,10 25,10 18.5,15.5 21,24 14,19 7,24 9.5,15.5 3,10 11.5,10"
+                fill="#F9A825"
+                opacity=".9"
+              />
+            </svg>
+            <svg
+              className="hc-star hc-star-2"
+              style={{
+                position: "absolute",
+                bottom: "2%",
+                right: "38%",
+                width: "22px",
+                height: "22px",
+              }}
+              viewBox="0 0 28 28"
+            >
+              <polygon
+                points="14,2 16.5,10 25,10 18.5,15.5 21,24 14,19 7,24 9.5,15.5 3,10 11.5,10"
+                fill="#1FA85E"
+                opacity=".8"
+              />
+            </svg>
+            <svg
+              className="hc-star"
+              style={{
+                position: "absolute",
+                top: "42%",
+                right: "1%",
+                width: "16px",
+                height: "16px",
+                animationDuration: "5s",
+              }}
+              viewBox="0 0 28 28"
+            >
+              <polygon
+                points="14,2 16.5,10 25,10 18.5,15.5 21,24 14,19 7,24 9.5,15.5 3,10 11.5,10"
+                fill="#4AABE8"
+                opacity=".7"
+              />
+            </svg>
+            <svg
+              className="hc-star hc-star-2"
+              style={{
+                position: "absolute",
+                top: "2%",
+                right: "36%",
+                width: "12px",
+                height: "12px",
+                animationDuration: "7s",
+              }}
+              viewBox="0 0 28 28"
+            >
+              <polygon
+                points="14,2 16.5,10 25,10 18.5,15.5 21,24 14,19 7,24 9.5,15.5 3,10 11.5,10"
+                fill="#E53E3E"
+                opacity=".65"
+              />
+            </svg>
+
+            {/* small plus / cross shapes */}
+            <svg
+              style={{
+                position: "absolute",
+                top: "60%",
+                right: "36%",
+                width: "16px",
+                height: "16px",
+                zIndex: 4,
+                pointerEvents: "none",
+                animation: "hcSpin 10s linear infinite",
+              }}
+              viewBox="0 0 16 16"
+            >
+              <rect
+                x="6"
+                y="0"
+                width="4"
+                height="16"
+                rx="2"
+                fill="#F9A825"
+                opacity=".7"
+              />
+              <rect
+                x="0"
+                y="6"
+                width="16"
+                height="4"
+                rx="2"
+                fill="#F9A825"
+                opacity=".7"
+              />
+            </svg>
+            <svg
+              style={{
+                position: "absolute",
+                top: "10%",
+                left: "54%",
+                width: "12px",
+                height: "12px",
+                zIndex: 4,
+                pointerEvents: "none",
+                animation: "hcSpin 8s linear infinite reverse",
+              }}
+              viewBox="0 0 16 16"
+            >
+              <rect
+                x="6"
+                y="0"
+                width="4"
+                height="16"
+                rx="2"
+                fill="#E53E3E"
+                opacity=".6"
+              />
+              <rect
+                x="0"
+                y="6"
+                width="16"
+                height="4"
+                rx="2"
+                fill="#E53E3E"
+                opacity=".6"
+              />
+            </svg>
+
+            {/* wavy bottom SVG accent */}
+            <svg
+              className="hc-wave"
+              viewBox="0 0 600 40"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M0,20 Q75,0 150,20 Q225,40 300,20 Q375,0 450,20 Q525,40 600,20 L600,40 L0,40 Z"
+                fill="#1FA85E"
+                opacity=".07"
+              />
+            </svg>
+          </div>
         </div>
       </div>
       <h1 className="home-main-title">{t.home.offerTitle}</h1>
@@ -5171,7 +5572,9 @@ export default function App() {
 
   return (
     <div style={{ width: "100%", minHeight: "100vh", background: "#09131E" }}>
-      <nav className={`nav ${hideHeader ? "nav-hide" : ""}`}>
+      <nav
+        className={`nav ${hideHeader ? "nav-hide" : ""} ${page === "home" ? "nav-home" : ""}`}
+      >
         <div className="nav-logo" onClick={() => go("home")}>
           <img
             src="/pieces/logo.png"
@@ -5273,7 +5676,9 @@ export default function App() {
         className={`mnav-ovl${mobileOpen ? " on" : ""}`}
         onClick={closeMobile}
       />
-      <div className={`mnav${mobileOpen ? " on" : ""}`}>
+      <div
+        className={`mnav${mobileOpen ? " on" : ""} ${page === "home" ? "mnav-home" : ""}`}
+      >
         <div className="mnav-h">
           <div
             className="mnav-logo"
