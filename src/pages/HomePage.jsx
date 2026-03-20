@@ -115,7 +115,7 @@ export default function HomePage({ onNav, onContact }) {
               <img
                 fetchPriority="high"
                 loading="eager"
-                src="https://res.cloudinary.com/dlouyotx5/image/upload/f_auto,q_auto,w_700/v1773468259/mychessfamily/gallery/1773468258807-img_8432.jpg"
+                src="https://res.cloudinary.com/dlouyotx5/image/upload/f_webp,q_auto,w_700/v1773468259/mychessfamily/gallery/1773468258807-img_8432.jpg"
                 alt="Chess class"
               />
             </div>
@@ -123,7 +123,7 @@ export default function HomePage({ onNav, onContact }) {
             <div className="hc-tr">
               <img
                 loading="lazy"
-                src="https://res.cloudinary.com/dlouyotx5/image/upload/f_auto,q_auto,w_700/v1773468229/mychessfamily/gallery/1773468228941-img_8235.jpg"
+                src="https://res.cloudinary.com/dlouyotx5/image/upload/f_webp,q_auto,w_700/v1773468229/mychessfamily/gallery/1773468228941-img_8235.jpg"
                 alt="Kids playing chess"
               />
             </div>
@@ -131,7 +131,7 @@ export default function HomePage({ onNav, onContact }) {
             <div className="hc-br">
               <img
                 loading="lazy"
-                src="https://res.cloudinary.com/dlouyotx5/image/upload/f_auto,q_auto,w_700/v1773413197/mychessfamily/gallery/1773413197476-img_3158.jpg"
+                src="https://res.cloudinary.com/dlouyotx5/image/upload/f_webp,q_auto,w_700/v1773413197/mychessfamily/gallery/1773413197476-img_3158.jpg"
                 alt="Chess coaching"
               />
             </div>
@@ -139,7 +139,7 @@ export default function HomePage({ onNav, onContact }) {
             <div className="hc-bl">
               <img
                 loading="lazy"
-                src="https://res.cloudinary.com/dlouyotx5/image/upload/f_auto,q_auto,w_700/v1773468177/mychessfamily/gallery/1773468177011-img_8252.jpg"
+                src="https://res.cloudinary.com/dlouyotx5/image/upload/f_webp,q_auto,w_700/v1773468177/mychessfamily/gallery/1773468177011-img_8252.jpg"
                 alt="Chess class"
               />
             </div>

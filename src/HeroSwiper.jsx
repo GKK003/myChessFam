@@ -14,27 +14,27 @@ import { useState, useEffect } from "react";
 
 const DEFAULT_PHOTOS = [
   {
-    src: "https://res.cloudinary.com/dlouyotx5/image/upload/v1773468663/mychessfamily/gallery/1773468663062-img_8369.jpg",
+    src: "https://res.cloudinary.com/dlouyotx5/image/upload/f_webp,q_auto/v1773468663/mychessfamily/gallery/1773468663062-img_8369.jpg",
     alt: "MyChessFamily",
   },
   {
-    src: "https://res.cloudinary.com/dlouyotx5/image/upload/v1773468643/mychessfamily/gallery/1773468643209-img_8480.jpg",
+    src: "https://res.cloudinary.com/dlouyotx5/image/upload/f_webp,q_auto/v1773468643/mychessfamily/gallery/1773468643209-img_8480.jpg",
     alt: "MyChessFamily",
   },
   {
-    src: "https://res.cloudinary.com/dlouyotx5/image/upload/v1773468259/mychessfamily/gallery/1773468258807-img_8432.jpg",
+    src: "https://res.cloudinary.com/dlouyotx5/image/upload/f_webp,q_auto/v1773468259/mychessfamily/gallery/1773468258807-img_8432.jpg",
     alt: "MyChessFamily",
   },
   {
-    src: "https://res.cloudinary.com/dlouyotx5/image/upload/v1773468229/mychessfamily/gallery/1773468228941-img_8235.jpg",
+    src: "https://res.cloudinary.com/dlouyotx5/image/upload/f_webp,q_auto/v1773468229/mychessfamily/gallery/1773468228941-img_8235.jpg",
     alt: "MyChessFamily",
   },
   {
-    src: "https://res.cloudinary.com/dlouyotx5/image/upload/v1773468177/mychessfamily/gallery/1773468177011-img_8252.jpg",
+    src: "https://res.cloudinary.com/dlouyotx5/image/upload/f_webp,q_auto/v1773468177/mychessfamily/gallery/1773468177011-img_8252.jpg",
     alt: "MyChessFamily",
   },
   {
-    src: "https://res.cloudinary.com/dlouyotx5/image/upload/v1773413197/mychessfamily/gallery/1773413197476-img_3158.jpg",
+    src: "https://res.cloudinary.com/dlouyotx5/image/upload/f_webp,q_auto/v1773413197/mychessfamily/gallery/1773413197476-img_3158.jpg",
     alt: "MyChessFamily",
   },
 ];
