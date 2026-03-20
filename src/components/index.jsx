@@ -137,12 +137,12 @@ export function Footer({ onNav, onContact }) {
           paddingTop: "1.2rem",
           borderTop: "1px solid rgba(74,171,232,0.1)",
           fontSize: ".78rem",
-          color: "rgba(180,210,240,0.35)",
+          color: "rgba(180,210,240,0.7)",
           letterSpacing: ".3px",
         }}
       >
         {t.footer.builtBy}{" "}
-        <span style={{ color: "rgba(180,210,240,0.55)", fontWeight: 600 }}>
+        <span style={{ color: "rgba(180,210,240,0.9)", fontWeight: 600 }}>
           Giorgi Kostava
         </span>
       </div>

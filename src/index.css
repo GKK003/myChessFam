@@ -93,7 +93,7 @@ body {
   --blue2: #2272cc;
   --blue3: #4aabe8;
   --green: #157a45;
-  --green2: #1fa85e;
+  --green2: #157a45;
   --cream: #dce9f5;
   --muted: rgba(180, 210, 240, 0.6);
   --border: rgba(74, 171, 232, 0.18);
@@ -509,7 +509,7 @@ body {
 }
 .stat-l {
   font-size: 0.7rem;
-  color: #7a8a9a;
+  color: #4a5a6a;
   margin-top: 1px;
 }
 
@@ -1119,9 +1119,9 @@ body {
   border-color: #d4d8dd;
 }
 .mnav-btn.on {
-  border-color: rgba(31, 168, 94, 0.3);
-  background: rgba(31, 168, 94, 0.08);
-  color: var(--green2);
+  border-color: rgba(21, 122, 69, 0.4);
+  background: rgba(21, 122, 69, 0.08);
+  color: #105c34;
 }
 .mnav-cta {
   margin-top: auto;
@@ -1911,7 +1911,7 @@ tr:hover td {
   flex-wrap: wrap;
 }
 .flnk {
-  color: #586273;
+  color: #8fa0b3;
   text-decoration: none;
   cursor: pointer;
   transition: 0.18s;
@@ -2058,7 +2058,7 @@ tr:hover td {
   font-size: 0.64rem;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #7a8a9a;
+  color: #4a5a6a;
   font-weight: 700;
 }
 .mnav-lang-row {
@@ -2091,7 +2091,7 @@ tr:hover td {
   color: #1f2b3a;
 }
 .mnav-lang-item.active {
-  color: var(--green2);
+  color: #105c34;
   background: rgba(21, 122, 69, 0.1);
 }
 

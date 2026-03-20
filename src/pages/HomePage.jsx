@@ -154,7 +154,7 @@ export default function HomePage({ onNav, onContact }) {
             alt={t.home.offer1Title}
             className="offer-img"
           />
-          <h3>{t.home.offer1Title}</h3>
+          <h2>{t.home.offer1Title}</h2>
           <p>{t.home.offer1Desc}</p>
           <span>{t.common.seeMore}</span>
         </div>
@@ -164,7 +164,7 @@ export default function HomePage({ onNav, onContact }) {
             alt={t.home.offer2Title}
             className="offer-img"
           />
-          <h3>{t.home.offer2Title}</h3>
+          <h2>{t.home.offer2Title}</h2>
           <p>{t.home.offer2Desc}</p>
           <span>{t.common.seeMore}</span>
         </div>
@@ -174,7 +174,7 @@ export default function HomePage({ onNav, onContact }) {
             alt={t.home.offer3Title}
             className="offer-img"
           />
-          <h3>{t.home.offer3Title}</h3>
+          <h2>{t.home.offer3Title}</h2>
           <p>{t.home.offer3Desc}</p>
           <span>{t.common.seeMore}</span>
         </div>
@@ -184,7 +184,7 @@ export default function HomePage({ onNav, onContact }) {
             alt={t.home.offer4Title}
             className="offer-img"
           />
-          <h3>{t.home.offer4Title}</h3>
+          <h2>{t.home.offer4Title}</h2>
           <p>{t.home.offer4Desc}</p>
           <span>{t.common.seeMore}</span>
         </div>
@@ -194,7 +194,7 @@ export default function HomePage({ onNav, onContact }) {
             alt={t.home.offer5Title}
             className="offer-img"
           />
-          <h3>{t.home.offer5Title}</h3>
+          <h2>{t.home.offer5Title}</h2>
           <p>{t.home.offer5Desc}</p>
           <span>{t.common.seeMore}</span>
         </div>

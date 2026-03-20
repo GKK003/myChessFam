@@ -246,7 +246,12 @@ export default function App() {
             src="/pieces/logo.webp"
             alt="company logo"
             className="nav-logo-img"
-            style={{ width: "145px", height: "115px", marginBottom: "10px" }}
+            style={{
+              width: "115px",
+              height: "115px",
+              marginBottom: "10px",
+              objectFit: "contain",
+            }}
           />
         </div>
         <div className="nav-links">
@@ -410,99 +415,103 @@ export default function App() {
         </div>
       </div>
 
-      <Suspense
-        fallback={
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100vh",
-              background: "#F5F6F8",
-              color: "#586273",
-              fontSize: "1rem",
-            }}
-          >
-            Loading...
-          </div>
-        }
-      >
-        <Routes>
-          <Route path="/" element={<Navigate to="/en" replace />} />
-          <Route
-            path="/:lang"
-            element={<HomePage onNav={go} onContact={openContact} />}
-          />
-          <Route
-            path="/:lang/programs"
-            element={<ProgramsPage onNav={go} onContact={openContact} />}
-          />
-          <Route
-            path="/:lang/camp"
-            element={
-              <CampPage
-                camps={camps}
-                onNav={go}
-                showToast={showToast}
-                onRegistered={loadAdminData}
-                onContact={openContact}
-              />
-            }
-          />
-          <Route
-            path="/:lang/team"
-            element={<TeamPage onNav={go} onContact={openContact} />}
-          />
-          <Route
-            path="/:lang/reviews"
-            element={
-              <ReviewsPage
-                reviews={reviews}
-                onNav={go}
-                openModal={() => setReviewOpen(true)}
-                onContact={openContact}
-              />
-            }
-          />
-          <Route
-            path="/:lang/about"
-            element={<AboutPage onNav={go} onContact={openContact} />}
-          />
-          <Route
-            path="/:lang/gallery"
-            element={<GalleryPage onNav={go} onContact={openContact} />}
-          />
-          <Route
-            path="/:lang/contact"
-            element={<ContactPage onNav={go} showToast={showToast} />}
-          />
-          <Route
-            path="/:lang/login"
-            element={<LoginPage onLogin={handleLogin} showToast={showToast} />}
-          />
-          <Route
-            path="/:lang/admin"
-            element={
-              isAdmin ? (
-                <AdminPage
+      <main>
+        <Suspense
+          fallback={
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100vh",
+                background: "#F5F6F8",
+                color: "#586273",
+                fontSize: "1rem",
+              }}
+            >
+              Loading...
+            </div>
+          }
+        >
+          <Routes>
+            <Route path="/" element={<Navigate to="/en" replace />} />
+            <Route
+              path="/:lang"
+              element={<HomePage onNav={go} onContact={openContact} />}
+            />
+            <Route
+              path="/:lang/programs"
+              element={<ProgramsPage onNav={go} onContact={openContact} />}
+            />
+            <Route
+              path="/:lang/camp"
+              element={
+                <CampPage
                   camps={camps}
-                  setCamps={setCamps}
-                  campRegs={campRegs}
-                  reloadRegs={loadAdminData}
-                  adminReviews={adminReviews}
-                  galleryPhotos={galleryPhotos}
-                  reloadGallery={loadGallery}
-                  onLogout={handleLogout}
+                  onNav={go}
                   showToast={showToast}
+                  onRegistered={loadAdminData}
+                  onContact={openContact}
                 />
-              ) : (
+              }
+            />
+            <Route
+              path="/:lang/team"
+              element={<TeamPage onNav={go} onContact={openContact} />}
+            />
+            <Route
+              path="/:lang/reviews"
+              element={
+                <ReviewsPage
+                  reviews={reviews}
+                  onNav={go}
+                  openModal={() => setReviewOpen(true)}
+                  onContact={openContact}
+                />
+              }
+            />
+            <Route
+              path="/:lang/about"
+              element={<AboutPage onNav={go} onContact={openContact} />}
+            />
+            <Route
+              path="/:lang/gallery"
+              element={<GalleryPage onNav={go} onContact={openContact} />}
+            />
+            <Route
+              path="/:lang/contact"
+              element={<ContactPage onNav={go} showToast={showToast} />}
+            />
+            <Route
+              path="/:lang/login"
+              element={
                 <LoginPage onLogin={handleLogin} showToast={showToast} />
-              )
-            }
-          />
-          <Route path="*" element={<Navigate to={`/${lang}`} replace />} />
-        </Routes>
-      </Suspense>
+              }
+            />
+            <Route
+              path="/:lang/admin"
+              element={
+                isAdmin ? (
+                  <AdminPage
+                    camps={camps}
+                    setCamps={setCamps}
+                    campRegs={campRegs}
+                    reloadRegs={loadAdminData}
+                    adminReviews={adminReviews}
+                    galleryPhotos={galleryPhotos}
+                    reloadGallery={loadGallery}
+                    onLogout={handleLogout}
+                    showToast={showToast}
+                  />
+                ) : (
+                  <LoginPage onLogin={handleLogin} showToast={showToast} />
+                )
+              }
+            />
+            <Route path="*" element={<Navigate to={`/${lang}`} replace />} />
+          </Routes>
+        </Suspense>
+      </main>
 
       {contactOpen && (
         <ContactModal onClose={closeContact} showToast={showToast} />
