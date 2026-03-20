@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { useLang } from "../LangContext";
-import { fmtDShort, getImageSrc, DEF_CAMPS } from "../constants";
+import {
+  fmtDShort,
+  getImageSrc,
+  DEF_CAMPS,
+  optimizeCloudinaryUrl,
+} from "../constants";
 import { Footer, CampRegModal, Badge } from "../components";
 
 export default function CampPage({
@@ -33,7 +38,11 @@ export default function CampPage({
             {camps.map((c) => (
               <div className="camp-row-card" key={c.id}>
                 <div className="camp-row-media">
-                  <img src={getImageSrc(c.image, BASE)} alt={c.name} />
+                  <img
+                    src={optimizeCloudinaryUrl(getImageSrc(c.image, BASE), 800)}
+                    alt={c.name}
+                    loading="lazy"
+                  />
                 </div>
                 <div className="camp-row-main">
                   <div className="camp-row-head">
@@ -103,44 +112,5 @@ export default function CampPage({
       )}
       <Footer onNav={onNav} onContact={onContact} />
     </div>
-  );
-}
-
-function AboutFaqSection() {
-  const { t } = useLang();
-  const faqs = t.about.faqs;
-  const [openIndex, setOpenIndex] = useState(0);
-  return (
-    <section className="about-faq-section">
-      <div className="about-inner-light">
-        <div className="about-section-head" style={{ marginTop: 0 }}>
-          <h2>{t.about.faqTitle}</h2>
-          <p>{t.about.faqSub}</p>
-        </div>
-        <div className="about-faq-grid">
-          {faqs.map((item, i) => {
-            const isOpen = openIndex === i;
-            return (
-              <div
-                key={item.q}
-                className={`about-faq-card${isOpen ? " open" : ""}`}
-              >
-                <button
-                  type="button"
-                  className="about-faq-top"
-                  onClick={() => setOpenIndex(isOpen ? -1 : i)}
-                >
-                  <span>{item.q}</span>
-                  <span className="about-faq-plus">{isOpen ? "−" : "+"}</span>
-                </button>
-                <div className="about-faq-body">
-                  <p>{item.a}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
   );
 }

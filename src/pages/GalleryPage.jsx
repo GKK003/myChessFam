@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLang } from "../LangContext";
-import { CONTACT, getGalleryImageSrc, api } from "../constants";
+import {
+  CONTACT,
+  getGalleryImageSrc,
+  api,
+  optimizeCloudinaryUrl,
+} from "../constants";
 import { Footer } from "../components";
 
 const GALLERY_CSS = `
@@ -434,9 +439,13 @@ export default function GalleryPage({ onNav, onContact }) {
                   onClick={() => setLightbox(idx)}
                 >
                   <SmartGalleryImage
-                    src={getGalleryImageSrc(item.imageUrl, BASE)}
+                    src={optimizeCloudinaryUrl(
+                      getGalleryImageSrc(item.imageUrl, BASE),
+                      800,
+                    )}
                     alt={item.caption}
                     className="gallery-img"
+                    loading="lazy"
                   />
                   <div className="gallery-overlay">
                     <div className="gallery-overlay-tag">
@@ -484,7 +493,10 @@ export default function GalleryPage({ onNav, onContact }) {
               ×
             </button>
             <SmartGalleryImage
-              src={getGalleryImageSrc(current.imageUrl, BASE)}
+              src={optimizeCloudinaryUrl(
+                getGalleryImageSrc(current.imageUrl, BASE),
+                1200,
+              )}
               alt={current.caption}
               className="lightbox-img"
               wrapperClassName="lightbox-img-wrap"

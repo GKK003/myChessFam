@@ -9,7 +9,7 @@ import {
 import ChatBot from "./ChatBot";
 import { useLang } from "./LangContext";
 import { api, AUTH_KEY, CONTACT, SOCIALS, DEF_CAMPS } from "./constants";
-import { Toast, ContactModal } from "./components";
+import { Toast, ContactModal, ReviewModal } from "./components";
 import "./index.css";
 
 // Pages — lazy loaded for performance
@@ -25,8 +25,6 @@ const AdminPage = lazy(() => import("./pages/AdminPage"));
 const GalleryPage = lazy(() => import("./pages/GalleryPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
-
-import ReviewModal from "./components/ReviewModal";
 
 export default function App() {
   const navigate = useNavigate();

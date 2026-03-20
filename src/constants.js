@@ -120,3 +120,10 @@ export const getImageSrc = (image, base) => {
   if (image.startsWith("images/")) return `/${image}`;
   return `${base}${image.startsWith("/") ? image : `/${image}`}`;
 };
+
+export const optimizeCloudinaryUrl = (url, width = 800) => {
+  if (!url || typeof url !== "string") return url;
+  if (!url.includes("res.cloudinary.com")) return url;
+  if (url.includes("/upload/f_auto")) return url; // already optimized
+  return url.replace("/upload/", `/upload/f_auto,q_auto,w_${width}/`);
+};

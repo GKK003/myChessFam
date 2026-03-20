@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLang } from "../LangContext";
 import { api } from "../constants";
 
-export default function ReviewModal({ onClose, showToast, reload }) {
+export function ReviewModal({ onClose, showToast, reload }) {
   const { t } = useLang();
   const rm = t.reviews.modal;
   const [childName, setChildName] = useState("");

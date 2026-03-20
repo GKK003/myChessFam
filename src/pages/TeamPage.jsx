@@ -1,5 +1,5 @@
 import { useLang } from "../LangContext";
-import { CONTACT, TEAM } from "../constants";
+import { CONTACT } from "../constants";
 import { Footer } from "../components";
 
 export default function TeamPage({ onNav, onContact }) {

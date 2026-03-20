@@ -9,6 +9,7 @@ import {
   api,
   AUTH_KEY,
 } from "../constants";
+export { ReviewModal } from "./ReviewModal";
 
 export function Toast({ toasts }) {
   return (
@@ -107,6 +108,7 @@ export function Footer({ onNav, onContact }) {
           target="_blank"
           rel="noreferrer"
           className="social-icon ig"
+          aria-label="Instagram"
         >
           <FaInstagram />
         </a>
@@ -115,6 +117,7 @@ export function Footer({ onNav, onContact }) {
           target="_blank"
           rel="noreferrer"
           className="social-icon fb"
+          aria-label="Facebook"
         >
           <FaFacebookF />
         </a>
@@ -123,6 +126,7 @@ export function Footer({ onNav, onContact }) {
           target="_blank"
           rel="noreferrer"
           className="social-icon li"
+          aria-label="LinkedIn"
         >
           <FaLinkedinIn />
         </a>
@@ -385,3 +389,5 @@ export function CampRegModal({ item, onClose, showToast, onRegistered }) {
     </div>
   );
 }
+
+/* ══════════════════════════════════════════ PAGES ══════════════════════════════════════════ */

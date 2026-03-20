@@ -181,6 +181,7 @@ export default function ContactPage({ onNav, showToast }) {
                     target="_blank"
                     rel="noreferrer"
                     className="contact-social-btn ig"
+                    aria-label="Instagram"
                   >
                     <FaInstagram /> Instagram
                   </a>
@@ -189,6 +190,7 @@ export default function ContactPage({ onNav, showToast }) {
                     target="_blank"
                     rel="noreferrer"
                     className="contact-social-btn fb"
+                    aria-label="Facebook"
                   >
                     <FaFacebookF /> Facebook
                   </a>
@@ -197,6 +199,7 @@ export default function ContactPage({ onNav, showToast }) {
                     target="_blank"
                     rel="noreferrer"
                     className="contact-social-btn li"
+                    aria-label="LinkedIn"
                   >
                     <FaLinkedinIn /> LinkedIn
                   </a>
