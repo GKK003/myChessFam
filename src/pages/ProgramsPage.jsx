@@ -9,11 +9,11 @@ export default function ProgramsPage({ onNav, onContact }) {
   const PROGRAMS = t.programs.programs.map((p, i) => ({
     ...p,
     icon: [
-      "/images/schoolprogramsicon.png",
-      "/images/privateicon.png",
-      "/images/tournamentpreparation.png",
-      "/images/teamtrain.png",
-      "/images/chesscamps.png",
+      "/images/schoolprogramsicon.webp",
+      "/images/privateicon.webp",
+      "/images/tournamentpreparation.webp",
+      "/images/teamtrain.webp",
+      "/images/chesscamps.webp",
     ][i],
     color: ["#1A5EA8", "#2E7D5B", "#B45309", "#6B21A8", "#0E7490"][i],
     accent: [
@@ -46,7 +46,11 @@ export default function ProgramsPage({ onNav, onContact }) {
             </button>
             <button
               className="btn btn-g"
-              style={{ background: "rgba(31,168,94,.12)", color: "var(--green2)", border: "1.5px solid rgba(31,168,94,.35)" }}
+              style={{
+                background: "rgba(31,168,94,.12)",
+                color: "var(--green2)",
+                border: "1.5px solid rgba(31,168,94,.35)",
+              }}
               onClick={() => onNav("camp")}
             >
               {t.programs.heroBtn2}
@@ -87,7 +91,11 @@ export default function ProgramsPage({ onNav, onContact }) {
             </button>
             <button
               className="btn btn-g"
-              style={{ background: "rgba(31,168,94,.12)", color: "var(--green2)", border: "1.5px solid rgba(31,168,94,.35)" }}
+              style={{
+                background: "rgba(31,168,94,.12)",
+                color: "var(--green2)",
+                border: "1.5px solid rgba(31,168,94,.35)",
+              }}
               onClick={() => onNav("team")}
             >
               {t.common.meetTeam}
@@ -181,4 +189,3 @@ function ProgramCard({ p }) {
     </div>
   );
 }
-

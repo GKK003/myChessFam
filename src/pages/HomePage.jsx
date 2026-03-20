@@ -17,7 +17,7 @@ export default function HomePage({ onNav, onContact }) {
       title: t.home.section1Title,
       text1: t.home.section1Text1,
       text2: t.home.section1Text2,
-      image: "/images/info.png",
+      image: "/images/info.webp",
       button: t.home.section1Btn,
       onClick: () => onNav("programs"),
     },
@@ -25,7 +25,7 @@ export default function HomePage({ onNav, onContact }) {
       title: t.home.section2Title,
       text1: t.home.section2Text1,
       text2: t.home.section2Text2,
-      image: "/images/info.png",
+      image: "/images/info.webp",
       button: t.home.section2Btn,
       onClick: () => onNav("programs"),
     },
@@ -33,7 +33,7 @@ export default function HomePage({ onNav, onContact }) {
       title: t.home.section3Title,
       text1: t.home.section3Text1,
       text2: t.home.section3Text2,
-      image: "/images/info.png",
+      image: "/images/info.webp",
       button: t.home.section3Btn,
       onClick: () => onNav("reviews"),
     },
@@ -41,7 +41,7 @@ export default function HomePage({ onNav, onContact }) {
       title: t.home.section4Title,
       text1: t.home.section4Text1,
       text2: t.home.section4Text2,
-      image: "/images/info.png",
+      image: "/images/info.webp",
       button: t.home.section4Btn,
       onClick: () => onNav("camp"),
     },
@@ -49,7 +49,7 @@ export default function HomePage({ onNav, onContact }) {
       title: t.home.section5Title,
       text1: t.home.section5Text1,
       text2: t.home.section5Text2,
-      image: "/images/info.png",
+      image: "/images/info.webp",
       button: t.home.section5Btn,
       onClick: onContact,
     },
@@ -150,7 +150,7 @@ export default function HomePage({ onNav, onContact }) {
       <div className="offer-grid">
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
-            src="/images/schoolprogramsicon.png"
+            src="/images/schoolprogramsicon.webp"
             alt={t.home.offer1Title}
             className="offer-img"
           />
@@ -160,7 +160,7 @@ export default function HomePage({ onNav, onContact }) {
         </div>
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
-            src="/images/privateicon.png"
+            src="/images/privateicon.webp"
             alt={t.home.offer2Title}
             className="offer-img"
           />
@@ -170,7 +170,7 @@ export default function HomePage({ onNav, onContact }) {
         </div>
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
-            src="/images/tournamentpreparation.png"
+            src="/images/tournamentpreparation.webp"
             alt={t.home.offer3Title}
             className="offer-img"
           />
@@ -180,7 +180,7 @@ export default function HomePage({ onNav, onContact }) {
         </div>
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
-            src="/images/teamtrain.png"
+            src="/images/teamtrain.webp"
             alt={t.home.offer4Title}
             className="offer-img"
           />
@@ -190,7 +190,7 @@ export default function HomePage({ onNav, onContact }) {
         </div>
         <div className="offer-card" onClick={() => onNav("programs")}>
           <img
-            src="/images/chesscamps.png"
+            src="/images/chesscamps.webp"
             alt={t.home.offer5Title}
             className="offer-img"
           />
